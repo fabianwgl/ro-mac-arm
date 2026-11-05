@@ -21,6 +21,13 @@ enum LoginStage {
         case connectingCharServer(_ charServer: CharServerInfo)
         case characterSelect(_ characters: [CharacterInfo])
         case characterMake(_ slot: Int)
+        case pincode(_ request: PincodeRequest)
         case waitingForMapServer(_ slot: Int)
+    }
+
+    enum PincodeRequest {
+        case enter
+        case create
+        case change
     }
 }

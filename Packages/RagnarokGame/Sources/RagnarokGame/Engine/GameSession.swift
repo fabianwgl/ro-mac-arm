@@ -67,6 +67,7 @@ final public class GameSession {
     private var username: String?
 
     private(set) var isDisconnected = false
+    private(set) var isExitRequested = false
     private(set) var errorMessages: [GameSession.ErrorMessage] = []
     private(set) var account: AccountInfo?
     private(set) var charServers: [CharServerInfo] = []
@@ -81,6 +82,8 @@ final public class GameSession {
 
     @ObservationIgnored var charClient: NetworkClient?
     @ObservationIgnored var charKeepaliveTask: Task<Void, Never>?
+
+    private var pincodeSeed: UInt32 = 0
 
     var playSession: PlaySession? {
         if case .play(let playSession) = stage {
@@ -130,6 +133,10 @@ final public class GameSession {
         errorMessages.removeAll()
     }
 
+    func resetExitRequest() {
+        isExitRequested = false
+    }
+
     func stopAllClients() {
         playSession?.stop()
         stopCharClient()
@@ -144,7 +151,7 @@ final public class GameSession {
         case .login(.loggingIn), .login(.charServerList):
             stopLoginClient()
             resetLoginPhase()
-        case .login(.connectingCharServer), .login(.characterSelect):
+        case .login(.connectingCharServer), .login(.characterSelect), .login(.pincode):
             stopCharClient()
             resetLoginPhase()
         case .login(.characterMake):
@@ -171,6 +178,7 @@ final public class GameSession {
         characters = []
         selectedCharacterSlot = 0
         maxCharacterSlots = 9
+        pincodeSeed = 0
 
         stage = .login(.login)
     }
@@ -226,6 +234,21 @@ final public class GameSession {
         guard case .running(let configuration) = state else {
             return
         }
+
+        let packetVersion: Int
+        do {
+            packetVersion = try PacketVersionSupport.resolveFromEnvironment()
+        } catch {
+            logger.error("\(error)")
+
+            let errorMessage = GameSession.ErrorMessage(content: error.description) { gameSession, errorMessage in
+                gameSession.removeErrorMessage(errorMessage)
+                gameSession.resetLoginPhase()
+            }
+            errorMessages.append(errorMessage)
+            return
+        }
+        logger.info("Packet version \(packetVersion)")
 
         let client = NetworkClient(
             name: "Login",
@@ -352,6 +375,56 @@ final public class GameSession {
         stage = .login(.waitingForMapServer(slot))
 
         let packet = PacketFactory.CH_SELECT_CHAR(slot: slot)
+        charClient.sendPacket(packet)
+    }
+
+    /// Submit the second password.
+    ///
+    /// Send ``PACKET_CH_SECOND_PASSWD_ACK``
+    func submitPincode(_ pin: String) {
+        guard case .login(.pincode(.enter)) = stage,
+              let charClient,
+              let account,
+              let encryptedPin = PincodeCipher.encrypt(pin, seed: pincodeSeed) else {
+            return
+        }
+
+        let packet = PacketFactory.CH_SECOND_PASSWD_ACK(accountID: account.accountID, encryptedPin: encryptedPin)
+        charClient.sendPacket(packet)
+    }
+
+    /// Create a new second password.
+    ///
+    /// Send ``PACKET_CH_MAKE_SECOND_PASSWD``
+    func submitNewPincode(_ pin: String) {
+        guard case .login(.pincode(.create)) = stage,
+              let charClient,
+              let account,
+              let encryptedPin = PincodeCipher.encrypt(pin, seed: pincodeSeed) else {
+            return
+        }
+
+        let packet = PacketFactory.CH_MAKE_SECOND_PASSWD(accountID: account.accountID, encryptedPin: encryptedPin)
+        charClient.sendPacket(packet)
+    }
+
+    /// Change the second password.
+    ///
+    /// Send ``PACKET_CH_EDIT_SECOND_PASSWD``
+    func changePincode(old: String, new: String) {
+        guard case .login(.pincode(.change)) = stage,
+              let charClient,
+              let account,
+              let encryptedOldPin = PincodeCipher.encrypt(old, seed: pincodeSeed),
+              let encryptedNewPin = PincodeCipher.encrypt(new, seed: pincodeSeed) else {
+            return
+        }
+
+        let packet = PacketFactory.CH_EDIT_SECOND_PASSWD(
+            accountID: account.accountID,
+            encryptedOldPin: encryptedOldPin,
+            encryptedNewPin: encryptedNewPin
+        )
         charClient.sendPacket(packet)
     }
 
@@ -518,8 +591,27 @@ final public class GameSession {
             break
         case _ as PACKET_HC_ACCEPT_ENTER2:
             break
-        case _ as PACKET_HC_SECOND_PASSWD_LOGIN:
-            break
+        case let packet as PACKET_HC_SECOND_PASSWD_LOGIN:
+            pincodeSeed = packet.seed
+
+            switch packet.result {
+            case 0:
+                stage = .login(.characterSelect(characters))
+            case 1:
+                stage = .login(.pincode(.enter))
+            case 2, 4:
+                stage = .login(.pincode(.create))
+            case 3:
+                stage = .login(.pincode(.change))
+            case 5:
+                stage = .login(.pincode(.create))
+
+                let localizedMessage = context.messageStringTable.localizedMessageString(forID: 1896)
+                let errorMessage = GameSession.ErrorMessage(content: localizedMessage)
+                errorMessages.append(errorMessage)
+            default:
+                logger.warning("Unknown pincode state: \(packet.result)")
+            }
         case _ as PACKET_HC_CHARLIST_NOTIFY:
             break
         case _ as PACKET_HC_BLOCK_CHARACTER:
@@ -622,6 +714,11 @@ extension GameSession: PlaySessionDelegate {
 
     func playSessionDidRestart(_ playSession: PlaySession) {
         exitCurrentPhase()
+    }
+
+    func playSessionDidAcceptQuit(_ playSession: PlaySession) {
+        exitSession()
+        isExitRequested = true
     }
 
     func playSession(_ playSession: PlaySession, didReceiveErrorMessage errorMessage: String) {

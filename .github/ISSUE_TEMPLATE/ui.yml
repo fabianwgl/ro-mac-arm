@@ -1,0 +1,48 @@
+name: UI Bug
+description: Report a window, layout, or interaction problem.
+title: "[UI] "
+labels: [ui, bug]
+body:
+  - type: input
+    id: window
+    attributes:
+      label: Window or screen
+      description: For example Login, Character Select, or Inventory.
+      placeholder: Inventory
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: textarea
+    id: expected-actual
+    attributes:
+      label: Expected and actual behaviour
+      description: Describe what you expected and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot
+      description: Drag and drop a screenshot here. Do not include Gravity assets.
+  - type: input
+    id: macos-version
+    attributes:
+      label: macOS version
+      placeholder: macOS 15.0
+  - type: checkboxes
+    id: no-gravity-assets
+    attributes:
+      label: Gravity assets
+      description: Do not attach data.grf, rdata.grf, BGM, or extracted Gravity files.
+      options:
+        - label: I confirm this report contains no Gravity assets.
+          required: true

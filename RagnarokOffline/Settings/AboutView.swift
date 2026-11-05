@@ -26,6 +26,8 @@ struct AboutView: View {
                 }
             }
 
+            ForkNoticeSection()
+
             Section {
                 Link(destination: repositoryURL) {
                     Text("GitHub Repository", tableName: "Settings")

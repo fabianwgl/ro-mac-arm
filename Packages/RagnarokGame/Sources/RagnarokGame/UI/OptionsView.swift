@@ -11,10 +11,8 @@ struct OptionsView: View {
     var isPlayerDead: Bool
     var onClose: () -> Void = {}
 
-    @Environment(GameSession.self) private var gameSession
     @Environment(GameContext.self) private var gameContext
     @Environment(PlaySession.self) private var playSession
-    @Environment(\.exitGame) private var exitGame
 
     var body: some View {
         GameWindow {
@@ -78,8 +76,6 @@ struct OptionsView: View {
                     // esc_03a.bmp
                     Button {
                         playSession.requestExit()
-                        gameSession.exitSession()
-                        exitGame()
                     } label: {
                         Text("Exit", bundle: #bundle)
                     }

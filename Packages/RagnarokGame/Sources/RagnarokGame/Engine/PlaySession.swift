@@ -17,6 +17,7 @@ import RagnarokPackets
 protocol PlaySessionDelegate: AnyObject {
     func playSession(_ playSession: PlaySession, didFailToEnterWithErrorMessage errorMessage: String)
     func playSessionDidRestart(_ playSession: PlaySession)
+    func playSessionDidAcceptQuit(_ playSession: PlaySession)
     func playSession(_ playSession: PlaySession, didReceiveErrorMessage errorMessage: String)
     func playSessionDidDisconnect(_ playSession: PlaySession)
 }
@@ -41,6 +42,7 @@ final class PlaySession {
     var skillCooldowns: [Int : SkillCooldown]
     var statusChanges: [StatusChange]
     var shortcutList: ShortcutList
+    var questLog: QuestLog
     let messageCenter: MessageCenter
 
     var dialog: NPCDialog?
@@ -58,6 +60,7 @@ final class PlaySession {
 
     @ObservationIgnored private var mapClient: NetworkClient?
     @ObservationIgnored private var keepaliveTask: Task<Void, Never>?
+    @ObservationIgnored private var exitFallbackTask: Task<Void, Never>?
 
     @ObservationIgnored private var serverClock = ServerClock()
     @ObservationIgnored private var serverTimeRequestTime: ContinuousClock.Instant?
@@ -86,6 +89,7 @@ final class PlaySession {
         self.skillCooldowns = [:]
         self.statusChanges = []
         self.shortcutList = ShortcutList()
+        self.questLog = QuestLog()
         self.messageCenter = MessageCenter(
             itemInfoTable: context.itemInfoTable,
             messageStringTable: context.messageStringTable
@@ -126,6 +130,10 @@ final class PlaySession {
     // MARK: - Map Client
 
     func start(mapServer: MapServerInfo) {
+        connect(to: mapServer)
+    }
+
+    private func connect(to mapServer: MapServerInfo) {
         let mapClient = NetworkClient(
             name: "Map",
             address: mapServer.ip,
@@ -144,7 +152,10 @@ final class PlaySession {
         // Handle packet stream
         Task { [weak self] in
             for await packet in mapClient.packetStream {
-                self?.handlePacket(packet)
+                guard let self, mapClient === self.mapClient else {
+                    return
+                }
+                self.handlePacket(packet)
             }
         }
 
@@ -173,11 +184,63 @@ final class PlaySession {
         keepaliveTask?.cancel()
         keepaliveTask = nil
 
+        cancelExitFallback()
+
         mapClient?.disconnect()
         mapClient = nil
 
         // The scene holds this session, so keeping the runtime would leak both.
         mapPhase = .connecting
+    }
+
+    /// Loads the map at the position the server moved the player to.
+    private func loadMap(mapName: String, position: SIMD2<Int>) {
+        if let mapScene, mapScene.mapName == mapName {
+            mapScene.jump(toPosition: position)
+            notifyMapLoaded()
+            return
+        }
+
+        mapRuntime?.unload()
+
+        let progress = Progress()
+        mapPhase = .loading(progress)
+
+        Task {
+            guard let device = MTLCreateSystemDefaultDevice() else {
+                fatalError("PlaySession: Metal is not available on this device")
+            }
+
+            let world = try await context.resourceManager.world(mapName: mapName)
+            let mapGrid = MapGrid(gat: world.gat)
+
+            let scene = MapScene(
+                mapName: mapName,
+                mapGrid: mapGrid,
+                account: account,
+                character: character,
+                playerPosition: position,
+                resourceManager: context.resourceManager,
+                audioPlayer: audioPlayer,
+                playSession: self
+            )
+            let renderResources = MapSceneRenderResources(device: device)
+            let runtime = MapSceneRuntime(
+                scene: scene,
+                world: world,
+                renderResources: renderResources
+            )
+
+            do {
+                try await runtime.load(progress: progress)
+
+                notifyMapLoaded()
+
+                mapPhase = .loaded(runtime)
+            } catch {
+                logger.warning("Map scene failed to load: \(error)")
+            }
+        }
     }
 
     private func handleClientError(_ error: NetworkClientError, from client: NetworkClient) {
@@ -210,7 +273,14 @@ final class PlaySession {
                 delegate?.playSessionDidRestart(self)
             }
         case let packet as PACKET_ZC_ACK_REQ_DISCONNECT:
-            messageCenter.addMessage(for: packet)
+            // rAthena answers CZ_REQUEST_QUIT with clif_disconnect_ack:
+            // 0 accepts the quit, any other value refuses it, such as within 10 seconds of combat.
+            if packet.result == 0 {
+                acceptQuit()
+            } else {
+                cancelExitFallback()
+                messageCenter.addMessage(for: packet)
+            }
         case let packet as PACKET_ZC_AID:
             account.update(accountID: packet.accountID)
         case _ as PACKET_ZC_PING_LIVE:
@@ -219,53 +289,16 @@ final class PlaySession {
         case let packet as PACKET_ZC_NPCACK_MAPMOVE:
             let mapName = packet.mapName.replacingOccurrences(of: ".gat", with: ".rsw")
             let position = SIMD2(x: Int(packet.xPos), y: Int(packet.yPos))
+            loadMap(mapName: mapName, position: position)
+        case let packet as PACKET_ZC_NPCACK_SERVERMOVE:
+            let mapName = packet.mapName.replacingOccurrences(of: ".gat", with: ".rsw")
+            let position = SIMD2(x: Int(packet.xPos), y: Int(packet.yPos))
+            let mapServer = MapServerInfo(ip: packet.ip, port: packet.port)
 
-            if let mapScene, mapScene.mapName == mapName {
-                mapScene.jump(toPosition: position)
-                notifyMapLoaded()
-                break
-            }
-
-            mapRuntime?.unload()
-
-            let progress = Progress()
-            mapPhase = .loading(progress)
-
-            Task {
-                guard let device = MTLCreateSystemDefaultDevice() else {
-                    fatalError("PlaySession: Metal is not available on this device")
-                }
-
-                let world = try await context.resourceManager.world(mapName: mapName)
-                let mapGrid = MapGrid(gat: world.gat)
-
-                let scene = MapScene(
-                    mapName: mapName,
-                    mapGrid: mapGrid,
-                    account: account,
-                    character: character,
-                    playerPosition: position,
-                    resourceManager: context.resourceManager,
-                    audioPlayer: audioPlayer,
-                    playSession: self
-                )
-                let renderResources = MapSceneRenderResources(device: device)
-                let runtime = MapSceneRuntime(
-                    scene: scene,
-                    world: world,
-                    renderResources: renderResources
-                )
-
-                do {
-                    try await runtime.load(progress: progress)
-
-                    notifyMapLoaded()
-
-                    mapPhase = .loaded(runtime)
-                } catch {
-                    logger.warning("Map scene failed to load: \(error)")
-                }
-            }
+            // The map server hands the player to another map server, so enter it like the first one.
+            stop()
+            start(mapServer: mapServer)
+            loadMap(mapName: mapName, position: position)
         case let packet as PACKET_ZC_NOTIFY_PLAYERMOVE:
             let moveData = MoveData(from: packet.moveData)
             mapScene?.onPlayerMoved(
@@ -567,6 +600,8 @@ final class PlaySession {
         case let packet as PACKET_ZC_WHISPER:
             let message = ChatMessage(from: packet)
             messageCenter.add(message)
+        case let packet as PACKET_ZC_ACK_WHISPER:
+            messageCenter.addMessage(for: packet)
         case let packet as PACKET_ZC_NOTIFY_PLAYERCHAT:
             let message = ChatMessage(from: packet)
             messageCenter.add(message)
@@ -613,7 +648,7 @@ final class PlaySession {
         case _ as PACKET_ZC_BROADCAST2:
             break
         default:
-            break
+            handleQuestPacket(packet)
         }
     }
 
@@ -692,6 +727,26 @@ final class PlaySession {
 
         let packet = PacketFactory.CZ_REQUEST_QUIT()
         mapClient.sendPacket(packet)
+
+        // The server may not answer when the connection is dead, so exit anyway after a while.
+        cancelExitFallback()
+        exitFallbackTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(5))
+            guard !Task.isCancelled else {
+                return
+            }
+            self?.acceptQuit()
+        }
+    }
+
+    private func acceptQuit() {
+        cancelExitFallback()
+        delegate?.playSessionDidAcceptQuit(self)
+    }
+
+    private func cancelExitFallback() {
+        exitFallbackTask?.cancel()
+        exitFallbackTask = nil
     }
 
     // MARK: - Player
@@ -760,6 +815,20 @@ final class PlaySession {
         }
 
         let packet = PacketFactory.CZ_UPGRADE_SKILLLEVEL(skillID: skillID)
+        mapClient.sendPacket(packet)
+    }
+
+    /// Request a quest state change.
+    ///
+    /// Send ``PACKET_CZ_ACTIVE_QUEST``
+    ///
+    /// Receive ``PACKET_ZC_ACTIVE_QUEST``
+    func setQuestActive(questID: UInt32, active: Bool) {
+        guard let mapClient else {
+            return
+        }
+
+        let packet = PacketFactory.CZ_ACTIVE_QUEST(questID: questID, active: active)
         mapClient.sendPacket(packet)
     }
 
@@ -925,23 +994,60 @@ final class PlaySession {
 
     // MARK: - Chat
 
-    func sendMessage(_ message: String) {
+    func sendMessage(_ message: String, whisperTarget: String? = nil) {
         guard let mapClient else {
             return
         }
 
-        if message.hasPrefix("%") {
-//            PACKET_CZ_REQUEST_CHAT_PARTY
-        } else if message.hasPrefix("$") {
-//            PACKET_CZ_GUILD_CHAT
-        } else if message.hasPrefix("/cl") {
-//            PACKET_CZ_CLAN_CHAT
-        } else if message.hasPrefix("/") {
-            performSlashCommand(message)
-        } else {
-            let packet = PacketFactory.CZ_REQUEST_CHAT(message: "\(character.name) : \(message)")
-            mapClient.sendPacket(packet)
+        let whisperTarget = whisperTarget?.trimmingCharacters(in: .whitespaces) ?? ""
+        if !whisperTarget.isEmpty {
+            sendWhisper(message, to: whisperTarget)
+            return
         }
+
+        switch ChatCommandParser.whisperCommand(from: message) {
+        case .whisper(let receiver, let text):
+            sendWhisper(text, to: receiver)
+        case .usage:
+            messageCenter.addWhisperUsageMessage()
+        case .notWhisper:
+            if message.hasPrefix("%") {
+                let text = String(message.dropFirst()).trimmingCharacters(in: .whitespaces)
+                if !text.isEmpty {
+                    let packet = PacketFactory.CZ_REQUEST_CHAT_PARTY(message: "\(character.name) : \(text)")
+                    mapClient.sendPacket(packet)
+                }
+            } else if message.hasPrefix("$") {
+                let text = String(message.dropFirst()).trimmingCharacters(in: .whitespaces)
+                if !text.isEmpty {
+                    let packet = PacketFactory.CZ_GUILD_CHAT(message: "\(character.name) : \(text)")
+                    mapClient.sendPacket(packet)
+                }
+            } else if message.hasPrefix("/cl") {
+//                PACKET_CZ_CLAN_CHAT
+            } else if message.hasPrefix("/") {
+                performSlashCommand(message)
+            } else {
+                let packet = PacketFactory.CZ_REQUEST_CHAT(message: "\(character.name) : \(message)")
+                mapClient.sendPacket(packet)
+            }
+        }
+    }
+
+    private func sendWhisper(_ message: String, to receiver: String) {
+        guard let mapClient else {
+            return
+        }
+
+        let packet = PacketFactory.CZ_WHISPER(receiver: receiver, message: message)
+        mapClient.sendPacket(packet)
+
+        let echo = ChatMessage(
+            type: .private,
+            senderName: character.name,
+            content: "(To \(receiver)) : \(message)"
+        )
+        messageCenter.add(echo)
     }
 
     private func performSlashCommand(_ message: String) {

@@ -34,6 +34,11 @@ extension MessageCenter {
         messages.append(message)
     }
 
+    func addWhisperUsageMessage() {
+        let message = MessageCenter.Message(content: "Usage: /w \"Name\" message", type: .info, category: .general)
+        messages.append(message)
+    }
+
     func addLocationMessage(mapName: String, localizedMapName: String, position: SIMD2<Int>) {
         let message = MessageCenter.Message(content: "\(localizedMapName)(\(mapName)) : \(position.x), \(position.y)", type: .info, category: .general)
         messages.append(message)

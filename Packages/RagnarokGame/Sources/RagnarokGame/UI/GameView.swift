@@ -64,6 +64,13 @@ public struct GameView: View {
         }
         .environment(gameSession)
         .environment(gameSession.context)
+        .onChange(of: gameSession.isExitRequested) { _, isExitRequested in
+            guard isExitRequested else {
+                return
+            }
+            exitGame()
+            gameSession.resetExitRequest()
+        }
         .onIncrementStatusProperty { sp, amount in
             gameSession.playSession?.incrementStatusProperty(sp, by: amount)
         }

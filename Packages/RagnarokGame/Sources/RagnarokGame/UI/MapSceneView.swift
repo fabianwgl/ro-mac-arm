@@ -113,6 +113,10 @@ struct MapSceneView: View {
                     SkillListView(skillList: playSession.skillList) {
                         presentedMenuItem = nil
                     }
+                case .quest:
+                    QuestLogView(questLog: playSession.questLog) {
+                        presentedMenuItem = nil
+                    }
                 case .worldMap:
                     WorldMapView(currentMapName: runtime.scene.mapName) {
                         presentedMenuItem = nil

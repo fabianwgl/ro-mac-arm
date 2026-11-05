@@ -414,7 +414,7 @@ extension MapScene {
             case .pc:
                 selectTarget(target)
                 targetSelector = TargetSelector(objectID: target.objectID, showTime: .now)
-            case .monster, .npc:
+            case .monster, .npc, .npc2:
                 if playSession.interactionMode != .select || selectedTargetID == objectID {
                     selectTarget(target)
                     performActionOnSelectedTarget()
@@ -500,11 +500,26 @@ extension MapScene {
         switch selectedTarget.type {
         case .monster:
             attackMonster(targetID: selectedTarget.objectID)
-        case .npc:
-            playSession.talkToNPC(npcID: selectedTarget.objectID)
+        case .npc, .npc2:
+            if selectedTarget.job == NPCJobID.jt_warpnpc.rawValue {
+                cancelArrivalAction()
+                requestMove(to: selectedTarget.gridPosition)
+            } else {
+                faceNPC(selectedTarget)
+                playSession.talkToNPC(npcID: selectedTarget.objectID)
+            }
         default:
             break
         }
+    }
+
+    /// Turns toward the NPC before talking to it, like the official client.
+    private func faceNPC(_ npc: MapSceneMapObject) {
+        player.look(at: npc.gridPosition)
+        playSession.changeDirection(
+            direction: Direction(fromPosition: player.gridPosition, toPosition: npc.gridPosition),
+            headDirection: .lookForward
+        )
     }
 }
 
@@ -831,5 +846,12 @@ extension MapScene {
         default:
             false
         }
+    }
+}
+
+extension Direction {
+    /// The 8-way direction from one grid position to another, such as when the player turns to an NPC.
+    init(fromPosition position: SIMD2<Int>, toPosition targetPosition: SIMD2<Int>) {
+        self.init(spriteDirection: SpriteDirection(sourcePosition: position, targetPosition: targetPosition))
     }
 }

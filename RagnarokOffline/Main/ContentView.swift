@@ -5,6 +5,9 @@
 //  Created by Leon Li on 2023/1/13.
 //
 
+#if os(macOS)
+import AppKit
+#endif
 import RagnarokGame
 import SwiftUI
 
@@ -108,6 +111,17 @@ struct ContentView: View {
 
             incomingFile = File(node: .regularFile(url), location: .external)
         }
+        #if os(macOS)
+        .alert(
+            uncleanExitAlertTitle,
+            isPresented: isUncleanExitAlertPresented
+        ) {
+            Button("Open Crash Reports") {
+                openCrashReports()
+            }
+            Button("OK", role: .cancel) {}
+        }
+        #endif
     }
 
     @ViewBuilder private func detailView(for item: SidebarItem) -> some View {
@@ -173,6 +187,32 @@ struct ContentView: View {
             selectedItem = .localClientFiles
         }
     }
+
+    #if os(macOS)
+    private var uncleanExitAlertTitle: String {
+        let startedAt = appModel.previousUncleanExit?.startedAt.formatted(date: .numeric, time: .shortened) ?? "unknown"
+        return "RO Mac Client did not quit cleanly last time (started \(startedAt)). Crash reports are in ~/Library/Logs/DiagnosticReports."
+    }
+
+    private var isUncleanExitAlertPresented: Binding<Bool> {
+        Binding(get: {
+            appModel.previousUncleanExit != nil
+        }, set: { isPresented in
+            if !isPresented {
+                appModel.previousUncleanExit = nil
+            }
+        })
+    }
+
+    private func openCrashReports() {
+        guard let libraryURL = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first else {
+            return
+        }
+
+        let directoryURL = libraryURL.appending(path: "Logs/DiagnosticReports", directoryHint: .isDirectory)
+        NSWorkspace.shared.open(directoryURL)
+    }
+    #endif
 }
 
 extension View {

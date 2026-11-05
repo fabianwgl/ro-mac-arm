@@ -12,14 +12,18 @@ public struct MapServerInfo: Sendable {
     public var ip: String
     public var port: UInt16
 
-    public init(from packet: PACKET_HC_NOTIFY_ZONESVR) {
-        let addri = in_addr(s_addr: packet.ip)
+    public init(ip: UInt32, port: UInt16) {
+        let addri = in_addr(s_addr: ip)
         if let addrs = inet_ntoa(addri) {
-            ip = String(cString: addrs)
+            self.ip = String(cString: addrs)
         } else {
-            ip = ""
+            self.ip = ""
         }
 
-        port = packet.port
+        self.port = port
+    }
+
+    public init(from packet: PACKET_HC_NOTIFY_ZONESVR) {
+        self.init(ip: packet.ip, port: packet.port)
     }
 }

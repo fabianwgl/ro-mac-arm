@@ -48,6 +48,7 @@ struct ChatBoxView: View {
 
     @State private var viewStyle: ViewStyle = .compact
     @State private var messageGroup: MessageGroup = .chat
+    @State private var whisperTarget = ""
     @State private var message = ""
 
     @FocusState private var isFocused: Bool
@@ -103,6 +104,22 @@ struct ChatBoxView: View {
                     .fill(Color.white.opacity(0.3))
                     .frame(width: 1)
 
+                TextField("To", text: $whisperTarget)
+                    .textFieldStyle(.plain)
+                    #if !os(macOS)
+                    .textInputAutocapitalization(.never)
+                    #endif
+                    .disableAutocorrection(true)
+                    .font(.game())
+                    .foregroundStyle(Color.white)
+                    .tint(Color.white)
+                    .padding(.horizontal, 3)
+                    .frame(width: 80, height: ChatBoxView.chatInputHeight)
+
+                Rectangle()
+                    .fill(Color.white.opacity(0.3))
+                    .frame(width: 1)
+
                 TextField(String(), text: $message)
                     .textFieldStyle(.plain)
                     #if !os(macOS)
@@ -143,7 +160,7 @@ struct ChatBoxView: View {
             return
         }
 
-        playSession.sendMessage(message)
+        playSession.sendMessage(message, whisperTarget: whisperTarget)
         playSession.messageCenter.inputHistory.push(message)
         self.message = ""
     }

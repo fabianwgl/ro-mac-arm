@@ -85,6 +85,34 @@ public enum PacketFactory {
         return packet
     }
 
+    /// | `PACKET_CH_SECOND_PASSWD_ACK` | `chclif_parse_pincode_check` |
+    public static func CH_SECOND_PASSWD_ACK(accountID: UInt32, encryptedPin: String) -> PACKET_CH_SECOND_PASSWD_ACK {
+        var packet = PACKET_CH_SECOND_PASSWD_ACK()
+        packet.packetType = HEADER_CH_SECOND_PASSWD_ACK
+        packet.AID = accountID
+        packet.pin = encryptedPin
+        return packet
+    }
+
+    /// | `PACKET_CH_MAKE_SECOND_PASSWD` | `chclif_parse_pincode_setnew` |
+    public static func CH_MAKE_SECOND_PASSWD(accountID: UInt32, encryptedPin: String) -> PACKET_CH_MAKE_SECOND_PASSWD {
+        var packet = PACKET_CH_MAKE_SECOND_PASSWD()
+        packet.packetType = HEADER_CH_MAKE_SECOND_PASSWD
+        packet.AID = accountID
+        packet.pin = encryptedPin
+        return packet
+    }
+
+    /// | `PACKET_CH_EDIT_SECOND_PASSWD` | `chclif_parse_pincode_change` |
+    public static func CH_EDIT_SECOND_PASSWD(accountID: UInt32, encryptedOldPin: String, encryptedNewPin: String) -> PACKET_CH_EDIT_SECOND_PASSWD {
+        var packet = PACKET_CH_EDIT_SECOND_PASSWD()
+        packet.packetType = HEADER_CH_EDIT_SECOND_PASSWD
+        packet.AID = accountID
+        packet.old_pin = encryptedOldPin
+        packet.new_pin = encryptedNewPin
+        return packet
+    }
+
     /// | `PACKET_PING` | `chclif_parse_keepalive` |
     public static func PING(accountID: UInt32) -> PACKET_PING {
         var packet = PACKET_PING()
@@ -184,6 +212,34 @@ public enum PacketFactory {
     /// | `PACKET_CZ_REQUEST_CHAT` | `clif_parse_GlobalMessage` |
     public static func CZ_REQUEST_CHAT(message: String) -> PACKET_CZ_REQUEST_CHAT {
         var packet = PACKET_CZ_REQUEST_CHAT()
+        packet.message = message
+        return packet
+    }
+
+    /// | `PACKET_CZ_WHISPER` | `clif_parse_WisMessage` |
+    public static func CZ_WHISPER(receiver: String, message: String) -> PACKET_CZ_WHISPER {
+        var packet = PACKET_CZ_WHISPER()
+        packet.packetType = HEADER_CZ_WHISPER
+        packet.packetLength = Int16(2 + 2 + 24 + message.utf8.count)
+        packet.receiver = receiver
+        packet.message = message
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQUEST_CHAT_PARTY` | `clif_parse_PartyMessage` |
+    public static func CZ_REQUEST_CHAT_PARTY(message: String) -> PACKET_CZ_REQUEST_CHAT_PARTY {
+        var packet = PACKET_CZ_REQUEST_CHAT_PARTY()
+        packet.packetType = HEADER_CZ_REQUEST_CHAT_PARTY
+        packet.packetLength = Int16(2 + 2 + message.utf8.count)
+        packet.message = message
+        return packet
+    }
+
+    /// | `PACKET_CZ_GUILD_CHAT` | `clif_parse_GuildMessage` |
+    public static func CZ_GUILD_CHAT(message: String) -> PACKET_CZ_GUILD_CHAT {
+        var packet = PACKET_CZ_GUILD_CHAT()
+        packet.packetType = HEADER_CZ_GUILD_CHAT
+        packet.packetLength = Int16(2 + 2 + message.utf8.count)
         packet.message = message
         return packet
     }
@@ -404,6 +460,15 @@ public enum PacketFactory {
     public static func CZ_PING_LIVE() -> PACKET_CZ_PING_LIVE {
         var packet = PACKET_CZ_PING_LIVE()
         packet.packetType = HEADER_CZ_PING_LIVE
+        return packet
+    }
+
+    /// | `PACKET_CZ_ACTIVE_QUEST` | `clif_parse_questStateAck` |
+    public static func CZ_ACTIVE_QUEST(questID: UInt32, active: Bool) -> PACKET_CZ_ACTIVE_QUEST {
+        var packet = PACKET_CZ_ACTIVE_QUEST()
+        packet.packetType = HEADER_CZ_ACTIVE_QUEST
+        packet.quest_id = questID
+        packet.active = active ? 1 : 0
         return packet
     }
 }

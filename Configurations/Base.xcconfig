@@ -11,3 +11,7 @@
 ASSETCATALOG_COMPILER_APPICON_NAME = RagnarokOfflineIcon
 ASSETCATALOG_COMPILER_APPICON_NAME[sdk=xros*] = AppIcon
 ASSETCATALOG_COMPILER_APPICON_NAME[sdk=xrsimulator*] = AppIcon
+
+// RO Mac Client identity. The targets in project.pbxproj derive their bundle identifiers from RO_BUNDLE_ID.
+RO_BUNDLE_ID = tech.thecapy.ro-mac-client
+DEVELOPMENT_TEAM = 4RGKC487ZB
