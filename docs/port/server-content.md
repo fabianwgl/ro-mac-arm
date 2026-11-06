@@ -69,7 +69,7 @@ Totals: 86 + 54 + 17 + 23 − 8 (overlap) = 172.
 | Mounts (Peco, Dragon, Wug, Madogear) | On, item-driven | Option bits in `src/map/pc.cpp:1364`. `rental_mount_speed_boost: 25` in `conf/battle/player.conf:195`. | Loaded: `npc/merchants/renters.txt` (rental mounts), `npc/re/quests/quests_16_1.txt` (`setriding`, `setdragon`, `setwug`). |
 | Cash mounts | Not available | No cash items (see Cash shop). | none |
 | Costumes | On, item-driven | `Costume_*` flags in `db/re/item_db_equip.yml`. `db/re/job_outfits.yml`. | Loaded: `npc/re/mapflag/nocostume.txt`, `npc/re/merchants/malangdo_costume.txt`. |
-| Mail (RODEX) | On | `src/map/mail.cpp` (PACKETVER ≥ 20150513 gate, line 183). `conf/battle/misc.conf`: `mail_daily_count: 100`, `mail_zeny_fee: 2`, `mail_attachment_price: 2500`, `mail_attachment_weight: 2000`, `mail_delay: 1000`. `conf/char_athena.conf`: `mail_return_days: 15`, `mail_delete_days: 15`, `mail_retrieve: yes`, `mail_return_empty: yes`. | Loaded: `npc/other/mail.txt` (`openmail`). |
+| Mail (RODEX) | On | `src/map/mail.cpp` (PACKETVER ≥ 20150513 gate, line 183). `conf/battle/misc.conf`: `mail_daily_count: 100`, `mail_zeny_fee: 2`, `mail_attachment_price: 2500`, `mail_attachment_weight: 2000`, `mail_delay: 1000`. `conf/char_athena.conf`: `mail_return_days: 15`, `mail_delete_days: 15`, `mail_retrieve: yes`, `mail_return_empty: yes`. | Loaded: `npc/other/mail.txt`, but its `openmail` command is not supported at PACKETVER 20150513 and later (`script.cpp` `BUILDIN_FUNC(openmail)` logs an error and fails), so the NPC takes 130 zeny and opens nothing. RODEX is opened by the client (`CZ_OPEN_MAILBOX2`) or by `@mail` (`ZC_MAIL_WINDOWS`). |
 | Achievements | On | `feature.achievement: on` (`conf/battle/feature.conf:81`). `achievement_mob_share: no` (`conf/battle/monster.conf:328`). | `db/re/achievement_db.yml` (511), `achievement_level_db.yml`. Loaded: `npc/re/other/achievements.txt`. |
 | Cash shop | Code on, no items | `cashshop_show_points: no` (`conf/battle/misc.conf:135`). Items come from `db/item_cash.yml`, which imports `db/import/item_cash.yml`. | That import is header-only (no `Body`), so the item list is empty. Loaded: `npc/re/merchants/cashmall.txt`, `npc/re/other/CashShop_Functions.txt`. |
 | Quest log | On | `quest_skill_learn: no`, `quest_skill_reset: no` (`conf/battle/player.conf:39,44`). `quest_exp_rate: 100` (`conf/battle/exp.conf:57`). | `db/re/quest_db.yml` (4867 entries), `src/map/quest.cpp`. 154 quest NPC files loaded. |
@@ -184,7 +184,7 @@ Ranked by how often a player touches each system per day. This is a judgement fr
 
 1. Chat, party, inventory, storage, and Kafra/warp services. Kafra and warp NPCs are loaded (`npc/kafras`, `npc/re/kafras`, `npc/warps` 81, `npc/re/warps` 56).
 2. Attendance login popup and the 20-day reward (`feature.attendance`, `db/re/attendance.yml`).
-3. Mail (RODEX). `openmail` NPC is loaded. Mail fees and attachments apply.
+3. Mail (RODEX). The client opens it itself, the `openmail` NPC does not work at this PACKETVER. Mail fees and attachments apply.
 4. Quest log and quest dialogs. 4867 quest entries; 154 quest NPC files loaded.
 5. Party, including the share picker.
 6. Refine, enchant, and socket UI. Frequent during gear progression.

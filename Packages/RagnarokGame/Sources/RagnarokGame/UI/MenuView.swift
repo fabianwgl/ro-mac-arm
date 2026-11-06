@@ -15,11 +15,13 @@ enum MenuItem {
     case party
     case friends
     case quest
+    case mail
     case worldMap
     case options
 }
 
 struct MenuView: View {
+    var hasUnreadMail = false
     var action: (MenuItem) -> Void
 
     @State private var isExpanded = false
@@ -28,6 +30,19 @@ struct MenuView: View {
         VStack(spacing: 0) {
             MenuExpandButton(isExpanded: isExpanded) {
                 isExpanded.toggle()
+            }
+
+            // The server's unread mail icon stays on screen while the menu is folded.
+            if hasUnreadMail && !isExpanded {
+                GameImageButton("menu_icon/bt_mail.bmp") {
+                    action(.mail)
+                }
+                .frame(width: 32, height: 34)
+                .overlay(alignment: .topTrailing) {
+                    MailBadge()
+                }
+                .padding(.top, 4)
+                .frame(width: 220, alignment: .leading)
             }
 
             if isExpanded {
@@ -86,8 +101,13 @@ struct MenuView: View {
                         }
                         .disabled(true)
                         GameImageButton("menu_icon/bt_mail.bmp") {
+                            action(.mail)
                         }
-                        .disabled(true)
+                        .overlay(alignment: .topTrailing) {
+                            if hasUnreadMail {
+                                MailBadge()
+                            }
+                        }
                         GameImageButton("menu_icon/bt_achievement.bmp") {
                         }
                         .disabled(true)
@@ -116,8 +136,21 @@ struct MenuView: View {
         }
     }
 
-    init(action: @escaping (MenuItem) -> Void) {
+    init(hasUnreadMail: Bool = false, action: @escaping (MenuItem) -> Void) {
+        self.hasUnreadMail = hasUnreadMail
         self.action = action
+    }
+}
+
+private struct MailBadge: View {
+    var body: some View {
+        Circle()
+            .fill(Color.red)
+            .overlay {
+                Circle()
+                    .stroke(Color.white, lineWidth: 1)
+            }
+            .frame(width: 9, height: 9)
     }
 }
 
