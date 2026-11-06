@@ -1240,6 +1240,9 @@ let registeredPackets: [Int16 : any DecodablePacket.Type] = [
     // | 0xa38, 0xae2 | `clif_ui_open` |
     HEADER_ZC_UI_OPEN: PACKET_ZC_UI_OPEN.self,
 
+    // | 0xaf0 | `clif_attendence_response` |
+    HEADER_ZC_ACK_CHECK_ATTENDANCE: PACKET_ZC_ACK_CHECK_ATTENDANCE.self,
+
     // | 0xa3b | `clif_hat_effects`, `clif_hat_effect_single` |
     HEADER_ZC_EQUIPMENT_EFFECT: PACKET_ZC_EQUIPMENT_EFFECT.self,
 

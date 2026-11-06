@@ -44,6 +44,7 @@ final class PlaySession {
     var shortcutList: ShortcutList
     var questLog: QuestLog
     var social = SocialState()
+    var attendance = Attendance()
     let messageCenter: MessageCenter
 
     var dialog: NPCDialog?
@@ -277,6 +278,7 @@ final class PlaySession {
         guard !handleSocialPacket(packet) else {
             return
         }
+        guard !handleAttendancePacket(packet) else { return }
 
         switch packet {
         case let packet as PACKET_ZC_ACCEPT_ENTER:

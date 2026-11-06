@@ -557,4 +557,17 @@ public enum PacketFactory {
         packet.CID = characterID
         return packet
     }
+
+    /// | `PACKET_CZ_OPEN_UI` | `clif_parse_open_ui` |
+    public static func CZ_OPEN_UI(uiType: Int8) -> PACKET_CZ_OPEN_UI {
+        var packet = PACKET_CZ_OPEN_UI()
+        packet.packetType = HEADER_CZ_OPEN_UI
+        packet.UIType = uiType
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_CHECK_ATTENDANCE` | `clif_parse_attendance_request` |
+    public static func CZ_REQ_CHECK_ATTENDANCE() -> PACKET_CZ_REQ_CHECK_ATTENDANCE {
+        PACKET_CZ_REQ_CHECK_ATTENDANCE()
+    }
 }
