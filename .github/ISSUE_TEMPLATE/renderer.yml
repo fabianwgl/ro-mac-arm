@@ -1,0 +1,58 @@
+name: Renderer Bug
+description: Report a map rendering, sprite, or Metal problem.
+title: "[Renderer] "
+labels: [renderer, bug]
+body:
+  - type: input
+    id: map-name
+    attributes:
+      label: Map name
+      placeholder: prontera
+    validations:
+      required: true
+  - type: input
+    id: mac-model
+    attributes:
+      label: Mac model and GPU
+      description: For example Mac14,2 with an M2 GPU.
+      placeholder: Mac14,2, Apple M2
+    validations:
+      required: true
+  - type: input
+    id: macos-version
+    attributes:
+      label: macOS version
+      placeholder: macOS 15.0
+    validations:
+      required: true
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot
+      description: Drag and drop a screenshot here. Do not include Gravity assets.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Any relevant client output or Metal validation messages.
+      render: shell
+  - type: checkboxes
+    id: no-gravity-assets
+    attributes:
+      label: Gravity assets
+      description: Do not attach data.grf, rdata.grf, BGM, or extracted Gravity files.
+      options:
+        - label: I confirm this report contains no Gravity assets.
+          required: true

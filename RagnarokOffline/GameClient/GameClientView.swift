@@ -177,7 +177,7 @@ struct GameClientView: View {
             serverAddress: settings.serverAddress,
             serverPort: UInt16(settings.serverPort)!
         )
-        let error = await testConnection(configuration)
+        let error = await GameClientView.testConnection(configuration)
         if let error {
             startState = .serverConnectionUnavailable(error)
             return
@@ -206,7 +206,8 @@ struct GameClientView: View {
         return false
     }
 
-    private func testConnection(_ configuration: GameSession.Configuration) async -> NWError? {
+    /// Shared with `LauncherView` so both screens run the same server reachability check before opening the game window.
+    static func testConnection(_ configuration: GameSession.Configuration) async -> NWError? {
         await withCheckedContinuation { continuation in
             let tcp = NWProtocolTCP.Options()
             tcp.connectionTimeout = 10

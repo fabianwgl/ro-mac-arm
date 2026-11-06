@@ -41,6 +41,17 @@ struct PacketDatabase {
         /// See `clif_navigateTo`
         add_packet(0x08e2, 27, nil, [])
 
+        // RO Mac Client: server to client packets rAthena d4b8e7b8 sends at PACKETVER 20211103
+        // that are missing from the generated table. Without a length the decoder cannot skip
+        // them and drops the whole stream. Sizes are rAthena's sizeof (see docs/port/packet-coverage.md).
+        add_packet(0x01f2, 20, nil, [])  // ZC_UPDATE_CHARSTAT (party/guild member online state)
+        add_packet(0x08fd, 6, nil, [])   // HC_ACK_CHANGE_CHARNAME
+        add_packet(0x0b8e, 18, nil, [])  // ZC_REPUTE_OPEN
+        add_packet(0x0174, -1, nil, [])  // ZC_ACK_CHANGE_GUILD_POSITIONINFO
+        add_packet(0x0156, -1, nil, [])  // ZC_ACK_REQ_CHANGE_MEMBERS
+        add_packet(0x0ae3, -1, nil, [])  // TC_RESULT
+        add_packet(0x0b70, -1, nil, [])  // HC_ACK_CHANGE_CHARACTER_SLOT
+
         self.entriesByPacketType = entriesByPacketType
     }
 

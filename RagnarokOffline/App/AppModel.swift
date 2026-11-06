@@ -32,6 +32,10 @@ final class AppModel {
 
     private(set) var database: DatabaseModel
 
+    #if os(macOS)
+    var previousUncleanExit: SessionMarker.PreviousSession?
+    #endif
+
     let characterSimulator: CharacterSimulator
     let skillSimulator: SkillSimulator
 

@@ -11,7 +11,7 @@ struct LicensesView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                Text(verbatim: "RagOff is not affiliated with or endorsed by Gravity Co., Ltd. Ragnarok Online and its game content belong to their respective rights holders.")
+                Text(verbatim: "RO Mac Client is not affiliated with or endorsed by Gravity Co., Ltd. Ragnarok Online and its game content belong to their respective rights holders.")
 
                 Text(verbatim: thirdPartyNotices)
 

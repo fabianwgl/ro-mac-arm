@@ -119,9 +119,9 @@ archive_ios() {
 	    <string>manual</string>
 	    <key>provisioningProfiles</key>
 	    <dict>
-	        <key>com.github.arkadeleon.ragnarok-offline</key>
+	        <key>tech.thecapy.ro-mac-client</key>
 	        <string>Ragnarok Offline</string>
-	        <key>com.github.arkadeleon.ragnarok-offline.thumbnail-extension</key>
+	        <key>tech.thecapy.ro-mac-client.thumbnail-extension</key>
 	        <string>Ragnarok Offline Thumbnail Extension</string>
 	    </dict>
 	</dict>
@@ -181,7 +181,7 @@ archive_macos() {
 	    <string>3rd Party Mac Developer Installer</string>
 	    <key>provisioningProfiles</key>
 	    <dict>
-	        <key>com.github.arkadeleon.ragnarok-offline</key>
+	        <key>tech.thecapy.ro-mac-client</key>
 	        <string>Ragnarok Offline Mac</string>
 	    </dict>
 	</dict>

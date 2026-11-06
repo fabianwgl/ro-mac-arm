@@ -26,6 +26,8 @@ struct AboutView: View {
                 }
             }
 
+            ForkNoticeSection()
+
             Section {
                 Link(destination: repositoryURL) {
                     Text("GitHub Repository", tableName: "Settings")
@@ -59,7 +61,7 @@ struct AboutView: View {
     }
 
     private var repositoryURL: URL {
-        URL(string: "https://github.com/arkadeleon/ragnarok-offline")!
+        URL(string: forkRepositoryURL)!
     }
 
     private var systemVersion: String {

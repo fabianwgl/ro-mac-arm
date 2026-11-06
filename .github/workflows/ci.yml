@@ -1,0 +1,105 @@
+name: CI
+
+# macos-26 for Xcode 27: upstream sources use toolchain features Xcode 26 lacks
+# (the `#bundle` macro fails there in RagnarokGame).
+
+# GitHub-hosted macOS runners cannot run Docker, so the rAthena integration
+# test is local-only. See docs/port/DOCKER.md.
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build (macOS arm64)
+    runs-on: macos-26
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Select latest Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "latest-stable"
+
+      - name: Install Metal Toolchain
+        run: xcodebuild -downloadComponent MetalToolchain || true
+
+      - name: Cache DerivedData and Swift packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Developer/Xcode/DerivedData
+            ~/Library/Caches/org.swift.swiftpm
+            ~/.swiftpm
+            Packages/*/.build
+          key: "${{ runner.os }}-xcode-${{ hashFiles('**/Package.resolved') }}"
+          restore-keys: |
+            ${{ runner.os }}-xcode-
+
+      - name: Build
+        run: |
+          xcodebuild \
+            -project RagnarokOffline.xcodeproj \
+            -scheme RagnarokOffline \
+            -destination 'platform=macOS,arch=arm64' \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+  unit-tests:
+    name: 'Unit tests (${{ matrix.package }})'
+    runs-on: macos-26
+    strategy:
+      fail-fast: false
+      matrix:
+        # RagnarokResources and RagnarokScript tests read kRO files from a local asset server
+        # (http://localhost:8080, TestResourceProvider), so they only run on a developer Mac.
+        package:
+          - BinaryIO
+          - DataCompression
+          - RagnarokConstants
+          - RagnarokCore
+          - RagnarokFileFormats
+          - RagnarokGRF
+          - RagnarokLocalization
+          - RagnarokModels
+          - RagnarokNetwork
+          - RagnarokPackets
+          - RagnarokGame
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Select latest Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "latest-stable"
+
+      - name: Install Metal Toolchain
+        run: xcodebuild -downloadComponent MetalToolchain || true
+
+      - name: Cache Swift packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/org.swift.swiftpm
+            ~/.swiftpm
+            Packages/*/.build
+          key: "${{ runner.os }}-swiftpm-${{ hashFiles('**/Package.resolved') }}"
+          restore-keys: |
+            ${{ runner.os }}-swiftpm-
+
+      - name: Run package tests
+        run: 'swift test --package-path "Packages/${{ matrix.package }}"'

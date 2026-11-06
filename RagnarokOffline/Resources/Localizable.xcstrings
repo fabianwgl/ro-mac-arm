@@ -4718,73 +4718,79 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Willkommen bei RagOff"
+            "value" : "Willkommen bei RO Mac Client"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welcome to RO Mac Client"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Te damos la bienvenida a RagOff"
+            "value" : "Te damos la bienvenida a RO Mac Client"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bienvenue dans RagOff"
+            "value" : "Bienvenue dans RO Mac Client"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Selamat datang di RagOff"
+            "value" : "Selamat datang di RO Mac Client"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RagOff へようこそ"
+            "value" : "RO Mac Client へようこそ"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RagOff에 오신 것을 환영합니다"
+            "value" : "RO Mac Client에 오신 것을 환영합니다"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Boas-vindas ao RagOff"
+            "value" : "Boas-vindas ao RO Mac Client"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Добро пожаловать в RagOff"
+            "value" : "Добро пожаловать в RO Mac Client"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ยินดีต้อนรับสู่ RagOff"
+            "value" : "ยินดีต้อนรับสู่ RO Mac Client"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RagOff’a hoş geldiniz"
+            "value" : "RO Mac Client’a hoş geldiniz"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "欢迎使用 RagOff"
+            "value" : "欢迎使用 RO Mac Client"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "歡迎使用 RagOff"
+            "value" : "歡迎使用 RO Mac Client"
           }
         }
       }
