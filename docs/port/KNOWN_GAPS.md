@@ -18,6 +18,11 @@ per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
   (upstream).
 - Party window (create, invite, accept, leave, kick, leader, member HP and
   minimap dots), friends window, quest log.
+- Guild window (Menu, Guild): create (needs an Emperium), invite by name and
+  accept or decline an invitation, members with position, level, job and
+  online state (login and logout live), expel, leave, disband (master, empty
+  guild), position names and permissions, notice (read, and edit as master),
+  alliance and hostile guild lists (read only), expulsion list.
 - macOS keyboard controls with rebinding, sound and display preferences, saved
   password in the Keychain, crash marker and log export, launcher.
 
@@ -25,7 +30,7 @@ per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
 
 | Area | Server state | Client state |
 | --- | --- | --- |
-| Guild window (members, positions, skills, emblem, alliances) | enabled | guild chat only; `ZC_ACK_CHANGE_GUILD_POSITIONINFO` and `ZC_ACK_REQ_CHANGE_MEMBERS` are framed and skipped |
+| Guild window: skills, emblem image, editing positions and member positions, alliance and hostility requests, castle info, member dots on the minimap | enabled | Info, Members, Positions and Notice tabs work (see Works); skills (`ZC_GUILD_SKILLINFO`), `ZC_GUILD_EMBLEM_IMG`, `CZ_REG_CHANGE_GUILD_POSITIONINFO`, `CZ_REQ_CHANGE_MEMBERPOS`, `CZ_REQ_ALLY_GUILD`/`CZ_ALLY_GUILD`/`CZ_REQ_HOSTILE_GUILD` and `ZC_GUILD_AGIT_INFO` are not used; an incoming alliance request only prints a chat line |
 | Pets, homunculus, mercenaries | enabled | no windows or commands |
 | RODEX mail | enabled | no window in the play UI |
 | Achievements | enabled | packets ignored, no window |
