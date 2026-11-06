@@ -119,6 +119,14 @@ struct MapSceneView: View {
                     PartyView(party: playSession.social.party) {
                         presentedMenuItem = nil
                     }
+                case .pet:
+                    PetView(pet: playSession.companions.pet) {
+                        presentedMenuItem = nil
+                    }
+                case .homunculus:
+                    HomunculusView(homunculus: playSession.companions.homunculus) {
+                        presentedMenuItem = nil
+                    }
                 case .friends:
                     FriendsView(friendList: playSession.social.friendList) {
                         presentedMenuItem = nil
@@ -136,6 +144,11 @@ struct MapSceneView: View {
                         presentedMenuItem = nil
                     }
                 }
+            }
+        }
+        .overlay(alignment: .center) {
+            if let eggIndices = playSession.companions.petEggIndices {
+                PetEggListView(inventory: playSession.inventory, eggIndices: eggIndices)
             }
         }
         .overlay(alignment: .center) {
@@ -267,6 +280,10 @@ struct MapSceneView: View {
             toggle(.skill)
         case .toggleStatus:
             toggle(.status)
+        case .togglePet:
+            toggle(.pet)
+        case .toggleHomunculus:
+            toggle(.homunculus)
         case .toggleWorldMap:
             toggle(.worldMap)
         case .toggleOptions:
@@ -293,7 +310,9 @@ struct MapSceneView: View {
     }
 
     private func closeTopWindow() {
-        if playSession.storage != nil {
+        if playSession.companions.petEggIndices != nil {
+            playSession.cancelPetEggSelection()
+        } else if playSession.storage != nil {
             playSession.closeStorage()
         } else if playSession.dealSelectionNPCID != nil {
             playSession.cancelDealSelection()

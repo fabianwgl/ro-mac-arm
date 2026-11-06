@@ -557,4 +557,54 @@ public enum PacketFactory {
         packet.CID = characterID
         return packet
     }
+
+    /// | `PACKET_CZ_COMMAND_PET` | `clif_parse_PetMenu` |
+    public static func CZ_COMMAND_PET(command: PACKET_CZ_COMMAND_PET.Command) -> PACKET_CZ_COMMAND_PET {
+        var packet = PACKET_CZ_COMMAND_PET()
+        packet.command = command.rawValue
+        return packet
+    }
+
+    /// | `PACKET_CZ_RENAME_PET` | `clif_parse_ChangePetName` |
+    public static func CZ_RENAME_PET(name: String) -> PACKET_CZ_RENAME_PET {
+        var packet = PACKET_CZ_RENAME_PET()
+        packet.name = name
+        return packet
+    }
+
+    /// | `PACKET_CZ_SELECT_PETEGG` | `clif_parse_SelectEgg` |
+    public static func CZ_SELECT_PETEGG(index: UInt16) -> PACKET_CZ_SELECT_PETEGG {
+        var packet = PACKET_CZ_SELECT_PETEGG()
+        packet.index = index
+        return packet
+    }
+
+    /// | `PACKET_CZ_COMMAND_MER` | `clif_parse_HomMenu` |
+    public static func CZ_COMMAND_MER(command: PACKET_CZ_COMMAND_MER.Command) -> PACKET_CZ_COMMAND_MER {
+        var packet = PACKET_CZ_COMMAND_MER()
+        packet.command = command.rawValue
+        return packet
+    }
+
+    /// | `PACKET_CZ_RENAME_MER` | `clif_parse_ChangeHomunculusName` |
+    public static func CZ_RENAME_MER(name: String) -> PACKET_CZ_RENAME_MER {
+        var packet = PACKET_CZ_RENAME_MER()
+        packet.name = name
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQUEST_MOVETOOWNER` | `clif_parse_HomMoveToMaster` |
+    public static func CZ_REQUEST_MOVETOOWNER(objectID: UInt32) -> PACKET_CZ_REQUEST_MOVETOOWNER {
+        var packet = PACKET_CZ_REQUEST_MOVETOOWNER()
+        packet.GID = objectID
+        return packet
+    }
+
+    /// | `PACKET_CZ_CONFIG` | `clif_parse_configuration` |
+    public static func CZ_CONFIG(type: PACKET_CZ_CONFIG.ConfigType, enabled: Bool) -> PACKET_CZ_CONFIG {
+        var packet = PACKET_CZ_CONFIG()
+        packet.type = type.rawValue
+        packet.flag = enabled ? 1 : 0
+        return packet
+    }
 }
