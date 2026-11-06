@@ -478,7 +478,7 @@ let registeredPackets: [Int16 : any DecodablePacket.Type] = [
     HEADER_ZC_MEMBERMGR_INFO: PACKET_ZC_MEMBERMGR_INFO.self,
 
     // | 0x156 | `clif_guild_memberpositionchanged` |
-//  HEADER_ZC_ACK_REQ_CHANGE_MEMBERS: PACKET_ZC_ACK_REQ_CHANGE_MEMBERS.self,
+    HEADER_ZC_ACK_REQ_CHANGE_MEMBERS: PACKET_ZC_ACK_REQ_CHANGE_MEMBERS.self,
 
     // | 0x15a, 0xa83 | `clif_guild_leave` |
     packet_header_guildLeave: PACKET_ZC_ACK_LEAVE_GUILD2.self,
@@ -514,7 +514,7 @@ let registeredPackets: [Int16 : any DecodablePacket.Type] = [
     HEADER_ZC_UPDATE_GDID: PACKET_ZC_UPDATE_GDID.self,
 
     // | 0x16d, 0x1f2 | `clif_guild_memberlogin_notice` |
-//  HEADER_ZC_UPDATE_CHARSTAT: PACKET_ZC_UPDATE_CHARSTAT.self,
+    HEADER_ZC_UPDATE_CHARSTAT: PACKET_ZC_UPDATE_CHARSTAT.self,
 
     // | 0x16f | `clif_guild_notice` |
     HEADER_ZC_GUILD_NOTICE: PACKET_ZC_GUILD_NOTICE.self,
@@ -526,7 +526,7 @@ let registeredPackets: [Int16 : any DecodablePacket.Type] = [
     HEADER_ZC_ACK_REQ_ALLY_GUILD: PACKET_ZC_ACK_REQ_ALLY_GUILD.self,
 
     // | 0x174 | `clif_guild_positionchanged` |
-//  HEADER_ZC_ACK_CHANGE_GUILD_POSITIONINFO: PACKET_ZC_ACK_CHANGE_GUILD_POSITIONINFO.self,
+    HEADER_ZC_ACK_CHANGE_GUILD_POSITIONINFO: PACKET_ZC_ACK_CHANGE_GUILD_POSITIONINFO.self,
 
     // | 0x177 | `clif_item_identify_list` |
 //  HEADER_ZC_ITEMIDENTIFY_LIST: PACKET_ZC_ITEMIDENTIFY_LIST.self,

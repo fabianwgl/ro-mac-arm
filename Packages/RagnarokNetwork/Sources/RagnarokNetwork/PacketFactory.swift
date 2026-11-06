@@ -570,4 +570,95 @@ public enum PacketFactory {
     public static func CZ_REQ_CHECK_ATTENDANCE() -> PACKET_CZ_REQ_CHECK_ATTENDANCE {
         PACKET_CZ_REQ_CHECK_ATTENDANCE()
     }
+
+    /// | `PACKET_CZ_REQ_MAKE_GUILD` | `clif_parse_CreateGuild` |
+    public static func CZ_REQ_MAKE_GUILD(characterID: UInt32, name: String) -> PACKET_CZ_REQ_MAKE_GUILD {
+        var packet = PACKET_CZ_REQ_MAKE_GUILD()
+        packet.packetType = HEADER_CZ_REQ_MAKE_GUILD
+        packet.GID = characterID
+        packet.guildName = name
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_GUILD_MENUINTERFACE` | `clif_parse_GuildCheckMaster` |
+    public static func CZ_REQ_GUILD_MENUINTERFACE() -> PACKET_CZ_REQ_GUILD_MENUINTERFACE {
+        var packet = PACKET_CZ_REQ_GUILD_MENUINTERFACE()
+        packet.packetType = HEADER_CZ_REQ_GUILD_MENUINTERFACE
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_GUILD_MENU` | `clif_parse_GuildRequestInfo` |
+    public static func CZ_REQ_GUILD_MENU(type: Int32) -> PACKET_CZ_REQ_GUILD_MENU {
+        var packet = PACKET_CZ_REQ_GUILD_MENU()
+        packet.packetType = HEADER_CZ_REQ_GUILD_MENU
+        packet.type = type
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_JOIN_GUILD2` | `clif_parse_GuildInvite2` |
+    public static func CZ_REQ_JOIN_GUILD2(name: String) -> PACKET_CZ_REQ_JOIN_GUILD2 {
+        var packet = PACKET_CZ_REQ_JOIN_GUILD2()
+        packet.packetType = HEADER_CZ_REQ_JOIN_GUILD2
+        packet.name = name
+        return packet
+    }
+
+    /// | `PACKET_CZ_JOIN_GUILD` | `clif_parse_GuildReplyInvite` |
+    public static func CZ_JOIN_GUILD(guildID: UInt32, accept: Bool) -> PACKET_CZ_JOIN_GUILD {
+        var packet = PACKET_CZ_JOIN_GUILD()
+        packet.packetType = HEADER_CZ_JOIN_GUILD
+        packet.guild_id = guildID
+        packet.answer = accept ? 1 : 0
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_LEAVE_GUILD` | `clif_parse_GuildLeave` |
+    public static func CZ_REQ_LEAVE_GUILD(
+        guildID: UInt32,
+        accountID: UInt32,
+        characterID: UInt32,
+        reason: String
+    ) -> PACKET_CZ_REQ_LEAVE_GUILD {
+        var packet = PACKET_CZ_REQ_LEAVE_GUILD()
+        packet.packetType = HEADER_CZ_REQ_LEAVE_GUILD
+        packet.guild_id = guildID
+        packet.AID = accountID
+        packet.CID = characterID
+        packet.message = reason
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_BAN_GUILD` | `clif_parse_GuildExpulsion` |
+    public static func CZ_REQ_BAN_GUILD(
+        guildID: UInt32,
+        accountID: UInt32,
+        characterID: UInt32,
+        reason: String
+    ) -> PACKET_CZ_REQ_BAN_GUILD {
+        var packet = PACKET_CZ_REQ_BAN_GUILD()
+        packet.packetType = HEADER_CZ_REQ_BAN_GUILD
+        packet.guild_id = guildID
+        packet.AID = accountID
+        packet.CID = characterID
+        packet.message = reason
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_DISORGANIZE_GUILD` | `clif_parse_GuildBreak` |
+    public static func CZ_REQ_DISORGANIZE_GUILD(key: String) -> PACKET_CZ_REQ_DISORGANIZE_GUILD {
+        var packet = PACKET_CZ_REQ_DISORGANIZE_GUILD()
+        packet.packetType = HEADER_CZ_REQ_DISORGANIZE_GUILD
+        packet.key = key
+        return packet
+    }
+
+    /// | `PACKET_CZ_GUILD_NOTICE` | `clif_parse_GuildChangeNotice` |
+    public static func CZ_GUILD_NOTICE(guildID: UInt32, subject: String, notice: String) -> PACKET_CZ_GUILD_NOTICE {
+        var packet = PACKET_CZ_GUILD_NOTICE()
+        packet.packetType = HEADER_CZ_GUILD_NOTICE
+        packet.guildID = guildID
+        packet.subject = subject
+        packet.notice = notice
+        return packet
+    }
 }
