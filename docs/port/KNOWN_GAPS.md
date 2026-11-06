@@ -17,7 +17,8 @@ per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
 - Inventory, equipment, drops, pickup, NPC dialogs, shops, storage, Kafra menus
   (upstream).
 - Party window (create, invite, accept, leave, kick, leader, member HP and
-  minimap dots), friends window, quest log.
+  minimap dots), friends window, quest log, attendance window (`ZC_UI_OPEN`,
+  `CZ_OPEN_UI`, `CZ_REQ_CHECK_ATTENDANCE`).
 - macOS keyboard controls with rebinding, sound and display preferences, saved
   password in the Keychain, crash marker and log export, launcher.
 
@@ -29,7 +30,7 @@ per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
 | Pets, homunculus, mercenaries | enabled | no windows or commands |
 | RODEX mail | enabled | no window in the play UI |
 | Achievements | enabled | packets ignored, no window |
-| Attendance | enabled, opens at login | window not shown |
+| Attendance | feature on, but `db/re/attendance.yml` has no running period (the 2018 example is commented out), so the server never opens the window or accepts a check-in until a period is added to `db/import/attendance.yml` | window, menu entry and check-in implemented; day numbers only (the server sends no period dates or reward table, reward arrives by mail); untested against the live server for lack of a period |
 | Navigation (`ZC_NAVIGATION_ACTIVE` 0x08e2) | enabled | framed and skipped |
 | Clan, chat rooms, trade, vending, buying store | enabled | missing |
 | Refine, enchant, item reform, Laphine, stylist, roulette | enabled | missing |

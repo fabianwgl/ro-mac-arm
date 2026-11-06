@@ -15,6 +15,7 @@ enum MenuItem {
     case party
     case friends
     case quest
+    case attendance
     case worldMap
     case options
 }
@@ -97,17 +98,21 @@ struct MenuView: View {
                     GridRow {
                         GameImageButton("menu_icon/bt_tip.bmp") {
                         }
+                        .disabled(true)
                         GameImageButton("menu_icon/bt_keyboard.bmp") {
                         }
+                        .disabled(true)
                         GameImageButton("menu_icon/bt_attendance.bmp") {
+                            action(.attendance)
                         }
                         GameImageButton("menu_icon/bt_adventureragency.bmp") {
                         }
+                        .disabled(true)
                         GameImageButton("menu_icon/bt_repute.bmp") {
                         }
+                        .disabled(true)
                     }
                     .frame(width: 32, height: 34)
-                    .disabled(true)
                 }
                 .padding(10)
                 .background(.black.opacity(0.5))

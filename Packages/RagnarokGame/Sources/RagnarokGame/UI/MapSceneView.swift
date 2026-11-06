@@ -71,6 +71,9 @@ struct MapSceneView: View {
                 MenuView { item in
                     if item == presentedMenuItem {
                         presentedMenuItem = nil
+                    } else if item == .attendance {
+                        // The server decides: it opens the window with the current state, or refuses.
+                        playSession.requestAttendanceWindow()
                     } else {
                         presentedMenuItem = item
                     }
@@ -127,6 +130,10 @@ struct MapSceneView: View {
                     QuestLogView(questLog: playSession.questLog) {
                         presentedMenuItem = nil
                     }
+                case .attendance:
+                    AttendanceView(attendance: playSession.attendance) {
+                        presentedMenuItem = nil
+                    }
                 case .worldMap:
                     WorldMapView(currentMapName: runtime.scene.mapName) {
                         presentedMenuItem = nil
@@ -163,6 +170,13 @@ struct MapSceneView: View {
                 presentedMenuItem = .options
             } else if presentedMenuItem == .options {
                 presentedMenuItem = nil
+            }
+        }
+        .onChange(of: playSession.attendance.isPresentationRequested, initial: true) { _, isRequested in
+            // The server opens the window at login, before this view exists, so the flag is consumed once.
+            if isRequested {
+                playSession.attendance.isPresentationRequested = false
+                presentedMenuItem = .attendance
             }
         }
         .onChange(of: playSession.storage != nil) { _, isStorageOpen in
