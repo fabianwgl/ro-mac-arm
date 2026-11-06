@@ -17901,21 +17901,28 @@ public struct CZ_PURCHASE_ITEM_FROMMC: BinaryDecodable, BinaryEncodable, Sendabl
 }
 
 public struct RANKLIST: BinaryDecodable, BinaryEncodable, Sendable {
+    // RO Mac Client: `char names[10][NAME_LENGTH]` is ten 24-byte names. The generator
+    // emitted one 10-byte string; fixed by hand, see docs/port/patches.md.
     public static var size: Int {
-        (10 + (4 * 10))
+        ((24 * 10) + (4 * 10))
     }
-    @FixedLengthString(lengthOfBytes: 10, encoding: .utf8)
-    public var names: String
+    public var names: [String] = Array(repeating: "", count: 10)
     @FixedSizeArray(size: 10, initialValue: 0)
     public var points: [UInt32]
     public init() {
     }
     public init(from decoder: BinaryDecoder) throws {
-        names = try decoder.decode(String.self, lengthOfBytes: 10, encoding: .utf8)
+        var names: [String] = []
+        for _ in 0..<10 {
+            names.append(try decoder.decode(String.self, lengthOfBytes: 24, encoding: .utf8))
+        }
+        self.names = names
         points = try decoder.decode([UInt32].self, count: 10)
     }
     public func encode(to encoder: BinaryEncoder) throws {
-        try encoder.encode(names, lengthOfBytes: 10, encoding: .utf8)
+        for index in 0..<10 {
+            try encoder.encode(index < names.count ? names[index] : "", lengthOfBytes: 24, encoding: .utf8)
+        }
         try encoder.encode(points)
     }
 }

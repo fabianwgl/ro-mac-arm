@@ -713,13 +713,13 @@ let registeredPackets: [Int16 : any DecodablePacket.Type] = [
     HEADER_ZC_FRIENDS_STATE: PACKET_ZC_FRIENDS_STATE.self,
 
     // | 0x207 | `clif_friendslist_req` |
-//  HEADER_ZC_REQ_ADD_FRIENDS: PACKET_ZC_REQ_ADD_FRIENDS.self,
+    HEADER_ZC_REQ_ADD_FRIENDS: PACKET_ZC_REQ_ADD_FRIENDS.self,
 
     // | 0x209 | `clif_friendslist_reqack` |
-//  HEADER_ZC_ADD_FRIENDS_LIST: PACKET_ZC_ADD_FRIENDS_LIST.self,
+    HEADER_ZC_ADD_FRIENDS_LIST: PACKET_ZC_ADD_FRIENDS_LIST.self,
 
     // | 0x20a | `clif_parse_FriendsListRemove` |
-//  HEADER_ZC_DELETE_FRIENDS: PACKET_ZC_DELETE_FRIENDS.self,
+    HEADER_ZC_DELETE_FRIENDS: PACKET_ZC_DELETE_FRIENDS.self,
 
     // | 0x20e | `clif_starskill` |
 //  HEADER_ZC_STARSKILL: PACKET_ZC_STARSKILL.self,
@@ -875,22 +875,22 @@ let registeredPackets: [Int16 : any DecodablePacket.Type] = [
 //  HEADER_ZC_MER_PAR_CHANGE: PACKET_ZC_MER_PAR_CHANGE.self,
 
     // | 0x2b1, 0x97a, 0x9f8, 0xaff | `clif_quest_send_list` |
-//  packet_header_questListType: PACKET_ZC_ALL_QUEST_LIST.self,
+    packet_header_questListType: PACKET_ZC_ALL_QUEST_LIST.self,
 
     // | 0x2b2 | `clif_quest_send_mission` |
-//  HEADER_ZC_ALL_QUEST_MISSION: PACKET_ZC_ALL_QUEST_MISSION.self,
+    HEADER_ZC_ALL_QUEST_MISSION: PACKET_ZC_ALL_QUEST_MISSION.self,
 
     // | 0x2b3, 0x9f9, 0xb0c | `clif_quest_add` |
-//  packet_header_questAddType: PACKET_ZC_ADD_QUEST.self,
+    packet_header_questAddType: packet_quest_add_header.self,
 
     // | 0x2b4 | `clif_quest_delete` |
-//  HEADER_ZC_DEL_QUEST: PACKET_ZC_DEL_QUEST.self,
+    HEADER_ZC_DEL_QUEST: PACKET_ZC_DEL_QUEST.self,
 
     // | 0x2b5, 0x9fa, 0xafe | `clif_quest_update_objective` |
-//  packet_header_questUpdateType: PACKET_ZC_UPDATE_MISSION_HUNT.self,
+    packet_header_questUpdateType: packet_quest_update_header.self,
 
     // | 0x2b7 | `clif_quest_update_status` |
-//  HEADER_ZC_ACTIVE_QUEST: PACKET_ZC_ACTIVE_QUEST.self,
+    HEADER_ZC_ACTIVE_QUEST: PACKET_ZC_ACTIVE_QUEST.self,
 
     // | 0x2b8, 0xb67 | `clif_party_show_picker` |
     HEADER_ZC_ITEM_PICKUP_PARTY: PACKET_ZC_ITEM_PICKUP_PARTY.self,
@@ -995,7 +995,7 @@ let registeredPackets: [Int16 : any DecodablePacket.Type] = [
     HEADER_ZC_DELETE_ITEM_FROM_BODY: PACKET_ZC_DELETE_ITEM_FROM_BODY.self,
 
     // | 0x7fc | `clif_party_leaderchanged` |
-//  HEADER_ZC_CHANGE_GROUP_MASTER: PACKET_ZC_CHANGE_GROUP_MASTER.self,
+    HEADER_ZC_CHANGE_GROUP_MASTER: PACKET_ZC_CHANGE_GROUP_MASTER.self,
 
     // | 0x7fd, 0xbba | `clif_broadcast_obtain_special_item` |
     HEADER_ZC_BROADCASTING_SPECIAL_ITEM_OBTAIN_item: PACKET_ZC_BROADCASTING_SPECIAL_ITEM_OBTAIN_item.self,
