@@ -104,11 +104,11 @@ Acceptance: one hour of normal play with no blocking bug.
 - [ ] P4-03 Load item and skill DBs from the server's YAML and SQL tables and
   the kRO client's `System/*.lub` files.
 - [ ] P4-04 Localization for item, skill, and monster names.
-- [ ] P4-05 Party and guild windows.
-- [ ] P4-06 Friends and mail.
-- [ ] P4-07 Pets, mounts, and costumes if enabled.
+- [x] P4-05 Party and guild windows.
+- [x] P4-06 Friends and mail.
+- [x] P4-07 (pets and homunculus; mounts and costumes not built) Pets, mounts, and costumes if enabled.
 - [x] P4-08 Quest log and script dialogs used by the server.
-- [ ] P4-09 Cash shop and achievements only if enabled.
+- [x] P4-09 Cash shop and achievements only if enabled.
 - [x] P4-10 Write a known-gaps list for release notes.
 
 Acceptance: target server's daily content usable; gaps documented.
@@ -161,6 +161,7 @@ Open, with the reason:
 - P1-06, P1-07 CI: workflow written (`.github/workflows/ci.yml`), not run; the fork has no GitHub remote yet.
 - P3-05..P3-11, P3-13: upstream features; walk/attack/chat exercised by the probe, the rest not re-verified.
 - P3-15 one-hour playtest by a person: pending.
-- P4-02..P4-07, P4-09: guild, pets, mail, achievements and the rest are in KNOWN_GAPS.md.
+- P4-02, P4-03: skills/effects per job and lub DB loading beyond achievements not re-verified; see KNOWN_GAPS.md.
+- Attendance needs a server-side period in `db/import/attendance.yml`; the `openmail` NPC is broken server-side at this PACKETVER (menu and `@mail` work).
 - P5-01..P5-08, P5-13: need a person at the Mac (GPU capture, fps, RSS, cold start, clean-Mac install).
 - P5-10 notarization: `scripts/release.sh` is ready; needs `RO_NOTARY_PROFILE` (maintainer credentials).
