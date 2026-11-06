@@ -123,14 +123,13 @@ Acceptance: target server's daily content usable; gaps documented.
 - [ ] P5-06 Measure cold start; target under 10 seconds.
 - [ ] P5-07 Retina, fullscreen, window restore, display change.
 - [ ] P5-08 Input remapping and optional gamepad.
-- [x] P5-09 Developer ID signing and hardened runtime.
-- [ ] P5-10 Notarize and staple the app.
-- [x] P5-11 Build DMG with compatibility manifest.
-- [x] P5-12 Publish GPL source archive for the exact binary.
-- [ ] P5-13 Test install on a clean Mac without Xcode.
+- [~] P5-09 (deferred: local-only project) Developer ID signing and hardened runtime.
+- [~] P5-10 (deferred: local-only project) Notarize and staple the app.
+- [~] P5-11 (deferred: local-only project) Build DMG with compatibility manifest.
+- [~] P5-12 (deferred: local-only project) Publish GPL source archive for the exact binary.
 - [x] P5-14 Write install guide: kRO files, server, PACKETVER, obfuscation.
 
-Acceptance: signed and notarized DMG runs on a clean Mac.
+Acceptance: local build meets the performance targets on the developer Mac. Signing and distribution are deferred.
 
 ## Phase 6: Maintenance
 
@@ -160,8 +159,8 @@ Open, with the reason:
 - P0-03 embedded-server baseline: skipped; the external Docker server is the target and works.
 - P1-06, P1-07 CI: workflow written (`.github/workflows/ci.yml`), not run; the fork has no GitHub remote yet.
 - P3-05..P3-11, P3-13: upstream features; walk/attack/chat exercised by the probe, the rest not re-verified.
-- P3-15 one-hour playtest by a person: pending.
+- P3-15 one-hour playtest: the developer runs it once the content work is done.
 - P4-02, P4-03: skills/effects per job and lub DB loading beyond achievements not re-verified; see KNOWN_GAPS.md.
 - Attendance needs a server-side period in `db/import/attendance.yml`; the `openmail` NPC is broken server-side at this PACKETVER (menu and `@mail` work).
-- P5-01..P5-08, P5-13: need a person at the Mac (GPU capture, fps, RSS, cold start, clean-Mac install).
-- P5-10 notarization: `scripts/release.sh` is ready; needs `RO_NOTARY_PROFILE` (maintainer credentials).
+- P5-01..P5-08: GPU capture, fps, RSS, cold start, display and input checks need the app running on screen.
+- P5-09..P5-12 signing, notarization, DMG, source archive: deferred; `scripts/release.sh` works unnotarized.

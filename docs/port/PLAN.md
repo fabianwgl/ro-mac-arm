@@ -19,6 +19,9 @@ client at `Packages/RagnarokPackets/Sources/RagnarokPackets/PacketVersion.swift`
 - Bundling Gravity assets. The user supplies kRO files.
 - Full kRO parity across every episode, job, and cash shop system in v1.0.
 - App Store distribution.
+- Signing, notarization and DMG distribution for now: this is a local-only
+  project (decided 2026-11-06). `scripts/release.sh` stays for later.
+- A clean-Mac install test by a second person.
 - A new renderer, new engine, or new UI framework.
 
 ## 3. Strategy
@@ -154,11 +157,11 @@ listed in the release notes.
 - Memory target under 4 GB RSS with a full kRO data set.
 - Cold start under 10 seconds after the first cache warm.
 - Retina scaling, fullscreen, window restore, and input remapping.
-- Sign with Developer ID, enable hardened runtime, notarize, ship a DMG.
+- Signing, notarization and the DMG are deferred (local-only project).
 - Publish the GPL source for the exact binary.
 - Write install docs: kRO files, server address, packet version, obfuscation.
 
-Exit criteria: signed and notarized DMG runs on a clean Mac with no Xcode.
+Exit criteria: the local build meets the performance targets on the developer Mac.
 
 ## 5. Milestones
 
@@ -168,7 +171,7 @@ Exit criteria: signed and notarized DMG runs on a clean Mac with no Xcode.
 | M1 | Login to rAthena, walk, chat | 5-8 weeks |
 | M2 | Playable core | 11-18 weeks |
 | M3 | Target-server content | 17-28 weeks |
-| M4 | Signed v1.0 | 20-33 weeks |
+| M4 | v1.0 (local build) | 20-33 weeks |
 
 Solo at 20 hours per week: double the ranges. Two developers full-time: roughly
 60 percent of the ranges.
@@ -194,9 +197,8 @@ v0.5:
 v1.0:
 
 - Phase 4 content complete for the target server.
-- Signed, notarized DMG.
 - GPL source published for the binary.
-- Install guide tested by a second person.
+- One hour playtest by the developer with a written bug list.
 
 ## 7. Success metrics
 
