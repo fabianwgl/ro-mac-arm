@@ -478,7 +478,7 @@ let registeredPackets: [Int16 : any DecodablePacket.Type] = [
     HEADER_ZC_MEMBERMGR_INFO: PACKET_ZC_MEMBERMGR_INFO.self,
 
     // | 0x156 | `clif_guild_memberpositionchanged` |
-//  HEADER_ZC_ACK_REQ_CHANGE_MEMBERS: PACKET_ZC_ACK_REQ_CHANGE_MEMBERS.self,
+    HEADER_ZC_ACK_REQ_CHANGE_MEMBERS: PACKET_ZC_ACK_REQ_CHANGE_MEMBERS.self,
 
     // | 0x15a, 0xa83 | `clif_guild_leave` |
     packet_header_guildLeave: PACKET_ZC_ACK_LEAVE_GUILD2.self,
@@ -514,7 +514,7 @@ let registeredPackets: [Int16 : any DecodablePacket.Type] = [
     HEADER_ZC_UPDATE_GDID: PACKET_ZC_UPDATE_GDID.self,
 
     // | 0x16d, 0x1f2 | `clif_guild_memberlogin_notice` |
-//  HEADER_ZC_UPDATE_CHARSTAT: PACKET_ZC_UPDATE_CHARSTAT.self,
+    HEADER_ZC_UPDATE_CHARSTAT: PACKET_ZC_UPDATE_CHARSTAT.self,
 
     // | 0x16f | `clif_guild_notice` |
     HEADER_ZC_GUILD_NOTICE: PACKET_ZC_GUILD_NOTICE.self,
@@ -526,7 +526,7 @@ let registeredPackets: [Int16 : any DecodablePacket.Type] = [
     HEADER_ZC_ACK_REQ_ALLY_GUILD: PACKET_ZC_ACK_REQ_ALLY_GUILD.self,
 
     // | 0x174 | `clif_guild_positionchanged` |
-//  HEADER_ZC_ACK_CHANGE_GUILD_POSITIONINFO: PACKET_ZC_ACK_CHANGE_GUILD_POSITIONINFO.self,
+    HEADER_ZC_ACK_CHANGE_GUILD_POSITIONINFO: PACKET_ZC_ACK_CHANGE_GUILD_POSITIONINFO.self,
 
     // | 0x177 | `clif_item_identify_list` |
 //  HEADER_ZC_ITEMIDENTIFY_LIST: PACKET_ZC_ITEMIDENTIFY_LIST.self,
@@ -611,7 +611,7 @@ let registeredPackets: [Int16 : any DecodablePacket.Type] = [
     HEADER_ZC_CHANGESTATE_PET: PACKET_ZC_CHANGESTATE_PET.self,
 
     // | 0x1a6 | `clif_sendegg` |
-//  HEADER_ZC_PETEGG_LIST: PACKET_ZC_PETEGG_LIST.self,
+    HEADER_ZC_PETEGG_LIST: PACKET_ZC_PETEGG_LIST.self,
 
     // | 0x1aa | `clif_pet_emotion` |
     HEADER_ZC_PET_ACT: PACKET_ZC_PET_ACT.self,
@@ -830,7 +830,7 @@ let registeredPackets: [Int16 : any DecodablePacket.Type] = [
 //  HEADER_ZC_AUCTION_WINDOWS: PACKET_ZC_AUCTION_WINDOWS.self,
 
     // | 0x260 | `clif_Mail_window` |
-//  HEADER_ZC_MAIL_WINDOWS: PACKET_ZC_MAIL_WINDOWS.self,
+    HEADER_ZC_MAIL_WINDOWS: PACKET_ZC_MAIL_WINDOWS.self,
 
     // | 0x274 | `clif_Mail_return` |
 //  HEADER_ZC_ACK_MAIL_RETURN: PACKET_ZC_ACK_MAIL_RETURN.self,
@@ -1181,10 +1181,11 @@ let registeredPackets: [Int16 : any DecodablePacket.Type] = [
     packet_header_rodexicon: PACKET_ZC_NOTIFY_UNREADMAIL.self,
 
     // | 0x9f0, 0xa7d, 0xac2 | `clif_Mail_refreshinbox` |
-//  packet_header_rodexmailList: PACKET_ZC_ACK_MAIL_LIST.self,
+    packet_header_rodexmailList: PACKET_ZC_ACK_MAIL_LIST.self,
 
     // | 0x9eb, 0xb63 | `clif_Mail_read` |
-    HEADER_ZC_ACK_READ_RODEX: PACKET_ZC_ACK_READ_RODEX.self,
+    // The generated PACKET_ZC_ACK_READ_RODEX reads the items as text, PACKET_ZC_ACK_READ_MAIL splits them.
+    HEADER_ZC_ACK_READ_RODEX: PACKET_ZC_ACK_READ_MAIL.self,
 
     // | 0x9ed | `clif_Mail_send` |
     packet_header_rodexwriteresult: PACKET_ZC_WRITE_MAIL_RESULT.self,
@@ -1205,7 +1206,7 @@ let registeredPackets: [Int16 : any DecodablePacket.Type] = [
     HEADER_ZC_ACK_ADD_ITEM_RODEX: PACKET_ZC_ACK_ADD_ITEM_RODEX.self,
 
     // | 0xa07 | `clif_mail_removeitem` |
-//  packet_header_rodexremoveitem: PACKET_ZC_ACK_REMOVE_RODEX_ITEM.self,
+    packet_header_rodexremoveitem: PACKET_ZC_ACK_REMOVE_ITEM_MAIL.self,
 
     // | 0xa12 | `clif_send_Mail_beginwrite_ack` |
     packet_header_rodexopenwrite: PACKET_ZC_ACK_OPEN_WRITE_MAIL.self,
@@ -1229,7 +1230,7 @@ let registeredPackets: [Int16 : any DecodablePacket.Type] = [
     packet_header_achievementUpdateType: PACKET_ZC_ACH_UPDATE.self,
 
     // | 0xa26 | `clif_achievement_reward_ack` |
-//  packet_header_achievementRewardAckType: PACKET_ZC_REQ_ACH_REWARD_ACK.self,
+    packet_header_achievementRewardAckType: PACKET_ZC_REQ_ACH_REWARD_ACK.self,
 
     // | 0xa28 | `clif_openvending_ack` |
     HEADER_ZC_ACK_OPENSTORE2: PACKET_ZC_ACK_OPENSTORE2.self,

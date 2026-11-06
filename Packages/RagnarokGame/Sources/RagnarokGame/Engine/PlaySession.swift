@@ -45,6 +45,8 @@ final class PlaySession {
     var questLog: QuestLog
     var social = SocialState()
     var attendance = Attendance()
+    var companions = CompanionState()
+    var mail = MailState()
     let messageCenter: MessageCenter
 
     var dialog: NPCDialog?
@@ -52,12 +54,15 @@ final class PlaySession {
     var npcShop: NPCShop?
     var storage: Storage?
     var warpList: WarpList?
+    var guildState = GuildState()
+
+    var achievements = Achievements()
 
     var interactionMode: GameInteractionMode = .direct
 
     @ObservationIgnored weak var delegate: (any PlaySessionDelegate)?
 
-    @ObservationIgnored private let context: GameContext
+    @ObservationIgnored let context: GameContext
     @ObservationIgnored private let audioPlayer: GameAudioPlayer
 
     @ObservationIgnored private var mapClient: NetworkClient?
@@ -275,10 +280,22 @@ final class PlaySession {
     }
 
     private func handlePacket(_ packet: any DecodablePacket) {
+        guard !handleGuildPacket(packet) else {
+            return
+        }
+
         guard !handleSocialPacket(packet) else {
             return
         }
         guard !handleAttendancePacket(packet) else { return }
+        guard !handleCompanionPacket(packet) else {
+            return
+        }
+        if handleAchievementPacket(packet) { return }
+
+        guard !handleMailPacket(packet) else {
+            return
+        }
 
         switch packet {
         case let packet as PACKET_ZC_ACCEPT_ENTER:
@@ -513,6 +530,7 @@ final class PlaySession {
             let type = UnitClearType(rawValue: Int(packet.type)) ?? .outsight
             logger.info("Object \(objectID) vanished (type: \(packet.type))")
             mapScene?.onMapObjectVanished(objectID: objectID, type: type)
+            handleCompanionVanish(objectID: objectID)
         case let packet as PACKET_ZC_RESURRECTION:
             logger.info("Object \(packet.gid) resurrected")
             mapScene?.onMapObjectResurrected(objectID: packet.gid)
@@ -635,10 +653,6 @@ final class PlaySession {
         case let packet as PACKET_ZC_NOTIFY_CLAN_CHAT:
             let message = ChatMessage(from: packet)
             messageCenter.add(message)
-        case _ as PACKET_ZC_ALL_ACH_LIST:
-            break
-        case _ as PACKET_ZC_ACH_UPDATE:
-            break
         case let packet as PACKET_ZC_NOTIFY_TIME:
             if let requestTime = serverTimeRequestTime {
                 let now = ContinuousClock.now

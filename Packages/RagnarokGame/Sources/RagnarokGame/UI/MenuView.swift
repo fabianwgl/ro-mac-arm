@@ -13,14 +13,20 @@ enum MenuItem {
     case inventory
     case skill
     case party
+    case guild
     case friends
+    case pet
+    case homunculus
     case quest
     case attendance
+    case achievement
+    case mail
     case worldMap
     case options
 }
 
 struct MenuView: View {
+    var hasUnreadMail = false
     var action: (MenuItem) -> Void
 
     @State private var isExpanded = false
@@ -29,6 +35,19 @@ struct MenuView: View {
         VStack(spacing: 0) {
             MenuExpandButton(isExpanded: isExpanded) {
                 isExpanded.toggle()
+            }
+
+            // The server's unread mail icon stays on screen while the menu is folded.
+            if hasUnreadMail && !isExpanded {
+                GameImageButton("menu_icon/bt_mail.bmp") {
+                    action(.mail)
+                }
+                .frame(width: 32, height: 34)
+                .overlay(alignment: .topTrailing) {
+                    MailBadge()
+                }
+                .padding(.top, 4)
+                .frame(width: 220, alignment: .leading)
             }
 
             if isExpanded {
@@ -54,8 +73,8 @@ struct MenuView: View {
 
                     GridRow {
                         GameImageButton("menu_icon/bt_guild.bmp") {
+                            action(.guild)
                         }
-                        .disabled(true)
                         GameImageButton("menu_icon/bt_battle.bmp") {
                         }
                         .disabled(true)
@@ -77,6 +96,26 @@ struct MenuView: View {
                     .frame(width: 32, height: 34)
 
                     GridRow {
+                        Button {
+                            action(.pet)
+                        } label: {
+                            Image(systemName: "pawprint.fill")
+                                .font(.game(size: 14))
+                                .foregroundStyle(Color.gameLabel)
+                        }
+                        .frame(width: 32, height: 34)
+                        Button {
+                            action(.homunculus)
+                        } label: {
+                            Image(systemName: "flask.fill")
+                                .font(.game(size: 14))
+                                .foregroundStyle(Color.gameLabel)
+                        }
+                        .frame(width: 32, height: 34)
+                    }
+                    .frame(width: 32, height: 34)
+
+                    GridRow {
                         GameImageButton("menu_icon/bt_option.bmp") {
                             action(.options)
                         }
@@ -87,11 +126,16 @@ struct MenuView: View {
                         }
                         .disabled(true)
                         GameImageButton("menu_icon/bt_mail.bmp") {
+                            action(.mail)
                         }
-                        .disabled(true)
+                        .overlay(alignment: .topTrailing) {
+                            if hasUnreadMail {
+                                MailBadge()
+                            }
+                        }
                         GameImageButton("menu_icon/bt_achievement.bmp") {
+                            action(.achievement)
                         }
-                        .disabled(true)
                     }
                     .frame(width: 32, height: 34)
 
@@ -121,8 +165,21 @@ struct MenuView: View {
         }
     }
 
-    init(action: @escaping (MenuItem) -> Void) {
+    init(hasUnreadMail: Bool = false, action: @escaping (MenuItem) -> Void) {
+        self.hasUnreadMail = hasUnreadMail
         self.action = action
+    }
+}
+
+private struct MailBadge: View {
+    var body: some View {
+        Circle()
+            .fill(Color.red)
+            .overlay {
+                Circle()
+                    .stroke(Color.white, lineWidth: 1)
+            }
+            .frame(width: 9, height: 9)
     }
 }
 

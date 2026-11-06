@@ -10,6 +10,6 @@ import XCTest
 
 final class PacketRegistryTests: XCTestCase {
     func testPacketRegistry() async throws {
-        XCTAssertEqual(registeredPackets.count, 396)
+        XCTAssertEqual(registeredPackets.count, 404)
     }
 }
