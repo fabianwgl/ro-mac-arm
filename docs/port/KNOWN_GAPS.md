@@ -28,7 +28,7 @@ per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
 | Guild window (members, positions, skills, emblem, alliances) | enabled | guild chat only; `ZC_ACK_CHANGE_GUILD_POSITIONINFO` and `ZC_ACK_REQ_CHANGE_MEMBERS` are framed and skipped |
 | Pets, homunculus, mercenaries | enabled | no windows or commands |
 | RODEX mail | enabled | no window in the play UI |
-| Achievements | enabled | packets ignored, no window |
+| Achievements | enabled | menu window, claim button and completion message work; titles need `System/achievement_list.lub` in the client folder, else rows read "Achievement #id"; no title wearing |
 | Attendance | enabled, opens at login | window not shown |
 | Navigation (`ZC_NAVIGATION_ACTIVE` 0x08e2) | enabled | framed and skipped |
 | Clan, chat rooms, trade, vending, buying store | enabled | missing |

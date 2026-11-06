@@ -557,4 +557,12 @@ public enum PacketFactory {
         packet.CID = characterID
         return packet
     }
+
+    /// | `PACKET_CZ_REQ_ACH_REWARD` | `clif_parse_AchievementCheckReward` |
+    public static func CZ_REQ_ACH_REWARD(achievementID: UInt32) -> PACKET_CZ_REQ_ACH_REWARD {
+        var packet = PACKET_CZ_REQ_ACH_REWARD()
+        packet.packetType = HEADER_CZ_REQ_ACH_REWARD
+        packet.achievementID = achievementID
+        return packet
+    }
 }
