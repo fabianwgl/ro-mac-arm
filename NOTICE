@@ -1,0 +1,30 @@
+RO Mac Client
+=============
+
+RO Mac Client is a fork of arkadeleon/ragnarok-offline (GPL-3.0),
+Copyright Leon Li and contributors.
+
+This program is licensed under GPL-3.0, the GNU General Public License version
+3. See LICENSE for the full text.
+
+rAthena packet definitions and constants
+----------------------------------------
+
+Packet definitions, protocol constants, and golden packet tests in this
+repository are derived from rAthena packet definitions and constants.
+
+rAthena is Copyright the rAthena Dev Teams and contributors and is licensed
+under GPL-3.0. Source: https://github.com/rathena/rathena
+
+Third-party references
+----------------------
+
+roBrowserLegacy (GPL-3.0, https://github.com/MrAntares/roBrowserLegacy) and
+Korangar (MIT, https://github.com/vE5li/korangar) are behavioural references
+only. No code is copied from either project unless it is listed in this file.
+
+Gravity assets
+--------------
+
+No Gravity assets are included in this repository. The user supplies their own
+kRO client. Do not commit data.grf, rdata.grf, BGM, or extracted Gravity files.

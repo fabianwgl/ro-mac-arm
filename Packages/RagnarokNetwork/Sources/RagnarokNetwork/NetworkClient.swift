@@ -20,6 +20,7 @@ public enum NetworkClientError: Error, Sendable {
 final public class NetworkClient: Sendable {
     private let name: String
     private let connection: NWConnection
+    private let recorder: PacketRecorder?
 
     private let encoder = PacketEncoder()
     private let decoder = PacketDecoder()
@@ -32,6 +33,7 @@ final public class NetworkClient: Sendable {
 
     public init(name: String, address: String, port: UInt16) {
         self.name = name
+        self.recorder = PacketRecorder.fromEnvironment(clientName: name)
 
         let tcp = NWProtocolTCP.Options()
         tcp.connectionTimeout = 10
@@ -54,9 +56,11 @@ final public class NetworkClient: Sendable {
     public func connect() {
         let name = name
         let errorContinuation = errorContinuation
+        let recorder = recorder
 
         connection.stateUpdateHandler = { state in
             logger.info("\(name) client connection state changed: \(String(describing: state))")
+            recorder?.record(.event, Data(String(describing: state).utf8))
 
             switch state {
             case .waiting(let error), .failed(let error):
@@ -75,6 +79,8 @@ final public class NetworkClient: Sendable {
 
         connection.cancel()
 
+        recorder?.close()
+
         errorContinuation.finish()
         packetContinuation.finish()
     }
@@ -82,6 +88,7 @@ final public class NetworkClient: Sendable {
     public func sendPacket(_ packet: some EncodablePacket) {
         do {
             let data = try encoder.encode(packet)
+            recorder?.record(.outbound, data)
 
             connection.send(content: data, completion: .contentProcessed({ [weak self] error in
                 if let error {
@@ -96,27 +103,45 @@ final public class NetworkClient: Sendable {
     }
 
     public func receiveDataAndPacket(count: Int, completion: @escaping @Sendable (_ data: Data) -> Void) {
-        connection.receive(minimumIncompleteLength: count, maximumLength: 65536) { [weak self] content, _, isComplete, error in
+        receiveDataAndPacket(count: count, buffer: Data(), completion: completion)
+    }
+
+    private func receiveDataAndPacket(count: Int, buffer: Data, completion: @escaping @Sendable (_ data: Data) -> Void) {
+        connection.receive(minimumIncompleteLength: max(count - buffer.count, 1), maximumLength: 65536) { [weak self] content, _, isComplete, error in
             guard let self else {
                 return
             }
 
+            var buffer = buffer
             if let content {
                 logger.info("Received \(content.count) bytes")
-                if content.count >= count {
-                    let data = content[0..<count]
-                    completion(data)
 
-                    let remaining = content[count...]
-                    do {
-                        try decoder.decode(from: remaining) { packet in
-                            logger.info("Received packet: \(String(describing: packet))")
-                            packetContinuation.yield(packet)
-                        }
-                    } catch {
-                        logger.warning("\(error)")
-                        self.errorContinuation.yield(.decoding(error))
+                if let recorder {
+                    let prefixCount = min(content.count, max(count - buffer.count, 0))
+                    if prefixCount > 0 {
+                        recorder.record(.inboundPrefix, Data(content.prefix(prefixCount)))
                     }
+                    if prefixCount < content.count {
+                        recorder.record(.inbound, Data(content.dropFirst(prefixCount)))
+                    }
+                }
+
+                buffer.append(content)
+            }
+
+            if buffer.count >= count {
+                let data = buffer[0..<count]
+                completion(data)
+
+                let remaining = buffer[count...]
+                do {
+                    try decoder.decode(from: remaining) { packet in
+                        logger.info("Received packet: \(String(describing: packet))")
+                        packetContinuation.yield(packet)
+                    }
+                } catch {
+                    logger.warning("\(error)")
+                    self.errorContinuation.yield(.decoding(error))
                 }
             }
 
@@ -124,6 +149,8 @@ final public class NetworkClient: Sendable {
                 self.errorContinuation.yield(.network(error))
             } else if isComplete {
                 self.errorContinuation.yield(.disconnected)
+            } else if buffer.count < count {
+                self.receiveDataAndPacket(count: count, buffer: buffer, completion: completion)
             } else {
                 self.receivePacket()
             }
@@ -138,6 +165,7 @@ final public class NetworkClient: Sendable {
 
             if let content {
                 logger.info("Received \(content.count) bytes")
+                recorder?.record(.inbound, content)
                 do {
                     try decoder.decode(from: content) { packet in
                         logger.info("Received packet: \(String(describing: packet))")

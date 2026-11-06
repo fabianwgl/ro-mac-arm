@@ -7,12 +7,14 @@
 
 import AVFAudio
 import Foundation
+import Observation
 import RagnarokCore
 import RagnarokResources
 
 @MainActor
 final class GameAudioPlayer {
     private let resourceManager: ResourceManager
+    private let preferences: GamePreferences
 
     private var bgmName: String?
     private var bgmPlayer: AVAudioPlayer?
@@ -22,8 +24,9 @@ final class GameAudioPlayer {
 
     private var soundEffectTasks: [UUID : Task<Void, Never>] = [:]
 
-    init(resourceManager: ResourceManager) {
+    init(resourceManager: ResourceManager, preferences: GamePreferences) {
         self.resourceManager = resourceManager
+        self.preferences = preferences
 
         self.soundEffectEngine = GameAudioEngine()
         self.soundEffectCache = GameAudioCache(resourceManager: resourceManager)
@@ -37,6 +40,9 @@ final class GameAudioPlayer {
             logger.warning("Failed to configure game audio playback: \(error, privacy: .public)")
         }
         #endif
+
+        observePreferences()
+        applyPreferences()
     }
 
     func setListenerPosition(_ position: SIMD3<Float>) {
@@ -80,8 +86,35 @@ final class GameAudioPlayer {
 
         bgmPlayer = player
         bgmPlayer?.numberOfLoops = -1
-        bgmPlayer?.volume = GameAudio.bgmVolume
+        bgmPlayer?.volume = bgmVolume
         bgmPlayer?.play()
+    }
+
+    /// Applies the preferences to the playing BGM and to the sound effect mixer.
+    private func applyPreferences() {
+        bgmPlayer?.volume = bgmVolume
+        soundEffectEngine.volume = preferences.isSoundEffectEnabled ? preferences.soundEffectVolume : 0
+    }
+
+    private func observePreferences() {
+        withObservationTracking {
+            _ = preferences.isBGMEnabled
+            _ = preferences.bgmVolume
+            _ = preferences.isSoundEffectEnabled
+            _ = preferences.soundEffectVolume
+        } onChange: { [weak self] in
+            Task { @MainActor in
+                guard let self else {
+                    return
+                }
+                self.observePreferences()
+                self.applyPreferences()
+            }
+        }
+    }
+
+    private var bgmVolume: Float {
+        preferences.isBGMEnabled ? preferences.bgmVolume : 0
     }
 
     func stopBGM() {

@@ -1,0 +1,15 @@
+{
+  "originHash" : "79d509540fb4f0519bc9f362af7251eff2483da7b8b71d2eeaac91c632e33a6c",
+  "pins" : [
+    {
+      "identity" : "ragnarok-lua",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/arkadeleon/ragnarok-lua.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "a6d151840d8c0610e4cfff19d6fe349dbdebcdb8"
+      }
+    }
+  ],
+  "version" : 3
+}

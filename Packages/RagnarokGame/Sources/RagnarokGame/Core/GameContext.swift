@@ -14,14 +14,18 @@ import RagnarokResources
 final class GameContext {
     let resourceManager: ResourceManager
 
+    let preferences: GamePreferences
+
     let itemInfoTable: ItemInfoTable
     let mapInfoTable: MapInfoTable
     let messageStringTable: MessageStringTable
     let skillInfoTable: SkillInfoTable
     let statusInfoTable: StatusInfoTable
 
-    init(resourceManager: ResourceManager) {
+    init(resourceManager: ResourceManager, preferences: GamePreferences? = nil) {
         self.resourceManager = resourceManager
+
+        self.preferences = preferences ?? GamePreferences()
 
         self.itemInfoTable = ItemInfoTable()
         self.mapInfoTable = MapInfoTable()

@@ -1,0 +1,86 @@
+name: Protocol Bug
+description: Report a login, character, or map packet failure.
+title: "[Protocol] "
+labels: [protocol, bug]
+body:
+  - type: input
+    id: client-commit
+    attributes:
+      label: Client commit
+      description: Output of `git rev-parse --short HEAD` on the client build.
+      placeholder: abc1234
+    validations:
+      required: true
+  - type: input
+    id: rathena-commit
+    attributes:
+      label: rAthena commit
+      description: Commit the test server was built from.
+      placeholder: d4b8e7b8f16061cc2496d377ac8f777ce72a4f39
+    validations:
+      required: true
+  - type: input
+    id: packetver
+    attributes:
+      label: PACKETVER
+      placeholder: "20211103"
+    validations:
+      required: true
+  - type: dropdown
+    id: obfuscation
+    attributes:
+      label: Packet obfuscation
+      description: Whether PACKET_OBFUSCATION is enabled on the server.
+      options:
+        - "Off"
+        - "On"
+    validations:
+      required: true
+  - type: input
+    id: opcode
+    attributes:
+      label: Opcode (hex)
+      placeholder: "0x0abc"
+    validations:
+      required: true
+  - type: input
+    id: packet-length
+    attributes:
+      label: Packet length
+      description: Observed length in bytes.
+      placeholder: "12"
+    validations:
+      required: true
+  - type: textarea
+    id: payload
+    attributes:
+      label: Hex payload
+      description: Full packet payload, including the opcode if available.
+      render: shell
+      placeholder: "0abc 0102 0304"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Client console output, server log lines, or both.
+      render: shell
+  - type: checkboxes
+    id: no-gravity-assets
+    attributes:
+      label: Gravity assets
+      description: Do not attach data.grf, rdata.grf, BGM, or extracted Gravity files.
+      options:
+        - label: I confirm this report contains no Gravity assets.
+          required: true
