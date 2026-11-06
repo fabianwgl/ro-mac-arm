@@ -57,5 +57,3 @@ per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
   soak runs pass; see [phase0-probe-report.md](phase0-probe-report.md).
 - Metal GPU capture, 120 fps on M1, RSS and cold-start targets (P5-01..P5-06):
   the build Mac is an M4; numbers are not recorded yet.
-- Notarization (P5-10): needs the maintainer's `notarytool` keychain profile.
-- Install on a clean Mac by a second person (P5-13).
