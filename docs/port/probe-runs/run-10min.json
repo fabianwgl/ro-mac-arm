@@ -1,0 +1,856 @@
+{
+  "attacksSent" : 71,
+  "characterCreated" : "ProbeOne",
+  "chatLinesSent" : 20,
+  "connectionsAccepted" : {
+    "char" : 1,
+    "login" : 1,
+    "map" : 1
+  },
+  "connectPacketCoalesced" : 1,
+  "decodeFailures" : [
+
+  ],
+  "disconnectEvents" : [
+
+  ],
+  "disconnects" : 0,
+  "durationSeconds" : 601.5,
+  "endedAt" : "2026-11-05T23:52:20Z",
+  "errorCount" : 0,
+  "errors" : [
+
+  ],
+  "lastStage" : "play.loaded",
+  "mapName" : "int_land04.rsw",
+  "monstersSeen" : 1,
+  "notes" : [
+    {
+      "message" : "client bug: map connect packet shared a TCP read with 6 more bytes",
+      "t" : 0.29999999999999999
+    },
+    {
+      "message" : "distinct cells visited by the player: 77",
+      "t" : 601.5
+    }
+  ],
+  "options" : {
+    "attackInterval" : 5,
+    "charName" : "ProbeOne",
+    "chatInterval" : 30,
+    "deleteTest" : false,
+    "host" : "127.0.0.1",
+    "port" : 6900,
+    "reconnect" : false,
+    "tap" : true,
+    "user" : "test",
+    "walkInterval" : 3
+  },
+  "packetsReceivedByOpcode" : [
+    {
+      "bytes" : 202,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_HC_ACCEPT_ENTER",
+      "opcode" : "0x006b",
+      "roles" : [
+        "char"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 444,
+      "decoded" : 74,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_NOTIFY_TIME",
+      "opcode" : "0x007f",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 1617,
+      "decoded" : 231,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_NOTIFY_VANISH",
+      "opcode" : "0x0080",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 1128,
+      "decoded" : 94,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_NOTIFY_PLAYERMOVE",
+      "opcode" : "0x0087",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 300,
+      "decoded" : 30,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_STOPMOVE",
+      "opcode" : "0x0088",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 727,
+      "decoded" : 22,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_NOTIFY_PLAYERCHAT",
+      "opcode" : "0x008e",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 66,
+      "decoded" : 3,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_NPCACK_MAPMOVE",
+      "opcode" : "0x0091",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 368,
+      "decoded" : 46,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_PAR_CHANGE",
+      "opcode" : "0x00b0",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 108,
+      "decoded" : 18,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_CLOSE_DIALOG",
+      "opcode" : "0x00b6",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 44,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_STATUS",
+      "opcode" : "0x00bd",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 30,
+      "decoded" : 6,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_STATUS_CHANGE",
+      "opcode" : "0x00be",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 84,
+      "decoded" : 12,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_EMOTION",
+      "opcode" : "0x00c0",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 8,
+      "decoded" : 2,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_ATTACK_RANGE",
+      "opcode" : "0x013a",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 588,
+      "decoded" : 42,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_COUPLESTATUS",
+      "opcode" : "0x0141",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 1264,
+      "decoded" : 16,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_BROADCAST2",
+      "opcode" : "0x01c3",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 45,
+      "decoded" : 3,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_SPRITE_CHANGE",
+      "opcode" : "0x01d7",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 4,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_FRIENDS_LIST",
+      "opcode" : "0x0201",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 4,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_HC_BLOCK_CHARACTER",
+      "opcode" : "0x020d",
+      "roles" : [
+        "char"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 6,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_AID",
+      "opcode" : "0x0283",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 576,
+      "decoded" : 12,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_NPC_CHAT",
+      "opcode" : "0x02c1",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 6,
+      "decoded" : 2,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_PARTY_CONFIG",
+      "opcode" : "0x02c9",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 60,
+      "decoded" : 6,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_CONFIG",
+      "opcode" : "0x02d9",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 6,
+      "decoded" : 2,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_CONFIG_NOTIFY",
+      "opcode" : "0x02da",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 13,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_ACCEPT_ENTER",
+      "opcode" : "0x02eb",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 70,
+      "decoded" : 5,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_QUEST_NOTIFY_EFFECT",
+      "opcode" : "0x0446",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 29,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_HC_ACCEPT_ENTER2",
+      "opcode" : "0x082d",
+      "roles" : [
+        "char"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 12,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_HC_SECOND_PASSWD_LOGIN",
+      "opcode" : "0x08b9",
+      "roles" : [
+        "char"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 850,
+      "decoded" : 25,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_NOTIFY_ACT",
+      "opcode" : "0x08c8",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 270,
+      "decoded" : 0,
+      "decodeFailures" : 0,
+      "opcode" : "0x08e2",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 10,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 168,
+      "decoded" : 12,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_HP_INFO",
+      "opcode" : "0x0977",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 24,
+      "decoded" : 3,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_MAPPROPERTY_R2",
+      "opcode" : "0x099b",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 6,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_HC_CHARLIST_NOTIFY",
+      "opcode" : "0x09a0",
+      "roles" : [
+        "char"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 3,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_NOTIFY_UNREADMAIL",
+      "opcode" : "0x09e7",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 18240,
+      "decoded" : 160,
+      "decodeFailures" : 0,
+      "name" : "packet_unit_walking",
+      "opcode" : "0x09fd",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 2808,
+      "decoded" : 26,
+      "decodeFailures" : 0,
+      "name" : "packet_idle_unit",
+      "opcode" : "0x09ff",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 72,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_ALL_ACH_LIST",
+      "opcode" : "0x0a23",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 198,
+      "decoded" : 3,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_ACH_UPDATE",
+      "opcode" : "0x0a24",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 12,
+      "decoded" : 3,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_SEND_SWAP_EQUIPITEM_INFO",
+      "opcode" : "0x0a9b",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 224,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_AC_ACCEPT_LOGIN",
+      "opcode" : "0x0ac4",
+      "roles" : [
+        "login"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 156,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_HC_NOTIFY_ZONESVR",
+      "opcode" : "0x0ac5",
+      "roles" : [
+        "char"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 48,
+      "decoded" : 4,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_LONGLONGPAR_CHANGE",
+      "opcode" : "0x0acb",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 6,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_RECOVER_PENALTY_OVERWEIGHT",
+      "opcode" : "0x0ade",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 2088,
+      "decoded" : 36,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_ACK_REQNAMEALL_NPC",
+      "opcode" : "0x0adf",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 18,
+      "decoded" : 3,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_INVENTORY_START",
+      "opcode" : "0x0b08",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 117,
+      "decoded" : 3,
+      "decodeFailures" : 0,
+      "name" : "packet_itemlist_normal",
+      "opcode" : "0x0b09",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 12,
+      "decoded" : 3,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_INVENTORY_END",
+      "opcode" : "0x0b0b",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 4,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_EXTEND_BODYITEM_SIZE",
+      "opcode" : "0x0b18",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 542,
+      "decoded" : 2,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_SHORTCUT_KEY_LIST",
+      "opcode" : "0x0b20",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 19,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_SKILLINFO_LIST",
+      "opcode" : "0x0b32",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 423,
+      "decoded" : 3,
+      "decodeFailures" : 0,
+      "name" : "packet_itemlist_equip",
+      "opcode" : "0x0b39",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 177,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_HC_ACCEPT_MAKECHAR",
+      "opcode" : "0x0b6f",
+      "roles" : [
+        "char"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 138,
+      "decoded" : 2,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_REPUTE_INFO",
+      "opcode" : "0x0b8d",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    }
+  ],
+  "packetsSentByOpcode" : [
+    {
+      "bytes" : 55,
+      "count" : 1,
+      "name" : "HEADER_CA_LOGIN",
+      "opcode" : "0x0064"
+    },
+    {
+      "bytes" : 17,
+      "count" : 1,
+      "opcode" : "0x0065"
+    },
+    {
+      "bytes" : 3,
+      "count" : 1,
+      "name" : "HEADER_CH_SELECT_CHAR",
+      "opcode" : "0x0066"
+    },
+    {
+      "bytes" : 6,
+      "count" : 3,
+      "name" : "clif_parse_LoadEndAck",
+      "opcode" : "0x007d"
+    },
+    {
+      "bytes" : 571,
+      "count" : 20,
+      "name" : "clif_parse_GlobalMessage",
+      "opcode" : "0x00f3"
+    },
+    {
+      "bytes" : 1335,
+      "count" : 267,
+      "name" : "clif_parse_WalkToXY",
+      "opcode" : "0x035f"
+    },
+    {
+      "bytes" : 456,
+      "count" : 76,
+      "name" : "clif_parse_TickSend",
+      "opcode" : "0x0360"
+    },
+    {
+      "bytes" : 23,
+      "count" : 1,
+      "name" : "clif_parse_WantToConnection",
+      "opcode" : "0x0436"
+    },
+    {
+      "bytes" : 49,
+      "count" : 7,
+      "name" : "clif_parse_ActionRequest",
+      "opcode" : "0x0437"
+    },
+    {
+      "bytes" : 36,
+      "count" : 1,
+      "name" : "HEADER_CH_MAKE_CHAR (not in packet database)",
+      "opcode" : "0x0a39"
+    }
+  ],
+  "packetTotals" : {
+    "bytes" : 34432,
+    "decoded" : 931,
+    "decodeFailures" : 0,
+    "unimplemented" : 10,
+    "unknown" : 0
+  },
+  "reachedMap" : true,
+  "reconnects" : 0,
+  "registeredSizeVsWireLengthMismatches" : [
+
+  ],
+  "requestedDurationSeconds" : 600,
+  "samplePositions" : [
+    "t=3s 18,26 -> 14,22",
+    "t=6s 14,22 -> 14,28",
+    "t=9s 14,28 -> 18,25",
+    "t=12s 18,25 -> 19,31",
+    "t=15s 19,31 -> 14,32",
+    "t=18s 14,32 -> 20,37",
+    "t=21s 20,37 -> 22,34",
+    "t=24s 22,34 -> 17,29",
+    "t=27s 17,29 -> 15,23",
+    "t=30s 15,23 -> 12,28",
+    "t=33s 12,28 -> 14,32",
+    "t=36s 14,32 -> 19,31",
+    "t=39s 19,31 -> 24,26",
+    "t=42s 24,26 -> 20,28",
+    "t=45s 20,28 -> 21,32",
+    "t=48s 21,32 -> 18,32",
+    "t=51s 18,32 -> 20,31",
+    "t=54s 20,31 -> 17,26",
+    "t=57s 17,26 -> 17,28",
+    "t=60s 17,28 -> 22,24",
+    "t=64s 22,24 -> 16,26",
+    "t=67s 16,26 -> 10,25",
+    "t=70s 10,25 -> 16,25",
+    "t=73s 16,25 -> 21,26",
+    "t=76s 21,26 -> 17,30",
+    "t=79s 17,30 -> 21,24",
+    "t=82s 21,24 -> 23,29",
+    "t=85s 23,29 -> 25,26",
+    "t=88s 25,26 -> 23,26",
+    "t=91s 23,26 -> 18,28",
+    "t=94s 18,28 -> 15,30",
+    "t=97s 15,30 -> 19,27",
+    "t=100s 19,27 -> 17,33",
+    "t=103s 17,33 -> 20,37",
+    "t=106s 20,37 -> 15,32",
+    "t=109s 15,32 -> 15,28",
+    "t=112s 15,28 -> 19,33",
+    "t=115s 19,33 -> 18,35",
+    "t=118s 18,35 -> 22,30",
+    "t=121s 22,30 -> 20,33",
+    "t=124s 20,33 -> 18,37",
+    "t=127s 18,37 -> 21,33",
+    "t=130s 21,33 -> 24,28",
+    "t=133s 24,28 -> 26,29",
+    "t=137s 51,30 -> 52,30",
+    "t=140s 52,30 -> 58,32",
+    "t=143s 58,32 -> 58,36",
+    "t=146s 58,36 -> 59,34",
+    "t=149s 59,34 -> 61,30",
+    "t=152s 61,30 -> 62,28"
+  ],
+  "sessions" : [
+    {
+      "attempt" : 1,
+      "map" : "iz_int04.rsw",
+      "mapLoadSeconds" : 1,
+      "result" : "completed",
+      "seconds" : 601.39999999999998
+    }
+  ],
+  "stageHistory" : [
+    {
+      "message" : "login.loggingIn",
+      "t" : 0.10000000000000001
+    },
+    {
+      "message" : "login.characterMake(slot 1)",
+      "t" : 0.20000000000000001
+    },
+    {
+      "message" : "login.characterSelect(2)",
+      "t" : 0.29999999999999999
+    },
+    {
+      "message" : "play.loading",
+      "t" : 0.40000000000000002
+    },
+    {
+      "message" : "play.loaded",
+      "t" : 1.5
+    },
+    {
+      "message" : "play.loading",
+      "t" : 216
+    },
+    {
+      "message" : "play.loaded",
+      "t" : 216.69999999999999
+    }
+  ],
+  "startedAt" : "2026-11-05T23:42:18Z",
+  "streamDesyncs" : 1,
+  "tapEnabled" : true,
+  "timeOnMapSeconds" : 600.10000000000002,
+  "unimplementedPackets" : [
+    {
+      "count" : 10,
+      "opcode" : "0x08e2",
+      "roles" : [
+        "map"
+      ]
+    }
+  ],
+  "unknownPackets" : [
+
+  ],
+  "walkRequestsSent" : 197
+}
