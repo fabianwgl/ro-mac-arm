@@ -19,6 +19,7 @@ enum MenuItem {
     case homunculus
     case quest
     case attendance
+    case achievement
     case worldMap
     case options
 }
@@ -113,8 +114,8 @@ struct MenuView: View {
                         }
                         .disabled(true)
                         GameImageButton("menu_icon/bt_achievement.bmp") {
+                            action(.achievement)
                         }
-                        .disabled(true)
                     }
                     .frame(width: 32, height: 34)
 
