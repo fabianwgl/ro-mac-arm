@@ -18,6 +18,10 @@ per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
   (upstream).
 - Party window (create, invite, accept, leave, kick, leader, member HP and
   minimap dots), friends window, quest log.
+- Pet window (status, feed, performance, return to egg, unequip accessory,
+  rename, auto feed) and the egg list a pet incubator opens; homunculus window
+  (status, feed, rename, delete, call, vaporize, resurrect, auto feed, skill
+  list). Menu buttons, Option-J and Option-R.
 - macOS keyboard controls with rebinding, sound and display preferences, saved
   password in the Keychain, crash marker and log export, launcher.
 
@@ -26,7 +30,7 @@ per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
 | Area | Server state | Client state |
 | --- | --- | --- |
 | Guild window (members, positions, skills, emblem, alliances) | enabled | guild chat only; `ZC_ACK_CHANGE_GUILD_POSITIONINFO` and `ZC_ACK_REQ_CHANGE_MEMBERS` are framed and skipped |
-| Pets, homunculus, mercenaries | enabled | no windows or commands |
+| Pets, homunculus, mercenaries | enabled | pet and homunculus windows and commands done (see Works); missing: taming (`ZC_START_CAPTURE`, `CZ_TRYCAPTURE_MONSTER`), pet evolution (`CZ_PET_EVOLUTION`), pet emotes and talk (`ZC_PET_ACT`), homunculus skill upgrade, attack and move orders, homunculus Lua AI; mercenary packets are not handled and there is no mercenary window |
 | RODEX mail | enabled | no window in the play UI |
 | Achievements | enabled | packets ignored, no window |
 | Attendance | enabled, opens at login | window not shown |

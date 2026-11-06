@@ -611,7 +611,7 @@ let registeredPackets: [Int16 : any DecodablePacket.Type] = [
     HEADER_ZC_CHANGESTATE_PET: PACKET_ZC_CHANGESTATE_PET.self,
 
     // | 0x1a6 | `clif_sendegg` |
-//  HEADER_ZC_PETEGG_LIST: PACKET_ZC_PETEGG_LIST.self,
+    HEADER_ZC_PETEGG_LIST: PACKET_ZC_PETEGG_LIST.self,
 
     // | 0x1aa | `clif_pet_emotion` |
     HEADER_ZC_PET_ACT: PACKET_ZC_PET_ACT.self,
