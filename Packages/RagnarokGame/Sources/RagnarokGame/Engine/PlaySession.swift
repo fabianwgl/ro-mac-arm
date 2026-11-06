@@ -46,6 +46,7 @@ final class PlaySession {
     var social = SocialState()
     var attendance = Attendance()
     var companions = CompanionState()
+    var mail = MailState()
     let messageCenter: MessageCenter
 
     var dialog: NPCDialog?
@@ -291,6 +292,10 @@ final class PlaySession {
             return
         }
         if handleAchievementPacket(packet) { return }
+
+        guard !handleMailPacket(packet) else {
+            return
+        }
 
         switch packet {
         case let packet as PACKET_ZC_ACCEPT_ENTER:

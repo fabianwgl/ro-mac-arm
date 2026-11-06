@@ -47,14 +47,14 @@ Tools/packet-golden/coverage.sh                    # runs PacketCoverageTests an
 | opcodes with names of both directions | 0 |
 | **server to client sendable** | **518** |
 | of which the client can frame (length known) | 517 |
-| of which the client can decode (`registeredPackets`) | 382 |
+| of which the client can decode (`registeredPackets`) | 383 |
 | of which the client cannot frame (decoder throws `unknownPacket`) | 1 |
 | client packet table entries | 838 |
-| client decoders in `registeredPackets` | 395 |
+| client decoders in `registeredPackets` | 398 |
 | **client to server packets rAthena parses on the map server (parse function)** | **400** opcodes, 282 current, 282 distinct functions |
 | login and char packets rAthena defines `HEADER_CA_*` or `HEADER_CH_*` for | 25 |
-| **`PacketFactory` builders** | **61** for 61 packet types |
-| rAthena parse functions covered by a `PacketFactory` builder | 48 of 282 |
+| **`PacketFactory` builders** | **75** for 75 packet types |
+| rAthena parse functions covered by a `PacketFactory` builder | 58 of 282 |
 | `PacketFactory` builders for login and char packets | 11 |
 
 ### Per server, by packet name prefix
@@ -65,7 +65,7 @@ Tools/packet-golden/coverage.sh                    # runs PacketCoverageTests an
 | char (CH_, HC_) | 34 | 15 | 19 | 16 |
 | map (CZ_, ZC_) | 636 | 228 | 408 | 343 |
 | other (PING, SC_, CT_, TC_) | 4 | 1 | 3 | 1 |
-| unnamed raw opcode | 604 | 187 | 85 | 19 |
+| unnamed raw opcode | 604 | 187 | 85 | 20 |
 
 The login and char servers dispatch their packets with their own `switch` and have no table, so their rows count
 `HEADER_*` constants only. The one raw packet they parse without a constant (`CH_ENTER`, 0x0065) is in the unnamed row.
@@ -82,18 +82,18 @@ The login and char servers dispatch their packets with their own `switch` and ha
 
 `GoldenPacketTests.testRegisteredPacketsMatchRathena` checks a decoder's length against the `PACKET_*` struct of the same name,
 or rAthena's packet table, and that the type's `HEADER_*` constant has the registered opcode.
-394 of 395 registered decoders have a struct or a table entry to compare with.
-The other 1 are hand written types for packets rAthena writes with raw `WFIFOx` calls, nothing to compare with:
+395 of 398 registered decoders have a struct or a table entry to compare with.
+The other 3 are hand written types for packets rAthena writes with raw `WFIFOx` calls, nothing to compare with:
 
-`PACKET_ZC_ALL_QUEST_LIST` 0x0aff
+`PACKET_ZC_ACK_MAIL_LIST` 0x0ac2, `PACKET_ZC_ALL_QUEST_LIST` 0x0aff, `PACKET_ZC_ACK_READ_MAIL` 0x0b63
 
 The client also has 27 sized structs without a same-named struct in rAthena at this PACKETVER
 (hand written in `Packets/`, or generated for other versions): `packet_roulette_info_ack_sub`, `PACKET_ZC_ACH_UPDATE`, `PACKET_ZC_ACK_REQ_DISCONNECT`, `PACKET_ZC_ACTIVE_QUEST`, `PACKET_ZC_ADD_FRIENDS_LIST`, `PACKET_ZC_AID`, `PACKET_ZC_ALL_ACH_LIST`, `PACKET_ZC_ALL_QUEST_LIST`, `PACKET_ZC_ALL_QUEST_MISSION`, `PACKET_ZC_CHANGE_GROUP_MASTER`, `PACKET_ZC_CONFIG`, `PACKET_ZC_DEL_QUEST`, `PACKET_ZC_DELETE_FRIENDS`, `PACKET_ZC_HP_INFO`, `PACKET_ZC_MAIL_RECEIVE`, `PACKET_ZC_MAPPROPERTY_R2`, `PACKET_ZC_MSG_STATE_CHANGE`, `PACKET_ZC_MSG_STATE_CHANGE3`, `PACKET_ZC_NOTIFY_EFFECT2`, `PACKET_ZC_NOTIFY_EXP`, `PACKET_ZC_NPC_CHAT`, `PACKET_ZC_PC_SELL_RESULT`, `PACKET_ZC_POSITION_ID_NAME_INFO_sub`, `PACKET_ZC_QUEST_NOTIFY_EFFECT`, `PACKET_ZC_RECOVER_PENALTY_OVERWEIGHT`, `PACKET_ZC_REQ_ADD_FRIENDS`, `PACKET_ZC_SEND_SWAP_EQUIPITEM_INFO`.
 
 ## Server to client packets the client cannot decode
 
-136 of the 518 sendable server to client packets have no registered decoder.
-135 of them are at least framed (length in the client table, logged and skipped), the other 1 are marked **no length**:
+135 of the 518 sendable server to client packets have no registered decoder.
+134 of them are at least framed (length in the client table, logged and skipped), the other 1 are marked **no length**:
 they are the ones that break the stream.
 
 Names come from `HEADER_*` constants, or from the comments above rAthena's `clif_*` functions (marked `~`, they can describe an
@@ -210,7 +210,7 @@ older use of a reused opcode). `*` marks unattributed table entries that rAthena
 - `0x08d2` ~ZC_FASTMOVE, table 10 bytes, length known
 - `0x0b8e` ZC_REPUTE_OPEN, length known
 
-### Other (70)
+### Other (69)
 
 - `0x006a` unnamed*, table 23 bytes, length known
 - `0x00cd` unnamed*, table 3 bytes, length known
@@ -236,7 +236,6 @@ older use of a reused opcode). `*` marks unattributed table entries that rAthena
 - `0x0256` unnamed*, table 5 bytes, length known
 - `0x025e` unnamed*, table 4 bytes, length known
 - `0x025f` unnamed*, table 6 bytes, length known
-- `0x0260` unnamed*, table 6 bytes, length known
 - `0x0274` unnamed*, table 8 bytes, length known
 - `0x0284` unnamed*, table 14 bytes, length known
 - `0x0289` unnamed*, table 12 bytes, length known
