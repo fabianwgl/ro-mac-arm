@@ -55,11 +55,13 @@ final class PlaySession {
     var warpList: WarpList?
     var guildState = GuildState()
 
+    var achievements = Achievements()
+
     var interactionMode: GameInteractionMode = .direct
 
     @ObservationIgnored weak var delegate: (any PlaySessionDelegate)?
 
-    @ObservationIgnored private let context: GameContext
+    @ObservationIgnored let context: GameContext
     @ObservationIgnored private let audioPlayer: GameAudioPlayer
 
     @ObservationIgnored private var mapClient: NetworkClient?
@@ -288,6 +290,7 @@ final class PlaySession {
         guard !handleCompanionPacket(packet) else {
             return
         }
+        if handleAchievementPacket(packet) { return }
 
         switch packet {
         case let packet as PACKET_ZC_ACCEPT_ENTER:
@@ -645,10 +648,6 @@ final class PlaySession {
         case let packet as PACKET_ZC_NOTIFY_CLAN_CHAT:
             let message = ChatMessage(from: packet)
             messageCenter.add(message)
-        case _ as PACKET_ZC_ALL_ACH_LIST:
-            break
-        case _ as PACKET_ZC_ACH_UPDATE:
-            break
         case let packet as PACKET_ZC_NOTIFY_TIME:
             if let requestTime = serverTimeRequestTime {
                 let now = ContinuousClock.now

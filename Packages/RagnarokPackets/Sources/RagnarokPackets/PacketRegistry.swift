@@ -1229,7 +1229,7 @@ let registeredPackets: [Int16 : any DecodablePacket.Type] = [
     packet_header_achievementUpdateType: PACKET_ZC_ACH_UPDATE.self,
 
     // | 0xa26 | `clif_achievement_reward_ack` |
-//  packet_header_achievementRewardAckType: PACKET_ZC_REQ_ACH_REWARD_ACK.self,
+    packet_header_achievementRewardAckType: PACKET_ZC_REQ_ACH_REWARD_ACK.self,
 
     // | 0xa28 | `clif_openvending_ack` |
     HEADER_ZC_ACK_OPENSTORE2: PACKET_ZC_ACK_OPENSTORE2.self,

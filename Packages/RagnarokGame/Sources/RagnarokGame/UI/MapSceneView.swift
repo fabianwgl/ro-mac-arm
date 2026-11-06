@@ -146,6 +146,10 @@ struct MapSceneView: View {
                     AttendanceView(attendance: playSession.attendance) {
                         presentedMenuItem = nil
                     }
+                case .achievement:
+                    AchievementsView(achievements: playSession.achievements) {
+                        presentedMenuItem = nil
+                    }
                 case .worldMap:
                     WorldMapView(currentMapName: runtime.scene.mapName) {
                         presentedMenuItem = nil
