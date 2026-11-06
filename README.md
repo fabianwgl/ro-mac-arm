@@ -1,37 +1,125 @@
-# Ragnarok Offline
+# RO Mac Client
 
-![](Screenshots/Simulator%20Screenshot%20-%20Apple%20Vision%20Pro.png)
+A native macOS client for Ragnarok Online on Apple silicon, built for a private
+[rAthena](https://github.com/rathena/rathena) server. Swift 6, SwiftUI and Metal,
+arm64 only, macOS 15 or newer.
 
-## Prerequisites
-Before installing Ragnarok Offline there are certain hardwares you will need.
+This is a fork of [Ragnarok Offline](https://github.com/arkadeleon/ragnarok-offline)
+by Leon Li (GPL-3.0). Upstream is a toolkit with a built-in single-player server;
+this fork turns it into a game client for an external rAthena server and keeps
+upstream mergeable (`upstream` remote, monthly sync, local changes logged in
+[docs/port/patches.md](docs/port/patches.md)).
 
-Hardware | OS Version    | Required
----------|---------------|---------
-Mac      | 15.0 or later | Yes
-iPad     | 18.0 or later | No
+No Gravity assets are included. You need your own kRO client files.
 
-## Installation
+## Goal
 
-1. Install [Xcode](https://developer.apple.com/xcode/downloads/) with the iOS 18, macOS 15, and visionOS 2 SDKs.
-1. Make sure the Xcode command line tools point at the installed Xcode:
-    ```shell
-    xcode-select --install
-    sudo xcode-select --switch /Applications/Xcode.app
-    ```
-1. Clone the repository with submodules:
-    ```shell
-    git clone --recurse-submodules https://github.com/arkadeleon/ragnarok-offline
-    cd ragnarok-offline
-    ```
-    If you already cloned the repository without submodules, run:
-    ```shell
-    git submodule update --init --recursive
-    ```
-1. Open `RagnarokOffline.xcodeproj` in Xcode.
-1. Select the `RagnarokOffline` scheme.
-1. Select a run destination:
-    - `My Mac` to run the macOS app.
-    - An iOS simulator to run on iPad or iPhone Simulator.
-    - An Apple Vision Pro simulator to run the visionOS app.
-    - A connected iPad, iPhone, or Apple Vision Pro device to run on real hardware.
-1. Wait for Xcode to resolve local Swift package dependencies, then build and run with `Product > Run`.
+Play a private rAthena server (pinned commit `d4b8e7b8`, `PACKETVER 20211103`)
+from a native Mac app: log in, pick a character, enter maps, move, chat, fight,
+loot, use NPCs, manage gear, and stay connected for hours without protocol
+errors. Full kRO parity is not a goal. The target is the content this server
+actually enables. This is a local-only project for now: no App Store, no signed
+distribution.
+
+The full plan is in [docs/port/PLAN.md](docs/port/PLAN.md).
+
+## Status (2026-11-06)
+
+| Milestone | State |
+| --- | --- |
+| M0 Build upstream, Docker rAthena login | Done |
+| M1 Log in to rAthena, walk, chat | Done |
+| M2 Playable core | In progress: core loop coded, per-item verification and a playtest left |
+| M3 Target-server content | About half of the enabled systems usable |
+| M4 v1.0 local build | Not started |
+
+What works today:
+
+- **Account:** login (including pincode), character create, select and delete,
+  and reconnect after a server restart.
+- **Movement:** walking, map changes, the hand-off between map servers, and
+  warp portals.
+- **Chat:** public, whisper (`/w`), party (`%`) and guild (`$`).
+- **Core game from upstream:** combat, skills, inventory, equipment, NPC
+  dialogs, shops, storage and Kafra.
+- **Social:** party, friends, guild, quest log, RODEX mail, achievements and
+  attendance.
+- **Companions:** pet and homunculus windows.
+- **macOS:** keyboard controls with rebinding, sound and display preferences,
+  the saved password in the Keychain, crash detection and log export, and a
+  launcher window. The upstream tools (GRF browser, databases, viewers) sit
+  behind View > Developer Tools.
+
+Proof:
+
+- A 60-minute session against stock rAthena with 0 disconnects and 0 unknown
+  packets ([probe report](docs/port/phase0-probe-report.md)).
+- Golden packet tests compiled from the rAthena headers.
+- [Packet coverage](docs/port/packet-coverage.md).
+
+Open systems are listed in [docs/port/KNOWN_GAPS.md](docs/port/KNOWN_GAPS.md):
+trade, vending, refine and enchant, clan, chat rooms, mercenaries, navigation
+and others.
+
+## Next
+
+1. Finish M2:
+   - Verify every Phase 3 item against the local server.
+   - Do a GUI run of the real app with screenshots.
+   - Fix what turns up.
+   - Re-run the soak test.
+   - Then a one-hour playtest.
+2. Plan and build the remaining systems in KNOWN_GAPS.md, starting with
+   trade, vending, buying store, refine and enchant.
+3. Performance work: 120 fps, memory under 4 GB, cold start under 10 s.
+
+## Run it
+
+Requirements: an Apple silicon Mac, macOS 15+, Xcode 27, Docker Desktop, and
+the 2021-04-06 kRO full client.
+
+1. Start the server. Follow [docs/port/DOCKER.md](docs/port/DOCKER.md): rAthena
+   at the pinned commit, compose project `ro-backend`, ports 6900, 6121 and 5121.
+2. Get the code and the Metal toolchain:
+   ```sh
+   git clone --recurse-submodules https://github.com/fabianwgl/ro-mac-arm.git
+   cd ro-mac-arm
+   xcodebuild -downloadComponent MetalToolchain
+   ```
+3. Build a sandboxed debug app:
+   ```sh
+   xcodebuild -project RagnarokOffline.xcodeproj -scheme RagnarokOffline \
+     -destination 'platform=macOS,arch=arm64' \
+     CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM= build
+   ```
+   Or open `RagnarokOffline.xcodeproj` in Xcode and run the `RagnarokOffline`
+   scheme.
+4. Launch the app once, then copy the client files into its sandbox:
+   ```sh
+   scripts/provision-assets.sh ~/path/to/kRO/client
+   ```
+5. In the launcher, check that `data.grf` shows as supported, keep
+   `127.0.0.1:6900`, and press Play.
+
+The [install guide](docs/port/INSTALL.md) covers troubleshooting.
+
+## Development
+
+- Package tests: `swift test --package-path Packages/<Name>`.
+  `RagnarokResources` and `RagnarokScript` need upstream's local asset server
+  on port 8080.
+- Headless client for protocol checks:
+  `swift build --package-path Tools/ROProbe`, then
+  `Tools/ROProbe/.build/debug/ro-probe --help`.
+- Golden packet data: `Tools/packet-golden/generate.sh <rathena-dir>`.
+  Coverage: `Tools/packet-golden/coverage.sh`.
+- Task board with per-task status: [docs/port/TASKS.md](docs/port/TASKS.md).
+  Architecture: [docs/port/ARCHITECTURE.md](docs/port/ARCHITECTURE.md).
+  Risks: [docs/port/RISKS.md](docs/port/RISKS.md).
+
+## License
+
+GPL-3.0, see [LICENSE](LICENSE) and [NOTICE](NOTICE). Based on Ragnarok Offline
+by Leon Li and contributors. Packet definitions are derived from rAthena
+(GPL-3.0). Ragnarok Online and its assets belong to Gravity Co., Ltd.; this
+project is not affiliated with or endorsed by Gravity.
