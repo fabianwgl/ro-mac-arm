@@ -91,3 +91,20 @@ fastlane/test_output
 # https://github.com/johnno1962/injectionforxcode
 
 iOSInjectionProject/
+
+# Fork: client assets. Never commit Gravity files.
+*.grf
+*.gpf
+BGM/
+/data/
+/client-files/
+
+# Fork: build and packaging output
+*.dmg
+/build/
+/dist/
+DerivedData/
+.build/
+*.xcresult
+.DS_Store
+

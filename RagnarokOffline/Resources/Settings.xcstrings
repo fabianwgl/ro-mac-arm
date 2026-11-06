@@ -381,6 +381,9 @@
         }
       }
     },
+    "Fork Notice" : {
+      "extractionState" : "manual"
+    },
     "General" : {
       "localizations" : {
         "de" : {
@@ -1521,6 +1524,9 @@
           }
         }
       }
+    },
+    "RO Mac Client is a fork of Ragnarok Offline by Leon Li (github.com/arkadeleon/ragnarok-offline), licensed under GPL-3.0. Source code: %@. Packet definitions derived from rAthena (GPL-3.0). Ragnarok Online assets are not included; you must supply your own kRO client files." : {
+      "extractionState" : "manual"
     },
     "Server" : {
       "localizations" : {
