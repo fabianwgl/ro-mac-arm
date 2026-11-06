@@ -165,13 +165,13 @@ Exit criteria: the local build meets the performance targets on the developer Ma
 
 ## 5. Milestones
 
-| Milestone | Scope | Solo full-time |
-| --- | --- | --- |
-| M0 | Build upstream, Docker rAthena login | 1-2 weeks |
-| M1 | Login to rAthena, walk, chat | 5-8 weeks |
-| M2 | Playable core | 11-18 weeks |
-| M3 | Target-server content | 17-28 weeks |
-| M4 | v1.0 (local build) | 20-33 weeks |
+| Milestone | Scope | Solo full-time | Status 2026-11-06 |
+| --- | --- | --- | --- |
+| M0 | Build upstream, Docker rAthena login | 1-2 weeks | Done |
+| M1 | Login to rAthena, walk, chat | 5-8 weeks | Done |
+| M2 | Playable core | 11-18 weeks | In progress: core loop coded, per-item verification and the playtest left |
+| M3 | Target-server content | 17-28 weeks | About half of the enabled systems usable; rest in KNOWN_GAPS.md |
+| M4 | v1.0 (local build) | 20-33 weeks | Not started (performance work) |
 
 Solo at 20 hours per week: double the ranges. Two developers full-time: roughly
 60 percent of the ranges.
@@ -227,3 +227,76 @@ v1.0:
   changes; do not chase every date.
 - Keep a one-page compatibility table: client build, rAthena commit, PACKETVER,
   obfuscation on or off, known gaps.
+
+## 10. Progress
+
+Status on 2026-11-06. Work is on branch `feat/port-phase0-5` of
+`github.com/fabianwgl/ro-mac-arm` (PR #1); `main` mirrors `upstream/master`.
+Per-task status with evidence is in [TASKS.md](TASKS.md); open content in
+[KNOWN_GAPS.md](KNOWN_GAPS.md).
+
+### Done
+
+- Phase 0: upstream builds on macOS 27 / Xcode 27 after installing the Metal
+  toolchain. The rAthena Docker stack runs as `ro-backend` at the pinned commit.
+  A headless probe (`Tools/ROProbe`) drives the real `GameSession`. A 10-minute
+  login, create, walk, chat and attack run passed with 0 disconnects.
+  Packet coverage is in [packet-coverage.md](packet-coverage.md). The go
+  decision is in RESEARCH.md.
+- Phase 1:
+  - The app is renamed `RO Mac Client` (`tech.thecapy.ro-mac-client`) and opens
+    on a launcher; the upstream tools sit behind View > Developer Tools.
+  - Fork files: NOTICE, an asset-safe `.gitignore`, issue templates, the
+    compatibility manifest, `scripts/provision-assets.sh`, the upstream sync
+    doc and `patches.md`.
+  - CI on `macos-26` builds the app.
+- Phase 2:
+  - Packet handling: a packet-date guard, decoder hardening (hex logging,
+    bounded buffer, fragmented and coalesced read tests) and a replay recorder.
+  - Golden tests compiled from the rAthena headers.
+  - Pincode, verified against the live server.
+  - Character delete, and reconnect after a server restart.
+  - A 60-minute soak with 0 errors.
+  - Obfuscation needs no work: rAthena's keys are zero at 20211103, verified on
+    a stock server.
+  - Client bugs fixed:
+    - `CZ_ENTER` shared a TCP write with the next packet.
+    - Eight server packets had no length.
+    - `RANKLIST` had the wrong size.
+    - The friend reply packet had the wrong size.
+    - The account id read dropped bytes on a short TCP read.
+    - Login required 6-character credentials.
+- Phase 3:
+  - Chat: whisper, party and guild.
+  - The quit acknowledgement and the hand-off between map servers.
+  - Clicking warps and NPCs.
+  - macOS keyboard controls with rebinding.
+  - Sound and display preferences.
+  - The saved password lives in the Keychain.
+  - A crash marker and log export.
+- Phase 4: an inventory of the server's content
+  ([server-content.md](server-content.md)), plus party, friends, quest log,
+  guild, pets, homunculus, RODEX mail, achievements and attendance.
+- Phase 5: install and release docs. `scripts/release.sh` builds a signed DMG
+  without notarization. Signing and distribution are deferred because the
+  project is local-only.
+
+### Next
+
+1. Finish M2:
+   - Verify P3-02 and P3-04 to P3-13 against the local server with the probe.
+   - Do a GUI run of the real app, with screenshots of the map and of each
+     core window.
+   - Fix what turns up.
+   - Run the soak again.
+   - Then the developer's one-hour playtest (P3-15).
+2. Plan and build the remaining systems in [KNOWN_GAPS.md](KNOWN_GAPS.md).
+   First: trade, vending, buying store, refine and enchant.
+3. Phase 5 performance work on the developer Mac.
+
+### Server notes found during the work
+
+- Attendance: no period is active in `db/re/attendance.yml`. Add one to
+  `db/import/attendance.yml` to use the feature.
+- The `openmail` NPC fails at this packet date after it takes 130 zeny.
+  Use the menu or `@mail`.
