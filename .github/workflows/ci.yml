@@ -1,5 +1,8 @@
 name: CI
 
+# macos-26 for Xcode 27: upstream sources use toolchain features Xcode 26 lacks
+# (the `#bundle` macro fails there in RagnarokGame).
+
 # GitHub-hosted macOS runners cannot run Docker, so the rAthena integration
 # test is local-only. See docs/port/DOCKER.md.
 
@@ -17,7 +20,7 @@ permissions:
 jobs:
   build:
     name: Build (macOS arm64)
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -55,7 +58,7 @@ jobs:
 
   unit-tests:
     name: 'Unit tests (${{ matrix.package }})'
-    runs-on: macos-15
+    runs-on: macos-26
     strategy:
       fail-fast: false
       matrix:

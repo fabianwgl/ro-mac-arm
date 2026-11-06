@@ -136,7 +136,7 @@ handling are more likely to limit frame time.
 
 ## 8. CI and release
 
-- GitHub Actions `macos-15`, arm64, Xcode current.
+- GitHub Actions `macos-26` (Xcode 27), arm64, Xcode current.
 - Build all packages, run unit tests, run the packet golden tests.
 - Cache Swift packages and DerivedData.
 - Release job: archive, sign with Developer ID, notarize, staple, create DMG,
