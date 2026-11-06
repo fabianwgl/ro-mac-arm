@@ -1,0 +1,17 @@
+{
+  "clientVersion": "",
+  "clientCommit": "",
+  "upstreamCommit": "",
+  "rathenaCommit": "",
+  "packetVersion": 20211103,
+  "packetObfuscation": false,
+  "pincode": "disabled",
+  "kroClientDate": "",
+  "grfVersion": "",
+  "knownGaps": [],
+  "testedOn": {
+    "macOS": "",
+    "chip": ""
+  },
+  "date": ""
+}
