@@ -29,6 +29,8 @@ struct LoginStageView: View {
                         CharacterSelectView(characters: characters)
                     case .characterMake(let slot):
                         CharacterMakeView(slot: slot)
+                    case .pincode(let request):
+                        PincodeView(request: request)
                     case .waitingForMapServer:
                         LoginLoadingView()
                     }

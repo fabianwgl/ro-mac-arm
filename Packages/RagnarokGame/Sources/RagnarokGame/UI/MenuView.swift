@@ -12,6 +12,9 @@ enum MenuItem {
     case equipment
     case inventory
     case skill
+    case party
+    case friends
+    case quest
     case worldMap
     case options
 }
@@ -43,8 +46,8 @@ struct MenuView: View {
                             action(.skill)
                         }
                         GameImageButton("menu_icon/bt_party.bmp") {
+                            action(.party)
                         }
-                        .disabled(true)
                     }
                     .frame(width: 32, height: 34)
 
@@ -56,14 +59,19 @@ struct MenuView: View {
                         }
                         .disabled(true)
                         GameImageButton("menu_icon/bt_quest.bmp") {
+                            action(.quest)
                         }
-                        .disabled(true)
                         GameImageButton("menu_icon/bt_map.bmp") {
                             action(.worldMap)
                         }
-                        GameImageButton("menu_icon/bt_navigation.bmp") {
+                        Button {
+                            action(.friends)
+                        } label: {
+                            Image(systemName: "person.2.fill")
+                                .font(.game(size: 14))
+                                .foregroundStyle(Color.gameLabel)
                         }
-                        .disabled(true)
+                        .frame(width: 32, height: 34)
                     }
                     .frame(width: 32, height: 34)
 

@@ -69,6 +69,23 @@ final class MessageCenter {
         messages.append(.init(from: message))
     }
 
+    // MARK: - Chat
+
+    func addMessage(for packet: PACKET_ZC_ACK_WHISPER) {
+        let messageID: Int
+        switch packet.result {
+        case 1: messageID = 148
+        case 2: messageID = 149
+        case 3: messageID = 150
+        default: return
+        }
+
+        let messageString = messageStringTable.localizedMessageString(forID: messageID)
+            .trimmingCharacters(in: .whitespaces)
+        let message = MessageCenter.Message(content: messageString, type: .error, category: .general)
+        messages.append(message)
+    }
+
     // MARK: - Item
 
     func addMessage(for packet: PACKET_ZC_ITEM_PICKUP_ACK) {

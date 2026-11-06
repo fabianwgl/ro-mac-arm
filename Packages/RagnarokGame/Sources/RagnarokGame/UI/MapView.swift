@@ -282,8 +282,8 @@ final class MapViewController: UIViewController, MTKViewDelegate, UIGestureRecog
             baseDistance = scene.camera.distance
         case .changed:
             var distance = baseDistance * Float(1 / gestureRecognizer.scale)
-            distance = max(distance, 3)
-            distance = min(distance, 120)
+            distance = max(distance, GamePreferences.zoomRange.lowerBound)
+            distance = min(distance, GamePreferences.zoomRange.upperBound)
             scene.camera.distance = distance
         default:
             break
@@ -485,8 +485,8 @@ final class MapViewController: NSViewController, MTKViewDelegate {
             scale = max(scale, .leastNonzeroMagnitude)
 
             var distance = baseDistance * Float(1 / scale)
-            distance = max(distance, 3)
-            distance = min(distance, 120)
+            distance = max(distance, GamePreferences.zoomRange.lowerBound)
+            distance = min(distance, GamePreferences.zoomRange.upperBound)
             scene.camera.distance = distance
         default:
             break

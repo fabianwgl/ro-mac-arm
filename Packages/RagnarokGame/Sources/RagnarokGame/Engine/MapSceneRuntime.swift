@@ -157,7 +157,11 @@ final class MapSceneRuntime {
     }
 
     private func makeEffects(worldPositions: [GameObjectID : SIMD3<Float>]) -> [MapSceneRenderSnapshot.Effect] {
-        scene.effects.values
+        guard scene.preferences.effectsEnabled else {
+            return []
+        }
+
+        return scene.effects.values
             .compactMap { effect in
                 guard let resourceGroup = renderResources.effectResource(for: effect.id) else {
                     return nil
@@ -217,6 +221,10 @@ final class MapSceneRuntime {
     /// The target selector's object shows its name 2 points under its HP bar.
     /// Without a bar, the name is centered where the bar would be.
     private func makeTexts(worldPositions: [GameObjectID : SIMD3<Float>]) -> [MapSceneRenderSnapshot.Text] {
+        guard scene.preferences.showsNames else {
+            return []
+        }
+
         guard let targetSelector = scene.targetSelector,
               let target = scene.objects[targetSelector.objectID],
               let targetPosition = worldPositions[target.objectID],
@@ -276,11 +284,13 @@ final class MapSceneRuntime {
 
         return scene.combatTexts
             .filter { combatText in
-                if combatText.kind.isCombo, let latestComboText = latestComboTexts[combatText.target.objectID] {
-                    combatText === latestComboText
-                } else {
-                    true
+                if combatText.kind == .miss, !scene.preferences.showsMissText {
+                    return false
                 }
+                if combatText.kind.isCombo, let latestComboText = latestComboTexts[combatText.target.objectID] {
+                    return combatText === latestComboText
+                }
+                return true
             }
             .compactMap { combatText in
                 let anchor = worldPositions[combatText.target.objectID] ?? combatText.target.initialWorldPosition

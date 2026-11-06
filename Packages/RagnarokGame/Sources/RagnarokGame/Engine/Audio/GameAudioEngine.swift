@@ -28,6 +28,13 @@ final class GameAudioEngine {
 
     private var listenerPosition: SIMD3<Float> = .zero
 
+    /// The master volume of every sound effect.
+    var volume: Float = 1 {
+        didSet {
+            engine.mainMixerNode.outputVolume = volume
+        }
+    }
+
     func setListenerPosition(_ position: SIMD3<Float>) {
         guard position != listenerPosition else {
             return
@@ -84,7 +91,7 @@ final class GameAudioEngine {
             return true
         }
 
-        engine.mainMixerNode.outputVolume = GameAudio.soundEffectVolume
+        engine.mainMixerNode.outputVolume = volume
 
         do {
             try engine.start()

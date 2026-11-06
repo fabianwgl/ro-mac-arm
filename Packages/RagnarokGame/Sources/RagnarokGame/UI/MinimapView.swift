@@ -16,6 +16,7 @@ struct MinimapView: View {
     var scene: MapScene
 
     @Environment(GameContext.self) private var gameContext
+    @Environment(PlaySession.self) private var playSession
 
     @State private var zoomLevel = 0
     @State private var mapImage: CGImage?
@@ -26,7 +27,9 @@ struct MinimapView: View {
                 scene: scene,
                 mapImage: mapImage,
                 zoomFactor: zoomFactors[zoomLevel],
-                showsFullMap: zoomLevel == 0
+                showsFullMap: zoomLevel == 0,
+                partyMembers: playSession.social.party.members,
+                playerAccountID: playSession.account.accountID
             )
 
             HStack(spacing: 0) {
@@ -81,6 +84,8 @@ private struct MinimapMapView: View {
     var mapImage: CGImage?
     var zoomFactor: Int
     var showsFullMap: Bool
+    var partyMembers: [Party.Member]
+    var playerAccountID: UInt32
 
     var body: some View {
         ZStack {
@@ -95,6 +100,17 @@ private struct MinimapMapView: View {
                     .position(mapCenter(for: mapImage, playerPosition: scene.state.playerPosition))
             }
 
+            ForEach(partyMembers) { member in
+                if member.accountID != playerAccountID,
+                   let position = member.position,
+                   isOnCurrentMap(member) {
+                    Circle()
+                        .fill(member.isDead ? Color.red : Color.cyan)
+                        .frame(width: 5, height: 5)
+                        .position(arrowPosition(for: position))
+                }
+            }
+
             MinimapArrowView()
                 .rotationEffect(arrowRotation(for: scene.state.playerDirection))
                 .position(arrowPosition(for: scene.state.playerPosition))
@@ -102,6 +118,17 @@ private struct MinimapMapView: View {
         .frame(width: mapSize, height: mapSize)
         .clipped()
         .allowsHitTesting(false)
+    }
+
+    private func isOnCurrentMap(_ member: Party.Member) -> Bool {
+        guard !member.mapName.isEmpty else {
+            return false
+        }
+        return mapNameStem(member.mapName) == mapNameStem(scene.mapName)
+    }
+
+    private func mapNameStem(_ mapName: String) -> String {
+        mapName.split(separator: ".", maxSplits: 1).first.map(String.init) ?? mapName
     }
 
     private func mapDisplaySize(for image: CGImage) -> CGSize {
