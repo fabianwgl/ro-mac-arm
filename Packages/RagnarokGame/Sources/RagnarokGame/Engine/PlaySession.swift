@@ -44,6 +44,7 @@ final class PlaySession {
     var shortcutList: ShortcutList
     var questLog: QuestLog
     var social = SocialState()
+    var mail = MailState()
     let messageCenter: MessageCenter
 
     var dialog: NPCDialog?
@@ -275,6 +276,10 @@ final class PlaySession {
 
     private func handlePacket(_ packet: any DecodablePacket) {
         guard !handleSocialPacket(packet) else {
+            return
+        }
+
+        guard !handleMailPacket(packet) else {
             return
         }
 

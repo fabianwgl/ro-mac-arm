@@ -68,7 +68,7 @@ struct MapSceneView: View {
             VStack(alignment: .leading, spacing: 0) {
                 BasicInfoView(character: playSession.character, status: playSession.playerStatus)
 
-                MenuView { item in
+                MenuView(hasUnreadMail: playSession.mail.mailbox.hasUnread) { item in
                     if item == presentedMenuItem {
                         presentedMenuItem = nil
                     } else {
@@ -127,6 +127,10 @@ struct MapSceneView: View {
                     QuestLogView(questLog: playSession.questLog) {
                         presentedMenuItem = nil
                     }
+                case .mail:
+                    MailboxView(mailbox: playSession.mail.mailbox) {
+                        presentedMenuItem = nil
+                    }
                 case .worldMap:
                     WorldMapView(currentMapName: runtime.scene.mapName) {
                         presentedMenuItem = nil
@@ -157,6 +161,10 @@ struct MapSceneView: View {
             if let invitation = playSession.social.invitation {
                 SocialInvitationView(invitation: invitation)
             }
+            if playSession.mail.draft != nil {
+                MailComposeView()
+                    .offset(x: 24, y: 24)
+            }
         }
         .onChange(of: runtime.scene.state.isPlayerDead) { _, newValue in
             if newValue {
@@ -167,6 +175,14 @@ struct MapSceneView: View {
         }
         .onChange(of: playSession.storage != nil) { _, isStorageOpen in
             if isStorageOpen {
+                presentedMenuItem = nil
+            }
+        }
+        .onChange(of: playSession.mail.openRequestCount) {
+            presentedMenuItem = .mail
+        }
+        .onChange(of: playSession.mail.closeRequestCount) {
+            if presentedMenuItem == .mail {
                 presentedMenuItem = nil
             }
         }
@@ -293,7 +309,9 @@ struct MapSceneView: View {
     }
 
     private func closeTopWindow() {
-        if playSession.storage != nil {
+        if playSession.mail.draft != nil {
+            playSession.closeMailCompose()
+        } else if playSession.storage != nil {
             playSession.closeStorage()
         } else if playSession.dealSelectionNPCID != nil {
             playSession.cancelDealSelection()

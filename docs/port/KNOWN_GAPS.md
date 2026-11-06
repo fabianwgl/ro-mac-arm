@@ -27,7 +27,7 @@ per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
 | --- | --- | --- |
 | Guild window (members, positions, skills, emblem, alliances) | enabled | guild chat only; `ZC_ACK_CHANGE_GUILD_POSITIONINFO` and `ZC_ACK_REQ_CHANGE_MEMBERS` are framed and skipped |
 | Pets, homunculus, mercenaries | enabled | no windows or commands |
-| RODEX mail | enabled | no window in the play UI |
+| RODEX mail | enabled | mailbox window (Mail and Account tabs, list, read, take zeny and items, delete, reply), write window (name check, title, text, zeny, up to 5 items), unread icon and message. Opened from the menu mail button or `@mail`: the `openmail` NPC cannot open it at this PACKETVER (`BUILDIN_FUNC(openmail)` only logs that it is unsupported, after the NPC took 130 zeny). Not done: returning a mail (rAthena ignores `CZ_RODEX_RETURN`), the "all mails" account requests (`CZ_OPEN_ALL_RODEX`, none in rAthena) |
 | Achievements | enabled | packets ignored, no window |
 | Attendance | enabled, opens at login | window not shown |
 | Navigation (`ZC_NAVIGATION_ACTIVE` 0x08e2) | enabled | framed and skipped |
