@@ -13,6 +13,7 @@ enum MenuItem {
     case inventory
     case skill
     case party
+    case guild
     case friends
     case quest
     case attendance
@@ -54,8 +55,8 @@ struct MenuView: View {
 
                     GridRow {
                         GameImageButton("menu_icon/bt_guild.bmp") {
+                            action(.guild)
                         }
-                        .disabled(true)
                         GameImageButton("menu_icon/bt_battle.bmp") {
                         }
                         .disabled(true)
