@@ -51,6 +51,7 @@ final class PlaySession {
     var npcShop: NPCShop?
     var storage: Storage?
     var warpList: WarpList?
+    var guildState = GuildState()
 
     var interactionMode: GameInteractionMode = .direct
 
@@ -274,6 +275,10 @@ final class PlaySession {
     }
 
     private func handlePacket(_ packet: any DecodablePacket) {
+        guard !handleGuildPacket(packet) else {
+            return
+        }
+
         guard !handleSocialPacket(packet) else {
             return
         }

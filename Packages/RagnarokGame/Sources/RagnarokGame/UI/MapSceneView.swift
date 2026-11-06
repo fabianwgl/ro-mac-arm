@@ -119,6 +119,10 @@ struct MapSceneView: View {
                     PartyView(party: playSession.social.party) {
                         presentedMenuItem = nil
                     }
+                case .guild:
+                    GuildView(guild: playSession.guildState.guild) {
+                        presentedMenuItem = nil
+                    }
                 case .friends:
                     FriendsView(friendList: playSession.social.friendList) {
                         presentedMenuItem = nil
@@ -156,6 +160,9 @@ struct MapSceneView: View {
             }
             if let invitation = playSession.social.invitation {
                 SocialInvitationView(invitation: invitation)
+            }
+            if let invitation = playSession.guildState.invitation {
+                GuildInvitationView(invitation: invitation)
             }
         }
         .onChange(of: runtime.scene.state.isPlayerDead) { _, newValue in
