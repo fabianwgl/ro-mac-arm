@@ -15,6 +15,8 @@ public enum GameAction: Hashable, Sendable, Identifiable {
     case toggleEquipment
     case toggleSkills
     case toggleStatus
+    case togglePet
+    case toggleHomunculus
     case toggleWorldMap
     case toggleOptions
     case focusChat
@@ -34,6 +36,10 @@ public enum GameAction: Hashable, Sendable, Identifiable {
             "toggleSkills"
         case .toggleStatus:
             "toggleStatus"
+        case .togglePet:
+            "togglePet"
+        case .toggleHomunculus:
+            "toggleHomunculus"
         case .toggleWorldMap:
             "toggleWorldMap"
         case .toggleOptions:
@@ -61,6 +67,10 @@ public enum GameAction: Hashable, Sendable, Identifiable {
             "Skills"
         case .toggleStatus:
             "Status"
+        case .togglePet:
+            "Pet"
+        case .toggleHomunculus:
+            "Homunculus"
         case .toggleWorldMap:
             "World Map"
         case .toggleOptions:
@@ -87,6 +97,8 @@ public enum GameAction: Hashable, Sendable, Identifiable {
             .toggleEquipment,
             .toggleSkills,
             .toggleStatus,
+            .togglePet,
+            .toggleHomunculus,
             .toggleWorldMap,
             .toggleOptions,
             .focusChat,
@@ -118,6 +130,10 @@ public enum GameAction: Hashable, Sendable, Identifiable {
             self = .toggleSkills
         case "toggleStatus":
             self = .toggleStatus
+        case "togglePet":
+            self = .togglePet
+        case "toggleHomunculus":
+            self = .toggleHomunculus
         case "toggleWorldMap":
             self = .toggleWorldMap
         case "toggleOptions":
@@ -408,6 +424,8 @@ public final class KeyBindings {
         chords[.toggleEquipment] = KeyChord(key: .character("q"), modifiers: .option)
         chords[.toggleSkills] = KeyChord(key: .character("s"), modifiers: .option)
         chords[.toggleStatus] = KeyChord(key: .character("a"), modifiers: .option)
+        chords[.togglePet] = KeyChord(key: .character("j"), modifiers: .option)
+        chords[.toggleHomunculus] = KeyChord(key: .character("r"), modifiers: .option)
 
         // The parity document lists Alt+M as the shortcut settings shortcut. Basic info
         // (Alt+V) is always on screen, so it has no separate action here. The world map

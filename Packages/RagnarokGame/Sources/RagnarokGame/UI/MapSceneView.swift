@@ -68,7 +68,7 @@ struct MapSceneView: View {
             VStack(alignment: .leading, spacing: 0) {
                 BasicInfoView(character: playSession.character, status: playSession.playerStatus)
 
-                MenuView { item in
+                MenuView(hasUnreadMail: playSession.mail.mailbox.hasUnread) { item in
                     if item == presentedMenuItem {
                         presentedMenuItem = nil
                     } else if item == .attendance {
@@ -122,6 +122,18 @@ struct MapSceneView: View {
                     PartyView(party: playSession.social.party) {
                         presentedMenuItem = nil
                     }
+                case .guild:
+                    GuildView(guild: playSession.guildState.guild) {
+                        presentedMenuItem = nil
+                    }
+                case .pet:
+                    PetView(pet: playSession.companions.pet) {
+                        presentedMenuItem = nil
+                    }
+                case .homunculus:
+                    HomunculusView(homunculus: playSession.companions.homunculus) {
+                        presentedMenuItem = nil
+                    }
                 case .friends:
                     FriendsView(friendList: playSession.social.friendList) {
                         presentedMenuItem = nil
@@ -134,6 +146,14 @@ struct MapSceneView: View {
                     AttendanceView(attendance: playSession.attendance) {
                         presentedMenuItem = nil
                     }
+                case .achievement:
+                    AchievementsView(achievements: playSession.achievements) {
+                        presentedMenuItem = nil
+                    }
+                case .mail:
+                    MailboxView(mailbox: playSession.mail.mailbox) {
+                        presentedMenuItem = nil
+                    }
                 case .worldMap:
                     WorldMapView(currentMapName: runtime.scene.mapName) {
                         presentedMenuItem = nil
@@ -143,6 +163,11 @@ struct MapSceneView: View {
                         presentedMenuItem = nil
                     }
                 }
+            }
+        }
+        .overlay(alignment: .center) {
+            if let eggIndices = playSession.companions.petEggIndices {
+                PetEggListView(inventory: playSession.inventory, eggIndices: eggIndices)
             }
         }
         .overlay(alignment: .center) {
@@ -164,6 +189,13 @@ struct MapSceneView: View {
             if let invitation = playSession.social.invitation {
                 SocialInvitationView(invitation: invitation)
             }
+            if let invitation = playSession.guildState.invitation {
+                GuildInvitationView(invitation: invitation)
+            }
+            if playSession.mail.draft != nil {
+                MailComposeView()
+                    .offset(x: 24, y: 24)
+            }
         }
         .onChange(of: runtime.scene.state.isPlayerDead) { _, newValue in
             if newValue {
@@ -181,6 +213,14 @@ struct MapSceneView: View {
         }
         .onChange(of: playSession.storage != nil) { _, isStorageOpen in
             if isStorageOpen {
+                presentedMenuItem = nil
+            }
+        }
+        .onChange(of: playSession.mail.openRequestCount) {
+            presentedMenuItem = .mail
+        }
+        .onChange(of: playSession.mail.closeRequestCount) {
+            if presentedMenuItem == .mail {
                 presentedMenuItem = nil
             }
         }
@@ -281,6 +321,10 @@ struct MapSceneView: View {
             toggle(.skill)
         case .toggleStatus:
             toggle(.status)
+        case .togglePet:
+            toggle(.pet)
+        case .toggleHomunculus:
+            toggle(.homunculus)
         case .toggleWorldMap:
             toggle(.worldMap)
         case .toggleOptions:
@@ -307,7 +351,11 @@ struct MapSceneView: View {
     }
 
     private func closeTopWindow() {
-        if playSession.storage != nil {
+        if playSession.mail.draft != nil {
+            playSession.closeMailCompose()
+        } else if playSession.companions.petEggIndices != nil {
+            playSession.cancelPetEggSelection()
+        } else if playSession.storage != nil {
             playSession.closeStorage()
         } else if playSession.dealSelectionNPCID != nil {
             playSession.cancelDealSelection()

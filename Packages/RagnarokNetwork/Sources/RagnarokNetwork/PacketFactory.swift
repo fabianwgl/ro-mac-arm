@@ -570,4 +570,291 @@ public enum PacketFactory {
     public static func CZ_REQ_CHECK_ATTENDANCE() -> PACKET_CZ_REQ_CHECK_ATTENDANCE {
         PACKET_CZ_REQ_CHECK_ATTENDANCE()
     }
+
+    /// | `PACKET_CZ_REQ_MAKE_GUILD` | `clif_parse_CreateGuild` |
+    public static func CZ_REQ_MAKE_GUILD(characterID: UInt32, name: String) -> PACKET_CZ_REQ_MAKE_GUILD {
+        var packet = PACKET_CZ_REQ_MAKE_GUILD()
+        packet.packetType = HEADER_CZ_REQ_MAKE_GUILD
+        packet.GID = characterID
+        packet.guildName = name
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_GUILD_MENUINTERFACE` | `clif_parse_GuildCheckMaster` |
+    public static func CZ_REQ_GUILD_MENUINTERFACE() -> PACKET_CZ_REQ_GUILD_MENUINTERFACE {
+        var packet = PACKET_CZ_REQ_GUILD_MENUINTERFACE()
+        packet.packetType = HEADER_CZ_REQ_GUILD_MENUINTERFACE
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_GUILD_MENU` | `clif_parse_GuildRequestInfo` |
+    public static func CZ_REQ_GUILD_MENU(type: Int32) -> PACKET_CZ_REQ_GUILD_MENU {
+        var packet = PACKET_CZ_REQ_GUILD_MENU()
+        packet.packetType = HEADER_CZ_REQ_GUILD_MENU
+        packet.type = type
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_JOIN_GUILD2` | `clif_parse_GuildInvite2` |
+    public static func CZ_REQ_JOIN_GUILD2(name: String) -> PACKET_CZ_REQ_JOIN_GUILD2 {
+        var packet = PACKET_CZ_REQ_JOIN_GUILD2()
+        packet.packetType = HEADER_CZ_REQ_JOIN_GUILD2
+        packet.name = name
+        return packet
+    }
+
+    /// | `PACKET_CZ_JOIN_GUILD` | `clif_parse_GuildReplyInvite` |
+    public static func CZ_JOIN_GUILD(guildID: UInt32, accept: Bool) -> PACKET_CZ_JOIN_GUILD {
+        var packet = PACKET_CZ_JOIN_GUILD()
+        packet.packetType = HEADER_CZ_JOIN_GUILD
+        packet.guild_id = guildID
+        packet.answer = accept ? 1 : 0
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_LEAVE_GUILD` | `clif_parse_GuildLeave` |
+    public static func CZ_REQ_LEAVE_GUILD(
+        guildID: UInt32,
+        accountID: UInt32,
+        characterID: UInt32,
+        reason: String
+    ) -> PACKET_CZ_REQ_LEAVE_GUILD {
+        var packet = PACKET_CZ_REQ_LEAVE_GUILD()
+        packet.packetType = HEADER_CZ_REQ_LEAVE_GUILD
+        packet.guild_id = guildID
+        packet.AID = accountID
+        packet.CID = characterID
+        packet.message = reason
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_BAN_GUILD` | `clif_parse_GuildExpulsion` |
+    public static func CZ_REQ_BAN_GUILD(
+        guildID: UInt32,
+        accountID: UInt32,
+        characterID: UInt32,
+        reason: String
+    ) -> PACKET_CZ_REQ_BAN_GUILD {
+        var packet = PACKET_CZ_REQ_BAN_GUILD()
+        packet.packetType = HEADER_CZ_REQ_BAN_GUILD
+        packet.guild_id = guildID
+        packet.AID = accountID
+        packet.CID = characterID
+        packet.message = reason
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_DISORGANIZE_GUILD` | `clif_parse_GuildBreak` |
+    public static func CZ_REQ_DISORGANIZE_GUILD(key: String) -> PACKET_CZ_REQ_DISORGANIZE_GUILD {
+        var packet = PACKET_CZ_REQ_DISORGANIZE_GUILD()
+        packet.packetType = HEADER_CZ_REQ_DISORGANIZE_GUILD
+        packet.key = key
+        return packet
+    }
+
+    /// | `PACKET_CZ_GUILD_NOTICE` | `clif_parse_GuildChangeNotice` |
+    public static func CZ_GUILD_NOTICE(guildID: UInt32, subject: String, notice: String) -> PACKET_CZ_GUILD_NOTICE {
+        var packet = PACKET_CZ_GUILD_NOTICE()
+        packet.packetType = HEADER_CZ_GUILD_NOTICE
+        packet.guildID = guildID
+        packet.subject = subject
+        packet.notice = notice
+        return packet
+    }
+
+    /// | `PACKET_CZ_COMMAND_PET` | `clif_parse_PetMenu` |
+    public static func CZ_COMMAND_PET(command: PACKET_CZ_COMMAND_PET.Command) -> PACKET_CZ_COMMAND_PET {
+        var packet = PACKET_CZ_COMMAND_PET()
+        packet.command = command.rawValue
+        return packet
+    }
+
+    /// | `PACKET_CZ_RENAME_PET` | `clif_parse_ChangePetName` |
+    public static func CZ_RENAME_PET(name: String) -> PACKET_CZ_RENAME_PET {
+        var packet = PACKET_CZ_RENAME_PET()
+        packet.name = name
+        return packet
+    }
+
+    /// | `PACKET_CZ_SELECT_PETEGG` | `clif_parse_SelectEgg` |
+    public static func CZ_SELECT_PETEGG(index: UInt16) -> PACKET_CZ_SELECT_PETEGG {
+        var packet = PACKET_CZ_SELECT_PETEGG()
+        packet.index = index
+        return packet
+    }
+
+    /// | `PACKET_CZ_COMMAND_MER` | `clif_parse_HomMenu` |
+    public static func CZ_COMMAND_MER(command: PACKET_CZ_COMMAND_MER.Command) -> PACKET_CZ_COMMAND_MER {
+        var packet = PACKET_CZ_COMMAND_MER()
+        packet.command = command.rawValue
+        return packet
+    }
+
+    /// | `PACKET_CZ_RENAME_MER` | `clif_parse_ChangeHomunculusName` |
+    public static func CZ_RENAME_MER(name: String) -> PACKET_CZ_RENAME_MER {
+        var packet = PACKET_CZ_RENAME_MER()
+        packet.name = name
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQUEST_MOVETOOWNER` | `clif_parse_HomMoveToMaster` |
+    public static func CZ_REQUEST_MOVETOOWNER(objectID: UInt32) -> PACKET_CZ_REQUEST_MOVETOOWNER {
+        var packet = PACKET_CZ_REQUEST_MOVETOOWNER()
+        packet.GID = objectID
+        return packet
+    }
+
+    /// | `PACKET_CZ_CONFIG` | `clif_parse_configuration` |
+    public static func CZ_CONFIG(type: PACKET_CZ_CONFIG.ConfigType, enabled: Bool) -> PACKET_CZ_CONFIG {
+        var packet = PACKET_CZ_CONFIG()
+        packet.type = type.rawValue
+        packet.flag = enabled ? 1 : 0
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_ACH_REWARD` | `clif_parse_AchievementCheckReward` |
+    public static func CZ_REQ_ACH_REWARD(achievementID: UInt32) -> PACKET_CZ_REQ_ACH_REWARD {
+        var packet = PACKET_CZ_REQ_ACH_REWARD()
+        packet.packetType = HEADER_CZ_REQ_ACH_REWARD
+        packet.achievementID = achievementID
+        return packet
+    }
+
+    // MARK: RODEX
+    //
+    // The opcodes are the ones rAthena parses at PACKETVER 20211103, see RodexHeaders.swift.
+    // `openType` is the tab of the mail: 0 normal, 1 account, 2 returned.
+
+    /// | `PACKET_CZ_REQ_OPEN_MAIL` | `clif_parse_Mail_refreshinbox` |
+    public static func CZ_REQ_OPEN_MAIL() -> PACKET_CZ_REQ_OPEN_MAIL {
+        var packet = PACKET_CZ_REQ_OPEN_MAIL()
+        packet.packetType = HEADER_CZ_OPEN_MAILBOX2
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_REFRESH_MAIL_LIST` | `clif_parse_Mail_refreshinbox` |
+    public static func CZ_REQ_REFRESH_MAIL_LIST() -> PACKET_CZ_REQ_REFRESH_MAIL_LIST {
+        var packet = PACKET_CZ_REQ_REFRESH_MAIL_LIST()
+        packet.packetType = HEADER_CZ_REQ_REFRESH_MAIL_LIST2
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_NEXT_MAIL_LIST` | `clif_parse_Mail_refreshinbox` |
+    public static func CZ_REQ_NEXT_MAIL_LIST(openType: UInt8, lastMailID: Int64) -> PACKET_CZ_REQ_NEXT_MAIL_LIST {
+        var packet = PACKET_CZ_REQ_NEXT_MAIL_LIST()
+        packet.packetType = HEADER_CZ_REQ_NEXT_MAIL_LIST
+        packet.opentype = Int8(bitPattern: openType)
+        packet.Lower_MailID = lastMailID
+        return packet
+    }
+
+    /// | `PACKET_CZ_CLOSE_MAILBOX` | `clif_parse_dull` |
+    public static func CZ_CLOSE_MAILBOX() -> PACKET_CZ_CLOSE_MAILBOX {
+        PACKET_CZ_CLOSE_MAILBOX()
+    }
+
+    /// | `PACKET_CZ_REQ_READ_MAIL` | `clif_parse_Mail_read` |
+    public static func CZ_REQ_READ_MAIL(openType: UInt8, mailID: Int64) -> PACKET_CZ_REQ_READ_MAIL {
+        var packet = PACKET_CZ_REQ_READ_MAIL()
+        packet.packetType = HEADER_CZ_REQ_READ_MAIL
+        packet.opentype = Int8(bitPattern: openType)
+        packet.MailID = mailID
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_ZENY_FROM_MAIL` | `clif_parse_Mail_getattach` |
+    public static func CZ_REQ_ZENY_FROM_MAIL(openType: UInt8, mailID: Int64) -> PACKET_CZ_REQ_ZENY_FROM_MAIL {
+        var packet = PACKET_CZ_REQ_ZENY_FROM_MAIL()
+        packet.packetType = HEADER_CZ_REQ_ZENY_FROM_MAIL
+        packet.MailID = mailID
+        packet.opentype = Int8(bitPattern: openType)
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_ITEM_FROM_MAIL` | `clif_parse_Mail_getattach` |
+    public static func CZ_REQ_ITEM_FROM_MAIL(openType: UInt8, mailID: Int64) -> PACKET_CZ_REQ_ITEM_FROM_MAIL {
+        var packet = PACKET_CZ_REQ_ITEM_FROM_MAIL()
+        packet.packetType = HEADER_CZ_REQ_ITEM_FROM_MAIL
+        packet.MailID = mailID
+        packet.opentype = Int8(bitPattern: openType)
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_DELETE_MAIL` | `clif_parse_Mail_delete` |
+    public static func CZ_REQ_DELETE_MAIL(openType: UInt8, mailID: Int64) -> PACKET_CZ_REQ_DELETE_MAIL {
+        var packet = PACKET_CZ_REQ_DELETE_MAIL()
+        packet.packetType = HEADER_CZ_REQ_DELETE_MAIL
+        packet.opentype = Int8(bitPattern: openType)
+        packet.MailID = mailID
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_OPEN_WRITE_MAIL` | `clif_parse_Mail_beginwrite` |
+    public static func CZ_REQ_OPEN_WRITE_MAIL(receiverName: String) -> PACKET_CZ_REQ_OPEN_WRITE_MAIL {
+        var packet = PACKET_CZ_REQ_OPEN_WRITE_MAIL()
+        packet.packetType = HEADER_CZ_REQ_OPEN_WRITE_MAIL
+        packet.receiveName = receiverName
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_CANCEL_WRITE_MAIL` | `clif_parse_Mail_cancelwrite` |
+    public static func CZ_REQ_CANCEL_WRITE_MAIL() -> PACKET_CZ_REQ_CANCEL_WRITE_MAIL {
+        PACKET_CZ_REQ_CANCEL_WRITE_MAIL()
+    }
+
+    /// | `PACKET_CZ_CHECKNAME2` | `clif_parse_Mail_Receiver_Check` |
+    public static func CZ_CHECKNAME2(name: String, isOwnCharacter: Bool = false) -> PACKET_CZ_CHECKNAME2 {
+        var packet = PACKET_CZ_CHECKNAME2()
+        packet.packetType = HEADER_CZ_CHECKNAME2
+        packet.Name = name
+        packet.own_char = isOwnCharacter ? 1 : 0
+        return packet
+    }
+
+    /// | `PACKET_CZ_ADD_ITEM_TO_MAIL` | `clif_parse_Mail_setattach` |
+    public static func CZ_ADD_ITEM_TO_MAIL(index: Int, count: Int) -> PACKET_CZ_ADD_ITEM_TO_MAIL {
+        var packet = PACKET_CZ_ADD_ITEM_TO_MAIL()
+        packet.packetType = HEADER_CZ_REQ_ADD_ITEM_TO_MAIL
+        packet.index = Int16(truncatingIfNeeded: index)
+        packet.count = Int16(truncatingIfNeeded: count)
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_REMOVE_ITEM_MAIL` | `clif_parse_Mail_winopen` |
+    public static func CZ_REQ_REMOVE_ITEM_MAIL(index: Int, count: Int) -> PACKET_CZ_REQ_REMOVE_ITEM_MAIL {
+        var packet = PACKET_CZ_REQ_REMOVE_ITEM_MAIL()
+        packet.packetType = HEADER_CZ_REQ_REMOVE_ITEM_MAIL
+        packet.index = Int16(truncatingIfNeeded: index)
+        packet.cnt = UInt16(truncatingIfNeeded: count)
+        return packet
+    }
+
+    /// | `PACKET_CZ_SEND_MAIL` | `clif_parse_Mail_send` |
+    ///
+    /// Title and text go out with a terminating NUL, and both lengths count it, as rAthena's client does.
+    /// Items are not part of this packet: they were attached one by one with `CZ_ADD_ITEM_TO_MAIL`.
+    public static func CZ_SEND_MAIL(
+        receiverName: String,
+        senderName: String,
+        receiverCharacterID: UInt32,
+        zeny: Int64,
+        title: String,
+        body: String
+    ) -> PACKET_CZ_SEND_MAIL {
+        let titleLength = title.utf8.count + 1
+        let bodyLength = body.utf8.count + 1
+        let headerLength = 2 + 2 + 24 + 24 + 8 + 2 + 2 + 4
+
+        var packet = PACKET_CZ_SEND_MAIL()
+        packet.packetType = HEADER_CZ_REQ_WRITE_MAIL2
+        packet.packetLength = Int16(headerLength + titleLength + bodyLength)
+        packet.receiveName = receiverName
+        packet.senderName = senderName
+        packet.zeny = zeny
+        packet.Titlelength = Int16(titleLength)
+        packet.TextcontentsLength = Int16(bodyLength)
+        packet.receiver_char_id = Int32(bitPattern: receiverCharacterID)
+        packet.string = title + "\u{0}" + body + "\u{0}"
+        return packet
+    }
 }

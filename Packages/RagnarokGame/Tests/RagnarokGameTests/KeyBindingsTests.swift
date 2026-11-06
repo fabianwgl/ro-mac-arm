@@ -36,6 +36,8 @@ struct KeyBindingsTests {
         #expect(keyBindings.chord(for: .toggleEquipment) == KeyChord(key: .character("q"), modifiers: .option))
         #expect(keyBindings.chord(for: .toggleSkills) == KeyChord(key: .character("s"), modifiers: .option))
         #expect(keyBindings.chord(for: .toggleStatus) == KeyChord(key: .character("a"), modifiers: .option))
+        #expect(keyBindings.chord(for: .togglePet) == KeyChord(key: .character("j"), modifiers: .option))
+        #expect(keyBindings.chord(for: .toggleHomunculus) == KeyChord(key: .character("r"), modifiers: .option))
         #expect(keyBindings.chord(for: .toggleOptions) == KeyChord(key: .character("m"), modifiers: .option))
         #expect(keyBindings.chord(for: .focusChat) == KeyChord(key: .named(.returnKey)))
         #expect(keyBindings.chord(for: .closeTopWindow) == KeyChord(key: .named(.escape)))
