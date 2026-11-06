@@ -45,6 +45,7 @@ final class PlaySession {
     var questLog: QuestLog
     var social = SocialState()
     var attendance = Attendance()
+    var companions = CompanionState()
     let messageCenter: MessageCenter
 
     var dialog: NPCDialog?
@@ -284,6 +285,9 @@ final class PlaySession {
             return
         }
         guard !handleAttendancePacket(packet) else { return }
+        guard !handleCompanionPacket(packet) else {
+            return
+        }
 
         switch packet {
         case let packet as PACKET_ZC_ACCEPT_ENTER:
@@ -518,6 +522,7 @@ final class PlaySession {
             let type = UnitClearType(rawValue: Int(packet.type)) ?? .outsight
             logger.info("Object \(objectID) vanished (type: \(packet.type))")
             mapScene?.onMapObjectVanished(objectID: objectID, type: type)
+            handleCompanionVanish(objectID: objectID)
         case let packet as PACKET_ZC_RESURRECTION:
             logger.info("Object \(packet.gid) resurrected")
             mapScene?.onMapObjectResurrected(objectID: packet.gid)
