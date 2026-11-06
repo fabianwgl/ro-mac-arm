@@ -24,6 +24,10 @@ per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
   online state (login and logout live), expel, leave, disband (master, empty
   guild), position names and permissions, notice (read, and edit as master),
   alliance and hostile guild lists (read only), expulsion list.
+- Pet window (status, feed, performance, return to egg, unequip accessory,
+  rename, auto feed) and the egg list a pet incubator opens; homunculus window
+  (status, feed, rename, delete, call, vaporize, resurrect, auto feed, skill
+  list). Menu buttons, Option-J and Option-R.
 - macOS keyboard controls with rebinding, sound and display preferences, saved
   password in the Keychain, crash marker and log export, launcher.
 
@@ -32,7 +36,7 @@ per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
 | Area | Server state | Client state |
 | --- | --- | --- |
 | Guild window: skills, emblem image, editing positions and member positions, alliance and hostility requests, castle info, member dots on the minimap | enabled | Info, Members, Positions and Notice tabs work (see Works); skills (`ZC_GUILD_SKILLINFO`), `ZC_GUILD_EMBLEM_IMG`, `CZ_REG_CHANGE_GUILD_POSITIONINFO`, `CZ_REQ_CHANGE_MEMBERPOS`, `CZ_REQ_ALLY_GUILD`/`CZ_ALLY_GUILD`/`CZ_REQ_HOSTILE_GUILD` and `ZC_GUILD_AGIT_INFO` are not used; an incoming alliance request only prints a chat line |
-| Pets, homunculus, mercenaries | enabled | no windows or commands |
+| Pets, homunculus, mercenaries | enabled | pet and homunculus windows and commands done (see Works); missing: taming (`ZC_START_CAPTURE`, `CZ_TRYCAPTURE_MONSTER`), pet evolution (`CZ_PET_EVOLUTION`), pet emotes and talk (`ZC_PET_ACT`), homunculus skill upgrade, attack and move orders, homunculus Lua AI; mercenary packets are not handled and there is no mercenary window |
 | RODEX mail | enabled | no window in the play UI |
 | Achievements | enabled | packets ignored, no window |
 | Attendance | feature on, but `db/re/attendance.yml` has no running period (the 2018 example is commented out), so the server never opens the window or accepts a check-in until a period is added to `db/import/attendance.yml` | window, menu entry and check-in implemented; day numbers only (the server sends no period dates or reward table, reward arrives by mail); untested against the live server for lack of a period |

@@ -15,6 +15,8 @@ enum MenuItem {
     case party
     case guild
     case friends
+    case pet
+    case homunculus
     case quest
     case attendance
     case worldMap
@@ -70,6 +72,26 @@ struct MenuView: View {
                             action(.friends)
                         } label: {
                             Image(systemName: "person.2.fill")
+                                .font(.game(size: 14))
+                                .foregroundStyle(Color.gameLabel)
+                        }
+                        .frame(width: 32, height: 34)
+                    }
+                    .frame(width: 32, height: 34)
+
+                    GridRow {
+                        Button {
+                            action(.pet)
+                        } label: {
+                            Image(systemName: "pawprint.fill")
+                                .font(.game(size: 14))
+                                .foregroundStyle(Color.gameLabel)
+                        }
+                        .frame(width: 32, height: 34)
+                        Button {
+                            action(.homunculus)
+                        } label: {
+                            Image(systemName: "flask.fill")
                                 .font(.game(size: 14))
                                 .foregroundStyle(Color.gameLabel)
                         }
