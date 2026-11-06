@@ -178,12 +178,19 @@ struct LoginView: View {
         )
     }
 
+    /// rAthena enforces `acc_name_min_length` and `password_min_length` (default 6) only when
+    /// an `_M`/`_F` suffix registers a new account (`mmo_auth_new`); existing accounts of any
+    /// length can log in.
+    private var isRegistering: Bool {
+        usernameWithoutSuffix != username
+    }
+
     private var isValidUsername: Bool {
-        usernameWithoutSuffix.count >= 6
+        isRegistering ? usernameWithoutSuffix.count >= 6 : !username.isEmpty
     }
 
     private var isValidPassword: Bool {
-        password.count >= 6
+        isRegistering ? password.count >= 6 : !password.isEmpty
     }
 }
 
