@@ -15,6 +15,7 @@ enum MenuItem {
     case party
     case friends
     case quest
+    case achievement
     case worldMap
     case options
 }
@@ -89,8 +90,8 @@ struct MenuView: View {
                         }
                         .disabled(true)
                         GameImageButton("menu_icon/bt_achievement.bmp") {
+                            action(.achievement)
                         }
-                        .disabled(true)
                     }
                     .frame(width: 32, height: 34)
 
