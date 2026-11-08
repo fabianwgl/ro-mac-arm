@@ -352,6 +352,7 @@ final class MapViewController: NSViewController, MTKViewDelegate {
     private let commandQueue: any MTLCommandQueue
     private let renderer: MapSceneRenderer
     private var mtkView: MTKView!
+    private var screenObserver: (any NSObjectProtocol)?
 
     private var baseAzimuth: Float = 0
     private var baseElevation: Float = 0
@@ -389,9 +390,7 @@ final class MapViewController: NSViewController, MTKViewDelegate {
         mtkView.colorPixelFormat = renderer.configuration.colorPixelFormat
         mtkView.depthStencilPixelFormat = renderer.configuration.depthStencilPixelFormat
         mtkView.clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)
-        if let fps = PerfProbe.preferredFramesPerSecondOverride {
-            mtkView.preferredFramesPerSecond = fps
-        }
+        matchDisplayRefreshRate()
         view.addSubview(mtkView)
 
         let panGestureRecognizer = NSPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
@@ -399,6 +398,44 @@ final class MapViewController: NSViewController, MTKViewDelegate {
 
         let magnificationGestureRecognizer = NSMagnificationGestureRecognizer(target: self, action: #selector(handleMagnification(_:)))
         mtkView.addGestureRecognizer(magnificationGestureRecognizer)
+    }
+
+    override func viewDidAppear() {
+        super.viewDidAppear()
+
+        matchDisplayRefreshRate()
+
+        if screenObserver == nil, let window = view.window {
+            screenObserver = NotificationCenter.default.addObserver(
+                forName: NSWindow.didChangeScreenNotification,
+                object: window,
+                queue: .main
+            ) { [weak self] _ in
+                MainActor.assumeIsolated {
+                    self?.matchDisplayRefreshRate()
+                }
+            }
+        }
+    }
+
+    override func viewDidDisappear() {
+        super.viewDidDisappear()
+
+        if let screenObserver {
+            NotificationCenter.default.removeObserver(screenObserver)
+        }
+        screenObserver = nil
+    }
+
+    /// MTKView draws at 60 fps unless told otherwise, which on a 120 or 144 Hz display shows
+    /// every second or third refresh. Follow the screen the window is on instead, again when
+    /// the window moves to another screen. The perf probe override wins.
+    private func matchDisplayRefreshRate() {
+        if let fps = PerfProbe.preferredFramesPerSecondOverride {
+            mtkView.preferredFramesPerSecond = fps
+        } else if let screen = view.window?.screen {
+            mtkView.preferredFramesPerSecond = screen.maximumFramesPerSecond
+        }
     }
 
     func update(runtime: MapSceneRuntime) {

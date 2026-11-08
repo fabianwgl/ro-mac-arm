@@ -12,7 +12,7 @@ rAthena in the `ro-backend` Docker stack, full 3.1 GB kRO `data.grf`, game windo
 
 | Target | Result on this Mac |
 | --- | --- |
-| P5-04 120 fps | **Capable, not met as shipped.** With 144 requested the client holds 143.9 fps average (6.95 ms, p95 7.1 to 7.3 ms) in Prontera and Geffen at 2560x1440. With the shipped default it runs at 48 fps (see finding 1). |
+| P5-04 120 fps | **Pass since the refresh rate fix.** The map view now follows the screen's `maximumFramesPerSecond`: 143.9 fps average, p95 7.08 ms in Prontera at 2560x1440 on the 144 Hz display with no override (run `native-refresh`). Before the fix it ran at 48 fps (see finding 1). |
 | P5-05 RSS under 4 GB | **Pass.** Peak RSS 418 to 557 MB, peak physical footprint 449 to 594 MB. |
 | P5-06 cold start under 10 s | **Pass.** Process start to first map frame 1.1 to 2.8 s, including login and character select. |
 
@@ -38,6 +38,7 @@ frame rate of the 95th percentile frame time, which is the worst 5 percent of fr
 | geffen | warm | 1.2 | 0.4 | 48.0 / 48.0 | 20.84 / 20.85 | 0.25 / 1.25 | 423 | 452 | host load 11.5 |
 | geffen | fps120 | 1.3 | 0.5 | 72.0 / 68.8 | 13.89 / 14.53 | 1.11 / 2.15 | 418 | 449 | 120 requested, 72 delivered |
 | geffen | fps144 | 1.1 | 0.4 | 143.9 / 136.6 | 6.95 / 7.32 | 1.06 / 2.51 | 418 | 450 | display-limited; GPU p95 3.8 ms |
+| prontera | native-refresh | 2.5 | | 143.9 / | 6.95 / 7.08 | | 552 | 586 | after the fix, no `--fps`; follows the 144 Hz display |
 
 Start-up breakdown of the Prontera cold run (seconds since process start): launcher shown 1.49, login sent 1.72,
 character select shown 1.84, map loading 1.89, map loaded 2.76, first frame 2.82. The warm run is the same
@@ -53,9 +54,10 @@ and `docs/port/perf/2026-11-08-geffen.json`.
    `preferredFramesPerSecond` at 60. On the 144 Hz display the display link only fires at integer divisors of the
    refresh rate, so 60 becomes 48 fps (144 / 3). A request of 120 gives 72 (144 / 2); a request of 144 gives 144.
    On a 120 Hz ProMotion panel the default would give 60 fps. To meet P5-04 the map view has to set
-   `preferredFramesPerSecond` to the screen's `maximumFramesPerSecond` (capped at 120 if wanted). This is a one-line
-   product change that is not part of this task; the numbers above show the renderer has the headroom: CPU draw
-   under 2.1 ms, GPU 1.2 to 2.6 ms on average and 4.0 ms at worst p95, against an 8.3 ms budget.
+   `preferredFramesPerSecond` to the screen's `maximumFramesPerSecond`. Fixed on 2026-11-08: the macOS
+   `MapViewController` sets it when the view appears and again on `NSWindow.didChangeScreenNotification`; the
+   `native-refresh` run holds 143.9 fps. The renderer has the headroom: CPU draw under 2.1 ms, GPU 1.2 to 2.6 ms on
+   average and 4.0 ms at worst p95, against an 8.3 ms budget.
 2. **Memory is far under the target.** The loader reads `data.grf` instead of mapping it (no mapped reads in the code), so RSS stays at
    418 to 557 MB. Physical footprint (`footprint`, includes compressed and GPU-shared memory) peaks at 594 MB.
    This is a short single-map session; map changes and long sessions were not measured here.

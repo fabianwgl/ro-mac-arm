@@ -1516,6 +1516,261 @@
       "requestedFps": "144",
       "run": "effects-fps144",
       "wallSeconds": 37
+    },
+    {
+      "app": {
+        "build": "release",
+        "cpuDrawMs": {
+          "avg": 0.94,
+          "max": 2.03,
+          "min": 0.5,
+          "p50": 1.01,
+          "p95": 1.33,
+          "p99": 1.45
+        },
+        "displayMaxHz": 144,
+        "drawable": {
+          "height": 1440,
+          "width": 2560
+        },
+        "endedAt": "2026-11-08T19:08:58Z",
+        "fps": {
+          "atP95FrameTime": 141.3,
+          "atP99FrameTime": 139.31,
+          "average": 143.89
+        },
+        "frameMs": {
+          "avg": 6.95,
+          "max": 16.75,
+          "min": 6.19,
+          "p50": 6.94,
+          "p95": 7.08,
+          "p99": 7.18
+        },
+        "framesOverPercent": {
+          "16.7ms": 0.02,
+          "33.3ms": 0,
+          "8.3ms": 0.05
+        },
+        "gpuMs": {
+          "avg": 2.43,
+          "max": 4.17,
+          "min": 0.6,
+          "p50": 2.57,
+          "p95": 3.53,
+          "p99": 3.94
+        },
+        "gpuSamples": 4316,
+        "gpuUnavailable": 0,
+        "label": "prontera native-refresh",
+        "machine": {
+          "cpu": "Apple M4",
+          "os": "Version 27.0.1 (Build 26A434)",
+          "physicalMemoryMB": 16384
+        },
+        "memory": {
+          "atFirstMapFrame": {
+            "peakPhysFootprintMB": 558.6,
+            "physFootprintMB": 517.4,
+            "residentMB": 544.5
+          },
+          "peakPhysFootprintMB": 602.8,
+          "physFootprintMB": 585.5,
+          "residentMB": 548
+        },
+        "milestonesSinceProcessStart": {
+          "autologinStarted": 1.612,
+          "characterSelectShown": 1.825,
+          "commandsDone": 2.5,
+          "launcherShown": 1.529,
+          "loginSent": 1.715,
+          "mapFirstFrame": 2.501,
+          "mapLoaded": 2.46,
+          "mapLoading": 1.87,
+          "playStage": 1.848
+        },
+        "preferredFramesPerSecond": 144,
+        "processStartedAt": "2026-11-08T19:08:21Z",
+        "samples": 4316,
+        "schema": 1,
+        "warmupSeconds": 5,
+        "windowSeconds": 30
+      },
+      "build": "Release",
+      "character": "PerfPront",
+      "commands": "",
+      "derived": {
+        "autologinToMapFirstFrameS": 0.89,
+        "characterSelectToMapLoadedS": 0.64,
+        "loginToCharacterSelectS": 0.11,
+        "mapLoadedToFirstFrameS": 0.04,
+        "processStartToLauncherShownS": 1.529,
+        "processStartToMapFirstFrameS": 2.501
+      },
+      "external": {
+        "footprintPeakMB": 585.3,
+        "rssLastMB": 547.7,
+        "rssPeakMB": 552.1,
+        "rssSeriesMB": [
+          [
+            0,
+            0.0
+          ],
+          [
+            1,
+            63.4
+          ],
+          [
+            2,
+            406.0
+          ],
+          [
+            3,
+            552.0
+          ],
+          [
+            4,
+            552.1
+          ],
+          [
+            5,
+            552.1
+          ],
+          [
+            6,
+            552.1
+          ],
+          [
+            7,
+            552.0
+          ],
+          [
+            8,
+            551.9
+          ],
+          [
+            9,
+            551.8
+          ],
+          [
+            10,
+            547.5
+          ],
+          [
+            11,
+            547.5
+          ],
+          [
+            12,
+            547.5
+          ],
+          [
+            13,
+            547.6
+          ],
+          [
+            14,
+            547.6
+          ],
+          [
+            15,
+            547.6
+          ],
+          [
+            16,
+            547.6
+          ],
+          [
+            17,
+            547.6
+          ],
+          [
+            18,
+            547.6
+          ],
+          [
+            19,
+            547.6
+          ],
+          [
+            20,
+            547.6
+          ],
+          [
+            21,
+            547.6
+          ],
+          [
+            22,
+            547.6
+          ],
+          [
+            23,
+            547.6
+          ],
+          [
+            24,
+            547.6
+          ],
+          [
+            25,
+            547.6
+          ],
+          [
+            26,
+            547.6
+          ],
+          [
+            27,
+            547.6
+          ],
+          [
+            28,
+            547.6
+          ],
+          [
+            29,
+            547.6
+          ],
+          [
+            30,
+            547.6
+          ],
+          [
+            32,
+            547.7
+          ],
+          [
+            33,
+            547.7
+          ],
+          [
+            34,
+            547.7
+          ],
+          [
+            35,
+            547.7
+          ],
+          [
+            36,
+            547.7
+          ],
+          [
+            37,
+            547.7
+          ]
+        ],
+        "samples": 37
+      },
+      "fullscreen": true,
+      "gitRev": "7c186c9c",
+      "hostLoadAverage1mAtLaunch": 9.15,
+      "loop": "",
+      "map": "prontera",
+      "requestedFps": "default",
+      "run": "native-refresh",
+      "wallSeconds": 38
     }
   ]
 }
