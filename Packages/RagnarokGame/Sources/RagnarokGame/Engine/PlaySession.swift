@@ -414,6 +414,11 @@ final class PlaySession {
                 let position = SIMD2(Int(packet.xPos), Int(packet.yPos))
                 mapScene?.onGroundSkillCast(skillID: skillID, sourceObjectID: packet.AID, position: position)
             }
+        case let packet as packet_skill_entry:
+            let position = SIMD2(Int(packet.xPos), Int(packet.yPos))
+            mapScene?.onSkillUnitSpawned(unitID: packet.AID, unitTypeID: Int(packet.job), position: position)
+        case let packet as PACKET_ZC_SKILL_DISAPPEAR:
+            mapScene?.onSkillUnitVanished(unitID: packet.GID)
         case let packet as PACKET_ZC_SHORTCUT_KEY_LIST:
             shortcutList.update(from: packet)
         case let packet as PACKET_ZC_PAR_CHANGE:

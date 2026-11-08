@@ -24,6 +24,10 @@ final class MapSceneEffect: Identifiable {
     /// The object this effect belongs to. The effect ends when that object leaves the map.
     let ownerObjectID: GameObjectID?
 
+    /// The skill unit (Fire Wall cell, Pneuma cell) this effect draws. The effect ends when
+    /// the server removes that unit.
+    let skillUnitID: GameObjectID?
+
     let delay: TimeInterval
 
     let duration: TimeInterval?
@@ -35,6 +39,7 @@ final class MapSceneEffect: Identifiable {
         sourceWorldPosition: SIMD3<Float>? = nil,
         targetObjectID: GameObjectID?,
         ownerObjectID: GameObjectID?,
+        skillUnitID: GameObjectID? = nil,
         delay: TimeInterval = 0,
         duration: TimeInterval? = nil
     ) {
@@ -45,6 +50,7 @@ final class MapSceneEffect: Identifiable {
         self.sourceWorldPosition = sourceWorldPosition
         self.targetObjectID = targetObjectID
         self.ownerObjectID = ownerObjectID
+        self.skillUnitID = skillUnitID
         self.delay = delay
         self.duration = duration
     }
