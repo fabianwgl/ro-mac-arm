@@ -31,6 +31,9 @@ final class VendingState {
     /// The title that went out with the request to open the shop, which the server's answer does not repeat.
     @ObservationIgnored var pendingShopTitle = ""
 
+    /// The buying stores, which are the shops turned around (PlaySession+BuyingStore.swift).
+    var buying = BuyingStoreState()
+
     /// The item id of cart slots that were just emptied, by cart index. rAthena removes the item from the cart
     /// (`ZC_DELETE_ITEM_FROM_CART`) before it reports the sale (`ZC_DELETEITEM_FROM_MCSTORE`), so the report
     /// finds its item here.
@@ -42,6 +45,13 @@ final class VendingState {
         shop = nil
         setup = nil
         ownShop = nil
+        buying.resetForMapChange()
+    }
+
+    /// A player left the view: his shop or buying store sign goes with him.
+    func removeSigns(of objectID: UInt32) {
+        signs.removeValue(forKey: objectID)
+        buying.signs.removeValue(forKey: objectID)
     }
 }
 
@@ -93,7 +103,7 @@ extension PlaySession {
         case let packet as PACKET_ZC_ACK_ADDITEM_TO_CART:
             messageCenter.addMessage(for: packet)
         default:
-            return false
+            return handleBuyingStorePacket(packet)
         }
         return true
     }

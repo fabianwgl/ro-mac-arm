@@ -123,4 +123,68 @@ struct VendingPacketFactoryTests {
     @Test func closeShopIsTwoBytes() throws {
         #expect(try bytes(PacketFactory.CZ_REQ_CLOSESTORE()) == [0x2e, 0x01])
     }
+
+    // MARK: Buying store
+
+    @Test func clickOnBuyerIsSixBytesAndCloseIsTwo() throws {
+        let click = try bytes(PacketFactory.CZ_REQ_CLICK_TO_BUYING_STORE(buyerID: 2_000_001))
+        #expect(click.count == 6)
+        #expect(uint16(click, at: 0) == 0x817)
+        #expect(uint32(click, at: 2) == 2_000_001)
+
+        #expect(try bytes(PacketFactory.CZ_REQ_CLOSE_BUYING_STORE()) == [0x15, 0x08])
+    }
+
+    @Test func saleCarriesBuyerStoreAndTriplesOfIndexItemAmount() throws {
+        let packet = PacketFactory.CZ_REQ_TRADE_BUYING_STORE(
+            buyerID: 2_000_001,
+            storeID: 7,
+            sales: [(index: 5, itemID: 506, amount: 3), (index: 9, itemID: 507, amount: 10)]
+        )
+        let data = try bytes(packet)
+
+        // 0819 <packet len>.W <account id>.L <store id>.L { <index>.W <name id>.L <amount>.W }*
+        #expect(data.count == 28)
+        #expect(uint16(data, at: 0) == 0x819)
+        #expect(uint16(data, at: 2) == 28)
+        #expect(uint32(data, at: 4) == 2_000_001)
+        #expect(uint32(data, at: 8) == 7)
+        #expect(uint16(data, at: 12) == 5)
+        #expect(uint32(data, at: 14) == 506)
+        #expect(uint16(data, at: 18) == 3)
+        #expect(uint16(data, at: 20) == 9)
+        #expect(uint32(data, at: 22) == 507)
+        #expect(uint16(data, at: 26) == 10)
+    }
+
+    @Test func openBuyingStoreCarriesLimitTitleAndItems() throws {
+        let packet = PacketFactory.CZ_REQ_OPEN_BUYING_STORE(
+            title: "Buying herbs",
+            zenyLimit: 5_000,
+            items: [(itemID: 506, amount: 20, price: 50)]
+        )
+        let data = try bytes(packet)
+
+        // 0811 <packet len>.W <limit zeny>.L <result>.B <store name>.80B { <name id>.L <amount>.W <price>.L }*
+        #expect(data.count == 99)
+        #expect(uint16(data, at: 0) == 0x811)
+        #expect(uint16(data, at: 2) == 99)
+        #expect(uint32(data, at: 4) == 5_000)
+        #expect(data[8] == 1)
+        #expect(Array(data[9..<21]) == [UInt8]("Buying herbs".utf8))
+        #expect(uint32(data, at: 89) == 506)
+        #expect(uint16(data, at: 93) == 20)
+        #expect(uint32(data, at: 95) == 50)
+    }
+
+    @Test func cancellingTheBuyingStoreSetUpHasResultZero() throws {
+        let data = try bytes(PacketFactory.CZ_REQ_OPEN_BUYING_STORE(title: "Ignored", zenyLimit: 100, items: []))
+
+        #expect(data.count == 89)
+        #expect(uint16(data, at: 0) == 0x811)
+        #expect(uint16(data, at: 2) == 89)
+        #expect(uint32(data, at: 4) == 0)
+        #expect(data[8] == 0)
+        #expect(data[9] == 0)
+    }
 }

@@ -206,6 +206,16 @@ struct MapSceneView: View {
                 OwnVendingShopView(shop: ownShop)
                     .offset(x: -24, y: -24)
             }
+            if let store = playSession.vending.buying.store {
+                BuyingStoreView(store: store)
+            }
+            if let setup = playSession.vending.buying.setup {
+                BuyingStoreSetupView(setup: setup)
+            }
+            if let own = playSession.vending.buying.own {
+                OwnBuyingStoreView(store: own)
+                    .offset(x: -24, y: -24)
+            }
         }
         .onChange(of: runtime.scene.state.isPlayerDead) { _, newValue in
             if newValue {

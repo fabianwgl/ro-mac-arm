@@ -232,7 +232,7 @@ private struct VendingInventoryRow: View {
     }
 }
 
-private struct VendingItemIcon: View {
+struct VendingItemIcon: View {
     var itemID: Int
     var amount: Int
 
@@ -263,7 +263,7 @@ private struct VendingItemIcon: View {
 }
 
 /// A price typed as digits.
-private struct VendingPriceField: View {
+struct VendingPriceField: View {
     @Binding var price: Int
 
     @State private var text = ""

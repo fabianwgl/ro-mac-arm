@@ -251,13 +251,17 @@ final class MapSceneRuntime {
             placements.append((targetNameText, targetPosition + [0, 0, -0.8], textTop))
         }
 
-        for (vendorID, title) in scene.playSession.vending.signs.sorted(by: { $0.key < $1.key }) {
-            guard let vendor = scene.objects[vendorID],
-                  vendor.effectState != .cloak,
-                  let vendorPosition = worldPositions[vendorID] else {
+        let vending = scene.playSession.vending
+        let signs = vending.signs.map { (id: $0.key, title: $0.value, isBuying: false) }
+            + vending.buying.signs.map { (id: $0.key, title: $0.value, isBuying: true) }
+        for sign in signs.sorted(by: { $0.id < $1.id }) {
+            guard let owner = scene.objects[sign.id],
+                  owner.effectState != .cloak,
+                  let ownerPosition = worldPositions[sign.id] else {
                 continue
             }
-            placements.append((TextDescriptor(shopTitle: title), vendorPosition + [0, 0, -0.8], Self.shopSignTop))
+            let descriptor = TextDescriptor(shopTitle: sign.title, isBuying: sign.isBuying)
+            placements.append((descriptor, ownerPosition + [0, 0, -0.8], Self.shopSignTop))
         }
 
         guard !placements.isEmpty else {

@@ -916,6 +916,71 @@ public enum PacketFactory {
         PACKET_CZ_REQ_CLOSESTORE()
     }
 
+    // MARK: Buying store
+    //
+    // The opcodes are the ones rAthena parses at PACKETVER 20211103, see BuyingStoreHeaders.swift.
+
+    /// | `PACKET_CZ_REQ_CLICK_TO_BUYING_STORE` | `clif_parse_ReqClickBuyingStore` |
+    public static func CZ_REQ_CLICK_TO_BUYING_STORE(buyerID: UInt32) -> PACKET_CZ_REQ_CLICK_TO_BUYING_STORE {
+        PACKET_CZ_REQ_CLICK_TO_BUYING_STORE(AID: buyerID)
+    }
+
+    /// | `PACKET_CZ_REQ_TRADE_BUYING_STORE` | `clif_parse_ReqTradeBuyingStore` |
+    ///
+    /// Sells inventory items to a buying store. `index` is the inventory index of the server (the slot plus 2),
+    /// `storeID` the id the item list carried. Every inventory slot may be listed once.
+    public static func CZ_REQ_TRADE_BUYING_STORE(
+        buyerID: UInt32,
+        storeID: UInt32,
+        sales: [(index: Int, itemID: Int, amount: Int)]
+    ) -> PACKET_CZ_REQ_TRADE_BUYING_STORE {
+        var packet = PACKET_CZ_REQ_TRADE_BUYING_STORE()
+        packet.packetType = HEADER_CZ_REQ_TRADE_BUYING_STORE
+        packet.packetLength = Int16(2 + 2 + 4 + 4 + sales.count * PACKET_CZ_REQ_TRADE_BUYING_STORE_sub.size)
+        packet.AID = buyerID
+        packet.storeId = storeID
+        packet.items = sales.map { sale in
+            var item = PACKET_CZ_REQ_TRADE_BUYING_STORE_sub()
+            item.index = Int16(truncatingIfNeeded: sale.index)
+            item.itemId = UInt32(truncatingIfNeeded: sale.itemID)
+            item.amount = UInt16(truncatingIfNeeded: sale.amount)
+            return item
+        }
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_OPEN_BUYING_STORE` | `clif_parse_ReqOpenBuyingStore` |
+    ///
+    /// Opens the buying store for these items, or cancels the set up window when `items` is empty.
+    /// The title is cut to the 79 bytes rAthena keeps (`MESSAGE_SIZE` is 80).
+    public static func CZ_REQ_OPEN_BUYING_STORE(
+        title: String,
+        zenyLimit: Int,
+        items: [(itemID: Int, amount: Int, price: Int)]
+    ) -> PACKET_CZ_REQ_OPEN_BUYING_STORE {
+        let isOpening = !items.isEmpty
+
+        var packet = PACKET_CZ_REQ_OPEN_BUYING_STORE()
+        packet.packetType = HEADER_CZ_REQ_OPEN_BUYING_STORE
+        packet.packetLength = Int16(2 + 2 + 4 + 1 + 80 + items.count * PACKET_CZ_REQ_OPEN_BUYING_STORE_sub.size)
+        packet.zenyLimit = isOpening ? UInt32(truncatingIfNeeded: zenyLimit) : 0
+        packet.result = isOpening ? 1 : 0
+        packet.storeName = isOpening ? truncatedUTF8(title, maxBytes: 79) : ""
+        packet.items = items.map { item in
+            var entry = PACKET_CZ_REQ_OPEN_BUYING_STORE_sub()
+            entry.itemId = UInt32(truncatingIfNeeded: item.itemID)
+            entry.amount = UInt16(truncatingIfNeeded: item.amount)
+            entry.price = UInt32(truncatingIfNeeded: item.price)
+            return entry
+        }
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_CLOSE_BUYING_STORE` | `clif_parse_ReqCloseBuyingStore` |
+    public static func CZ_REQ_CLOSE_BUYING_STORE() -> PACKET_CZ_REQ_CLOSE_BUYING_STORE {
+        PACKET_CZ_REQ_CLOSE_BUYING_STORE()
+    }
+
     private static func truncatedUTF8(_ text: String, maxBytes: Int) -> String {
         var text = text
         while text.utf8.count > maxBytes {
