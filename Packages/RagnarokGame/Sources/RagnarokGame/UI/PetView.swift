@@ -236,7 +236,7 @@ struct PetEggListView: View {
         guard let item = inventory.items[index] else {
             return "Pet egg"
         }
-        return gameContext.itemInfoTable.localizedIdentifiedItemName(forItemID: item.itemID) ?? "Item \(item.itemID)"
+        return gameContext.itemInfoTable.localizedItemName(forItemID: item.itemID, isIdentified: item.isIdentified) ?? "Item \(item.itemID)"
     }
 }
 

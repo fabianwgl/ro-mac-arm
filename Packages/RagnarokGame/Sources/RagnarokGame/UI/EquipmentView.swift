@@ -121,7 +121,7 @@ private struct EquipmentSlotLabel: View {
         guard let item = playSession.inventory.item(equippedAt: location) else {
             return nil
         }
-        return gameContext.itemInfoTable.localizedIdentifiedItemName(forItemID: item.itemID)
+        return gameContext.itemInfoTable.localizedItemName(forItemID: item.itemID, isIdentified: item.isIdentified)
     }
 
     var body: some View {

@@ -74,6 +74,7 @@ struct QuestLogView: View {
 private struct QuestLogRow: View {
     var quest: QuestLog.Quest
 
+    @Environment(GameContext.self) private var gameContext
     @Environment(PlaySession.self) private var playSession
 
     var body: some View {
@@ -114,7 +115,14 @@ private struct QuestLogRow: View {
     }
 
     private func objectiveText(_ objective: QuestLog.Objective) -> String {
-        let monsterName = objective.monsterName.isEmpty ? "Monster #\(objective.monsterID)" : objective.monsterName
+        // The server names the monster in the quest packet; when it sends none, the monster table does.
+        let monsterName = if !objective.monsterName.isEmpty {
+            objective.monsterName
+        } else if let name = gameContext.monsterNameTable.localizedMonsterName(forMonsterID: Int(objective.monsterID)) {
+            name
+        } else {
+            "Monster #\(objective.monsterID)"
+        }
         return "\(monsterName) \(objective.count)/\(objective.required)"
     }
 }

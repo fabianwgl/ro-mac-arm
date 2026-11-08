@@ -80,7 +80,13 @@ struct BasicInfoView: View {
     }
 
     private var job: String {
-        JobID(rawValue: character.job)?.stringValue ?? ""
+        guard let jobID = JobID(rawValue: character.job) else {
+            return ""
+        }
+        if let name = jobID.localizedName {
+            return String(localized: name)
+        }
+        return jobID.stringValue
     }
 
     private var baseExp: CGFloat {

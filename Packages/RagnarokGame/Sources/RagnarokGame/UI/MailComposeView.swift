@@ -270,7 +270,7 @@ struct MailComposeView: View {
     @ViewBuilder private func amountInputBox(_ draft: MailDraft) -> some View {
         if let item = amountItem {
             GameNumberInputBox(
-                gameContext.itemInfoTable.localizedIdentifiedItemName(forItemID: item.itemID) ?? "\(item.itemID)",
+                gameContext.itemInfoTable.localizedItemName(forItemID: item.itemID, isIdentified: item.isIdentified) ?? "\(item.itemID)",
                 bounds: 1...max(item.amount, 1)
             ) { amount in
                 playSession.attachMailItem(index: item.index, amount: amount)
