@@ -25,6 +25,12 @@ struct Options {
     var maxReconnectBackoff: TimeInterval = 15
     var stageTimeout: TimeInterval = 120
     var mapLoadTimeout: TimeInterval = 300
+    var vendingRole: String?
+    var vendingTitle = "Probe potions"
+    var vendingMap = "prt_fild08"
+    var vendingX = 170
+    var vendingY = 180
+    var vendingTimeout: TimeInterval = 180
 
     static let usage = """
     Usage: ro-probe [options]
@@ -49,6 +55,11 @@ struct Options {
       --stage-timeout <s>     wait per login stage         (default 120)
       --map-load-timeout <s>  wait for the map to load     (default 300)
       --with-audio            let the client play BGM and sound effects (muted by default)
+      --vending <role>         run the vending scenario instead of wandering: seller, buyer, store-owner, store-seller
+      --vending-title <text>   shop title the seller sets and the buyer expects (default "Probe potions")
+      --vending-map <map>      map both probes warp to       (default prt_fild08)
+      --vending-pos <x,y>      cell both probes warp to      (default 170,180)
+      --vending-timeout <s>    how long to wait for the other probe (default 180)
       --coverage              print packet table coverage (P0-10) and exit
       --trade-test            two clients (trade1, trade2) trade items and zeny; --json writes the result
       -h, --help              this text
@@ -122,6 +133,22 @@ struct Options {
             case "--stage-timeout": options.stageTimeout = try number(flag)
             case "--map-load-timeout": options.mapLoadTimeout = try number(flag)
             case "--with-audio": options.withAudio = true
+            case "--vending":
+                let role = try value(flag)
+                guard ["seller", "buyer", "store-owner", "store-seller"].contains(role) else {
+                    throw ParseError(description: "--vending expects seller, buyer, store-owner or store-seller, not \(role)")
+                }
+                options.vendingRole = role
+            case "--vending-title": options.vendingTitle = try value(flag)
+            case "--vending-map": options.vendingMap = try value(flag)
+            case "--vending-pos":
+                let cell = try value(flag).split(separator: ",").compactMap { Int($0) }
+                guard cell.count == 2 else {
+                    throw ParseError(description: "invalid --vending-pos, expected x,y")
+                }
+                options.vendingX = cell[0]
+                options.vendingY = cell[1]
+            case "--vending-timeout": options.vendingTimeout = try number(flag)
             case "--coverage": options.coverageOnly = true
             case "--trade-test": options.tradeTest = true
             case "-h", "--help":

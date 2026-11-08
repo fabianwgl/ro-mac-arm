@@ -40,6 +40,11 @@ struct ROProbe {
         let provider = ClientFilesProvider(url: clientURL, allowAudio: options.withAudio)
         let resourceManager = ResourceManager(resourceProvider: provider)
 
+        if let role = options.vendingRole.flatMap(VendingScenario.Role.init(rawValue:)) {
+            let scenario = VendingScenario(options: options, role: role, resourceManager: resourceManager)
+            exit(await scenario.run() ? 0 : 1)
+        }
+
         var tap: PacketTap?
         if !options.noTap {
             let created = PacketTap(stats: stats, loginUpstream: .init(host: options.host, port: options.port), splitEnter: !options.noEnterWorkaround)

@@ -217,6 +217,26 @@ struct MapSceneView: View {
                 MailComposeView()
                     .offset(x: 24, y: 24)
             }
+            if let shop = playSession.vending.shop {
+                VendingShopView(shop: shop)
+            }
+            if let setup = playSession.vending.setup {
+                VendingSetupView(setup: setup)
+            }
+            if let ownShop = playSession.vending.ownShop {
+                OwnVendingShopView(shop: ownShop)
+                    .offset(x: -24, y: -24)
+            }
+            if let store = playSession.vending.buying.store {
+                BuyingStoreView(store: store)
+            }
+            if let setup = playSession.vending.buying.setup {
+                BuyingStoreSetupView(setup: setup)
+            }
+            if let own = playSession.vending.buying.own {
+                OwnBuyingStoreView(store: own)
+                    .offset(x: -24, y: -24)
+            }
         }
         .onChange(of: runtime.scene.state.isPlayerDead) { _, newValue in
             if newValue {
