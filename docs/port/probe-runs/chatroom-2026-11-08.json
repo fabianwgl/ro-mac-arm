@@ -1,0 +1,213 @@
+{
+  "accounts" : [
+    {
+      "accountID" : 2000008,
+      "character" : "RoomOne",
+      "label" : "A",
+      "user" : "room1"
+    },
+    {
+      "accountID" : 2000009,
+      "character" : "RoomTwo",
+      "label" : "B",
+      "user" : "room2"
+    }
+  ],
+  "checks" : [
+    {
+      "detail" : "A SIMD2<Int>(278, 167), B SIMD2<Int>(278, 167), distance 0",
+      "name" : "both players stand within 2 cells",
+      "passed" : true
+    },
+    {
+      "detail" : "A 4",
+      "name" : "A has Basic Skill level 4",
+      "passed" : true
+    },
+    {
+      "detail" : "Probe room",
+      "name" : "\/chat opens the create window with the title",
+      "passed" : true
+    },
+    {
+      "detail" : "Optional([RagnarokGame.ChatRoomMember(name: \"RoomOne\", isOwner: true)]) title Probe room",
+      "name" : "A owns the new room alone",
+      "passed" : true
+    },
+    {
+      "detail" : "Optional(RagnarokGame.ChatRoomSign(chatID: 7487, ownerID: 2000008, title: \"Probe room\", limit: 4, users: 1, access: RagnarokGame.ChatRoomAccess.publicRoom))",
+      "name" : "B's sign has the title, limit 4, one user, public",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "B can click the owner",
+      "passed" : true
+    },
+    {
+      "detail" : "[(ownerID: 2000008, title: \"Probe room\")]",
+      "name" : "A draws his own sign over himself",
+      "passed" : true
+    },
+    {
+      "detail" : "Optional([RagnarokGame.ChatRoomMember(name: \"RoomOne\", isOwner: true), RagnarokGame.ChatRoomMember(name: \"RoomTwo\", isOwner: false)]) chat Optional(7487) expected 7487",
+      "name" : "B joined a room owned by A",
+      "passed" : true
+    },
+    {
+      "detail" : "Optional([RagnarokGame.ChatRoomMember(name: \"RoomOne\", isOwner: true), RagnarokGame.ChatRoomMember(name: \"RoomTwo\", isOwner: false)])",
+      "name" : "A sees B as a normal member",
+      "passed" : true
+    },
+    {
+      "detail" : "A [\"RoomOne : hello from the owner\", \"RoomTwo : hello from the member\"], B [\"RoomOne : hello from the owner\", \"RoomTwo : hello from the member\"]",
+      "name" : "each side sees both lines in the room window",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "the chat box got the lines too",
+      "passed" : true
+    },
+    {
+      "detail" : "ChatRoomSettings(title: \"Probe room\", limit: 4, isPublic: true, password: \"\")",
+      "name" : "settings start from the current room",
+      "passed" : true
+    },
+    {
+      "detail" : "A Renamed room, B Renamed room",
+      "name" : "owner and member both have the new title",
+      "passed" : true
+    },
+    {
+      "detail" : "Optional(7487) expected 7487",
+      "name" : "the owner learned the chat id from the change",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "the member draws the new title over the owner",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "B is out of the room, A is alone in it",
+      "passed" : true
+    },
+    {
+      "detail" : "Optional(RagnarokGame.ChatRoomSign(chatID: 7487, ownerID: 2000008, title: \"Renamed room\", limit: 4, users: 1, access: RagnarokGame.ChatRoomAccess.publicRoom))",
+      "name" : "B's sign shows the new title and one user",
+      "passed" : true
+    },
+    {
+      "detail" : "B messages [\"RoomTwo : hello from the member\", \"You left the chat room.\", \"RoomTwo : only the street hears this\"]",
+      "name" : "a line from inside the room does not reach someone outside",
+      "passed" : true
+    },
+    {
+      "detail" : "A messages [\"RoomOne : hello from the owner\", \"RoomTwo : hello from the member\", \"RoomOne : only the room hears this\"]",
+      "name" : "a line from outside does not reach the room",
+      "passed" : true
+    },
+    {
+      "detail" : "A 1 new, B 1 new",
+      "name" : "each speaker still sees his own line",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "closing the last member's room removes its sign",
+      "passed" : true
+    },
+    {
+      "detail" : "Optional(RagnarokGame.ChatRoomSign(chatID: 7488, ownerID: 2000008, title: \"Private probe\", limit: 3, users: 1, access: RagnarokGame.ChatRoomAccess.privateRoom))",
+      "name" : "the sign says private",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "a click on a private room asks for the password",
+      "passed" : true
+    },
+    {
+      "detail" : "B in the room: false. room2 must be a plain player (group 0), the administrator group skips passwords",
+      "name" : "a wrong password lets nobody in",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "the right password lets B in",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "B hears that he was expelled",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "A's list no longer has B",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "an expelled member is refused even with the password",
+      "passed" : true
+    },
+    {
+      "detail" : "A Optional([RagnarokGame.ChatRoomMember(name: \"RoomTwo\", isOwner: true), RagnarokGame.ChatRoomMember(name: \"RoomOne\", isOwner: false)]), B Optional([RagnarokGame.ChatRoomMember(name: \"RoomTwo\", isOwner: true), RagnarokGame.ChatRoomMember(name: \"RoomOne\", isOwner: false)])",
+      "name" : "A gave the room to B and both lists agree",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "B can open the settings now, A cannot",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "B keeps the room after A left",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "A sees the sign over B, the new owner",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "the last member closes the room",
+      "passed" : true
+    }
+  ],
+  "date" : "2026-11-08T19:01:36Z",
+  "messagesA" : [
+    "rAthena Version Git Hash:  d4b8e7b8f16061cc2496d377ac8f777ce72a4f39",
+    "Welcome to rAthena! Enjoy! Please report any bugs you find.",
+    "RoomOne : hello from the owner",
+    "RoomTwo : hello from the member",
+    "RoomOne : only the room hears this",
+    "You left the chat room.",
+    "You left the chat room.",
+    "You left the chat room."
+  ],
+  "messagesB" : [
+    "rAthena Version Git Hash:  d4b8e7b8f16061cc2496d377ac8f777ce72a4f39",
+    "Welcome to rAthena! Enjoy! Please report any bugs you find.",
+    "RoomOne : hello from the owner",
+    "RoomTwo : hello from the member",
+    "You left the chat room.",
+    "RoomTwo : only the street hears this",
+    "The password is wrong.",
+    "You were expelled from the chat room.",
+    "You were expelled from that chat room.",
+    "You left the chat room."
+  ],
+  "notes" : [
+    "room1 is group 99 (administrator), room2 is group 0 (player): groups.yml gives the administrator group join_chat (password bypass) and kick_chat (expel immunity)"
+  ],
+  "passed" : true,
+  "scenario" : "chatroom",
+  "seconds" : 14,
+  "server" : "127.0.0.1:6900"
+}

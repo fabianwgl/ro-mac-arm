@@ -93,6 +93,19 @@ cd ~/dev/rathena/tools/docker && docker compose restart map char login
 The summary counts the disconnect, each failed attempt while the servers are down, and the reconnect that reaches
 the map again. `GameSession` has no reconnect of its own, so the probe builds a fresh `GameSession` per attempt.
 
+### Chat room test
+
+```sh
+Tools/ROProbe/.build/debug/ro-probe --chatroom-test --json docs/port/probe-runs/chatroom-<date>.json
+```
+
+Two clients in one process (accounts `room1` in group 99 and `room2` in group 0, characters `RoomOne` and `RoomTwo`, both
+created when missing) use chat rooms through the same `PlaySession` and `MapScene` calls the UI makes. Round 1 is a
+public room (create, join by clicking the owner, a line each way, rename, leave, lines that only members get, close),
+round 2 a private one (wrong and right password, expel, refused after the expel) and round 3 gives the room away. `room2`
+must be a plain player: the administrator group has `join_chat` and `kick_chat`, which skip passwords and make a player
+immune to expel. `room1` needs group 99 for `@warp`, `@skpoint` and `@recall`. Account setup is in `docs/port/DOCKER.md`.
+
 ### Packet coverage (P0-10)
 
 ```sh

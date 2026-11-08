@@ -29,6 +29,10 @@ struct ROProbe {
             exit(await TradeScenario.run(options: options) ? 0 : 1)
         }
 
+        if options.chatRoomTest {
+            exit(await ChatRoomScenario.run(options: options) ? 0 : 1)
+        }
+
         let stats = ProbeStats()
         stats.setTapEnabled(!options.noTap)
 
