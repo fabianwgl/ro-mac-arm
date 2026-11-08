@@ -1,0 +1,267 @@
+{
+  "buyer": {
+    "character": "Vend2",
+    "checks": [
+      {
+        "detail": "Probe potions",
+        "name": "sign shows the title",
+        "passed": true
+      },
+      {
+        "detail": "price 100, amount 30",
+        "name": "shop lists the potions at the price",
+        "passed": true
+      },
+      {
+        "detail": "Probe potions",
+        "name": "shop has the vendor title",
+        "passed": true
+      },
+      {
+        "detail": "total Optional(1000)",
+        "name": "total is the price of the pick",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "window closed after the purchase",
+        "passed": true
+      },
+      {
+        "detail": "potions 0 -> 10",
+        "name": "buyer got the potions",
+        "passed": true
+      },
+      {
+        "detail": "zeny 200000 -> 199000, expected -1000",
+        "name": "buyer paid the price",
+        "passed": true
+      }
+    ],
+    "errors": [],
+    "facts": {
+      "buyerPosition": "prt_fild08.rsw 170,180",
+      "buyerPotionsAfter": 10,
+      "buyerPotionsBefore": 0,
+      "buyerZenyAfter": 199000,
+      "buyerZenyBefore": 200000,
+      "chatMessages": [
+        "rAthena Version Git Hash:  d4b8e7b8f16061cc2496d377ac8f777ce72a4f39",
+        "Welcome to rAthena! Enjoy! Please report any bugs you find.",
+        "Current amount of zeny changed.",
+        "Warped.",
+        "You got Red Potion (10)."
+      ],
+      "shopItems": [
+        {
+          "amount": 30,
+          "index": 2,
+          "itemID": 501,
+          "price": 100
+        }
+      ],
+      "signTitle": "Probe potions",
+      "vendorID": 2000005
+    },
+    "passed": true,
+    "role": "buyer",
+    "seconds": 13.5,
+    "steps": [
+      {
+        "step": "login as vend2",
+        "t": 0.2
+      },
+      {
+        "step": "select character slot 0",
+        "t": 0.3
+      },
+      {
+        "step": "on map prt_fild08.rsw",
+        "t": 2.6
+      },
+      {
+        "step": "prepare zeny",
+        "t": 2.6
+      },
+      {
+        "step": "chat: @zeny 100000",
+        "t": 2.6
+      },
+      {
+        "step": "warp to prt_fild08 170,180",
+        "t": 2.6
+      },
+      {
+        "step": "chat: @warp prt_fild08 170 180",
+        "t": 2.6
+      },
+      {
+        "step": "wait for a shop sign (up to 180 s)",
+        "t": 5.6
+      },
+      {
+        "step": "sign \"Probe potions\" over player 2000005",
+        "t": 11.2
+      },
+      {
+        "step": "click the vendor",
+        "t": 11.2
+      },
+      {
+        "step": "buy 10",
+        "t": 11.3
+      }
+    ],
+    "user": "vend2"
+  },
+  "databaseCrossCheck": {
+    "Vend1": {
+      "cartPotions": 70,
+      "zeny": 1000
+    },
+    "Vend2": {
+      "inventoryPotions": 10,
+      "zeny": 199000
+    }
+  },
+  "date": "2026-11-08",
+  "passed": true,
+  "scenario": "vending",
+  "seller": {
+    "character": "Vend1",
+    "checks": [
+      {
+        "detail": "own shop item Optional(RagnarokGame.OwnVendingShop.Item(index: 2, itemID: 501, price: 100, amount: 30, sold: 0))",
+        "name": "shop is open with the stock",
+        "passed": true
+      },
+      {
+        "detail": "[2000005: \"Probe potions\"]",
+        "name": "own sign is set",
+        "passed": true
+      },
+      {
+        "detail": "zeny 0 -> 1000, expected +1000",
+        "name": "seller zeny rose by the price",
+        "passed": true
+      },
+      {
+        "detail": "cart 80 -> 70",
+        "name": "seller cart lost the potions",
+        "passed": true
+      },
+      {
+        "detail": "earned Optional(1000)",
+        "name": "own shop counts the sale",
+        "passed": true
+      },
+      {
+        "detail": "inventory potions 0",
+        "name": "seller inventory unchanged",
+        "passed": true
+      },
+      {
+        "detail": "",
+        "name": "shop closed",
+        "passed": true
+      }
+    ],
+    "errors": [],
+    "facts": {
+      "chatMessages": [
+        "rAthena Version Git Hash:  d4b8e7b8f16061cc2496d377ac8f777ce72a4f39",
+        "Welcome to rAthena! Enjoy! Please report any bugs you find.",
+        "You are unable to change your job.",
+        "@jobchange failed.",
+        "All skills have been added to your skill tree.",
+        "Cart Added.",
+        "You got Red Potion (40).",
+        "Item created.",
+        "Base level raised.",
+        "HP and SP have already been recovered.",
+        "Warped.",
+        "Your shop \"Probe potions\" is open.",
+        "Sold 10 Red Potion for 1000 zeny.",
+        "Vend2 has bought your item(s)."
+      ],
+      "sellerCartAfter": 70,
+      "sellerCartBefore": 80,
+      "sellerInventoryBefore": 0,
+      "sellerPosition": "prt_fild08.rsw 170,180",
+      "sellerZenyAfter": 1000,
+      "sellerZenyBefore": 0,
+      "setupSlots": 12
+    },
+    "passed": true,
+    "role": "seller",
+    "seconds": 14.5,
+    "steps": [
+      {
+        "step": "login as vend1",
+        "t": 0.2
+      },
+      {
+        "step": "select character slot 0",
+        "t": 0.3
+      },
+      {
+        "step": "on map prt_fild08.rsw",
+        "t": 2.6
+      },
+      {
+        "step": "become a Merchant with a cart and potions",
+        "t": 2.6
+      },
+      {
+        "step": "chat: @jobchange 5",
+        "t": 2.6
+      },
+      {
+        "step": "chat: @allskill",
+        "t": 4.7
+      },
+      {
+        "step": "chat: @cart 1",
+        "t": 5.7
+      },
+      {
+        "step": "chat: @item 501 40",
+        "t": 5.7
+      },
+      {
+        "step": "chat: @blvl 60",
+        "t": 5.9
+      },
+      {
+        "step": "chat: @heal 9999 9999",
+        "t": 7
+      },
+      {
+        "step": "warp to prt_fild08 170,180",
+        "t": 8
+      },
+      {
+        "step": "chat: @warp prt_fild08 170 180",
+        "t": 8
+      },
+      {
+        "step": "use Vending (skill 41)",
+        "t": 11
+      },
+      {
+        "step": "shop open, waiting for a buyer (up to 180 s)",
+        "t": 11.3
+      },
+      {
+        "step": "sold 10, checking",
+        "t": 11.4
+      },
+      {
+        "step": "close the shop",
+        "t": 13.5
+      }
+    ],
+    "user": "vend1"
+  },
+  "server": "rAthena d4b8e7b8, PACKETVER 20211103, docker ro-backend"
+}
