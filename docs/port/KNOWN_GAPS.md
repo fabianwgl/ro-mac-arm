@@ -64,6 +64,7 @@ per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
 | Battlegrounds | maps loaded | `ZC_BATTLEFIELD_*` framed, no UI |
 | Reputation (`ZC_REPUTE_OPEN`) | enabled | framed and skipped |
 | Character rename, slot move | enabled | framed, no UI |
+| Names and descriptions | n/a | English names for every server item, skill and monster (locale table, then English table, then the server's English name; see [localization.md](localization.md)); 203 of 1,265 maps show the map file name; 384 skills have no English description and show the Aegis name; no appraisal (Magnifier) window, so unidentified drops stay unidentified; refine and slot suffixes are not drawn in names |
 | Window position persistence | n/a | game windows are fixed-layout SwiftUI; main and game windows use macOS defaults |
 
 ## Not verified on this machine

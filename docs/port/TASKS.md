@@ -101,9 +101,11 @@ Acceptance: one hour of normal play with no blocking bug.
 
 - [x] P4-01 List the target server's enabled jobs, maps, and systems.
 - [ ] P4-02 Implement skills and effects for enabled jobs.
-- [ ] P4-03 Load item and skill DBs from the server's YAML and SQL tables and
+- [x] P4-03 (names from the server YAML as a generated snapshot; the kRO lub
+  files are Korean only and not needed, see [localization.md](localization.md))
+  Load item and skill DBs from the server's YAML and SQL tables and
   the kRO client's `System/*.lub` files.
-- [ ] P4-04 Localization for item, skill, and monster names.
+- [x] P4-04 Localization for item, skill, and monster names.
 - [x] P4-05 Party and guild windows.
 - [x] P4-06 Friends and mail.
 - [x] P4-07 (pets and homunculus; mounts and costumes not built) Pets, mounts, and costumes if enabled.
