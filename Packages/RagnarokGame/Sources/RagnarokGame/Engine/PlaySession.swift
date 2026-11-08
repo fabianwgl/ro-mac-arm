@@ -50,6 +50,7 @@ final class PlaySession {
     var trade = TradeState()
     var vending = VendingState()
     var chatRoom = ChatRoomState()
+    var appraisal = AppraisalState()
     let messageCenter: MessageCenter
 
     var dialog: NPCDialog?
@@ -227,6 +228,7 @@ final class PlaySession {
         mapRuntime?.unload()
         vending.resetForMapChange()
         chatRoom.resetForMapChange()
+        appraisal = AppraisalState()
 
         let progress = Progress()
         mapPhase = .loading(progress)
@@ -313,6 +315,10 @@ final class PlaySession {
         }
 
         guard !handleVendingPacket(packet) else {
+            return
+        }
+
+        guard !handleAppraisalPacket(packet) else {
             return
         }
 

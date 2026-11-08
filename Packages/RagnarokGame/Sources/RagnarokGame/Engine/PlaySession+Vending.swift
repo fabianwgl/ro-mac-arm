@@ -7,6 +7,7 @@
 
 import Foundation
 import Observation
+import RagnarokModels
 import RagnarokNetwork
 import RagnarokPackets
 
@@ -82,6 +83,7 @@ extension PlaySession {
         // The cart. Inventory type 1 of the item lists, the other types belong to the inventory and the storage.
         case let packet as PACKET_ZC_INVENTORY_START where Int(packet.invType) == Cart.inventoryType:
             vending.cart.items = [:]
+            vending.cart.isActive = true
         case let packet as PACKET_ZC_INVENTORY_END where Int(packet.invType) == Cart.inventoryType:
             break
         case let packet as packet_itemlist_normal where Int(packet.invType) == Cart.inventoryType:
@@ -219,6 +221,12 @@ extension PlaySession {
     }
 
     // MARK: - Cart
+
+    /// Whether the inventory menu offers to move the item into the cart: the player has a cart, and the server
+    /// keeps equipped items out of it.
+    func canMoveToCart(_ item: InventoryItem) -> Bool {
+        vending.cart.isActive && !item.isEquipped && item.amount > 0
+    }
 
     /// Moves an item of the inventory into the cart (`CZ_MOVE_ITEM_FROM_BODY_TO_CART`).
     func moveItemToCart(index: Int, amount: Int) {

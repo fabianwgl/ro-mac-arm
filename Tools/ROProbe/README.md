@@ -153,6 +153,21 @@ round 2 a private one (wrong and right password, expel, refused after the expel)
 must be a plain player: the administrator group has `join_chat` and `kick_chat`, which skip passwords and make a player
 immune to expel. `room1` needs group 99 for `@warp`, `@skpoint` and `@recall`. Account setup is in `docs/port/DOCKER.md`.
 
+### Appraisal test
+
+```sh
+Tools/ROProbe/.build/debug/ro-probe --appraisal-test --user ident1 --pass ident1 --char-name Ident \
+  --json docs/port/probe-runs/appraisal-2026-11-08.json
+```
+
+One GM probe (group 99 account). It gets an unidentified Knife (`@item2 1201 1 0 0 0 0 0 0 0`) and Magnifiers
+(`@item 611`), uses a Magnifier through `PlaySession.useItem`, checks the `ZC_ITEMIDENTIFY_LIST` picker, cancels once
+(the second Magnifier use only works when the server left the menu), then picks the Knife and checks that the inventory
+flag flips on `ZC_ACK_ITEMIDENTIFY`. It repeats the pick with the Item Appraisal skill (`@jobchange 5`, `@allskill`),
+then puts a cart on and off with `@cart` to check `canMoveToCart` and moves potions into the cart and back. A Magnifier
+is used up by a cancel as well, so a run needs five. Right after a run the server may answer "still recognizes your
+last log-in"; wait about a minute before the next run.
+
 ### Packet coverage (P0-10)
 
 ```sh
