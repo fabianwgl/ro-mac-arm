@@ -17,6 +17,10 @@ public struct InventoryItem: Sendable {
     public var equippedLocation: EquipPositions
     public var slots: [Int]
 
+    /// False for equipment that dropped and has not been appraised. The server gives such an item its unidentified
+    /// name (`Dagger` for a Knife) until a Magnifier is used on it.
+    public var isIdentified: Bool
+
     public var isUsable: Bool {
         switch type {
         case .healing, .usable, .delayconsume, .cash: true
@@ -50,6 +54,7 @@ public struct InventoryItem: Sendable {
         location = EquipPositions(rawValue: 0)
         equippedLocation = EquipPositions(rawValue: 0)
         slots = [0, 0, 0, 0]
+        isIdentified = true
     }
 
     public init(from item: NORMALITEM_INFO) {
@@ -60,6 +65,7 @@ public struct InventoryItem: Sendable {
         location = EquipPositions(rawValue: 0)
         equippedLocation = EquipPositions(rawValue: Int(item.WearState))
         slots = item.slot.card.map(Int.init)
+        isIdentified = Self.isIdentified(flag: item.Flag)
     }
 
     public init(from item: EQUIPITEM_INFO) {
@@ -70,6 +76,12 @@ public struct InventoryItem: Sendable {
         location = EquipPositions(rawValue: Int(item.location))
         equippedLocation = EquipPositions(rawValue: Int(item.WearState))
         slots = item.slot.card.map(Int.init)
+        isIdentified = Self.isIdentified(flag: item.Flag)
+    }
+
+    /// The `Flag` byte of an item list entry is a bit field; its first bit is `IsIdentified`.
+    static func isIdentified(flag: UInt8) -> Bool {
+        flag & 0x01 != 0
     }
 }
 

@@ -228,7 +228,7 @@ struct StorageView: View {
     }
 
     private func itemName(for item: InventoryItem) -> String {
-        gameContext.itemInfoTable.localizedIdentifiedItemName(forItemID: item.itemID) ?? "\(item.itemID)"
+        gameContext.itemInfoTable.localizedItemName(forItemID: item.itemID, isIdentified: item.isIdentified) ?? "\(item.itemID)"
     }
 
     private func preview(for item: InventoryItem) -> some View {
@@ -290,7 +290,7 @@ private struct StorageItemList: View {
     }
 
     private func itemName(for item: InventoryItem) -> String {
-        gameContext.itemInfoTable.localizedIdentifiedItemName(forItemID: item.itemID) ?? "\(item.itemID)"
+        gameContext.itemInfoTable.localizedItemName(forItemID: item.itemID, isIdentified: item.isIdentified) ?? "\(item.itemID)"
     }
 }
 

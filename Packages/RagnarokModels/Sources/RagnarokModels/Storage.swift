@@ -51,6 +51,7 @@ public struct Storage: Sendable {
             item.type = ItemType(rawValue: Int(packet.itemType)) ?? .etc
             item.amount = amount
             item.slots = packet.slot.card.map(Int.init)
+            item.isIdentified = packet.identified != 0
             items[index] = item
         }
     }

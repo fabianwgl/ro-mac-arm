@@ -27,6 +27,6 @@ final class MonsterNameTableTests: XCTestCase {
         let locale = Locale(languageCode: .english)
         let monsterNameTable = MonsterNameTable(locale: locale)
         let poring = monsterNameTable.localizedMonsterName(forMonsterID: 1002)
-        XCTAssertNil(poring)
+        XCTAssertEqual(poring, "Poring")
     }
 }

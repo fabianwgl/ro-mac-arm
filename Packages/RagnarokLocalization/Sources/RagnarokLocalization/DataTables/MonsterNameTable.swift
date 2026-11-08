@@ -7,25 +7,33 @@
 
 import Foundation
 
+/// Monster names.
+///
+/// Only the Chinese localizations have a table of their own. A lookup tries it, then the name the server's monster
+/// database gives, which is English. The map shows the name the server sends with each monster, so this table is for
+/// places that only have a monster id, such as a quest objective or a database page.
 final public class MonsterNameTable {
-    let monsterNamesByID: [Int : String]
+    let sources: [LocalizedSource<Int, String>]
+    let serverMonsterNamesByID: [Int : String]
 
-    public init(locale: Locale = .current) {
-        guard let url = Bundle.module.url(forResource: "MonsterName", withExtension: "json", locale: locale) else {
-            self.monsterNamesByID = [:]
-            return
-        }
+    public convenience init(locale: Locale = .current) {
+        self.init(
+            sources: LocalizedSource<Int, String>.sources(named: "MonsterName", locale: locale),
+            serverMonsterNamesByID: ServerNameTable.shared.monsterNamesByID
+        )
+    }
 
-        do {
-            let decoder = JSONDecoder()
-            let data = try Data(contentsOf: url)
-            self.monsterNamesByID = try decoder.decode([Int : String].self, from: data)
-        } catch {
-            self.monsterNamesByID = [:]
-        }
+    init(sources: [LocalizedSource<Int, String>], serverMonsterNamesByID: [Int : String]) {
+        self.sources = sources
+        self.serverMonsterNamesByID = serverMonsterNamesByID
     }
 
     public func localizedMonsterName(forMonsterID monsterID: Int) -> String? {
-        monsterNamesByID[monsterID]
+        for source in sources {
+            if let name = LocalizedText.usable(source.values[monsterID], allowsKorean: source.allowsKorean) {
+                return name
+            }
+        }
+        return serverMonsterNamesByID[monsterID]
     }
 }

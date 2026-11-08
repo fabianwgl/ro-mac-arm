@@ -19,6 +19,7 @@ final class GameContext {
     let itemInfoTable: ItemInfoTable
     let mapInfoTable: MapInfoTable
     let messageStringTable: MessageStringTable
+    let monsterNameTable: MonsterNameTable
     let skillInfoTable: SkillInfoTable
     let statusInfoTable: StatusInfoTable
 
@@ -30,6 +31,7 @@ final class GameContext {
         self.itemInfoTable = ItemInfoTable()
         self.mapInfoTable = MapInfoTable()
         self.messageStringTable = MessageStringTable()
+        self.monsterNameTable = MonsterNameTable()
         self.skillInfoTable = SkillInfoTable()
         self.statusInfoTable = StatusInfoTable()
     }

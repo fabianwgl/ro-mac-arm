@@ -133,7 +133,7 @@ struct InventoryView: View {
     @ViewBuilder private var throwAmountInputBox: some View {
         if let item = throwingItem {
             GameNumberInputBox(
-                gameContext.itemInfoTable.localizedIdentifiedItemName(forItemID: item.itemID) ?? "\(item.itemID)",
+                gameContext.itemInfoTable.localizedItemName(forItemID: item.itemID, isIdentified: item.isIdentified) ?? "\(item.itemID)",
                 bounds: 1...item.amount
             ) { amount in
                 playSession.throwItem(at: item.index, amount: amount)

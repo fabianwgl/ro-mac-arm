@@ -80,6 +80,7 @@ public struct Inventory {
             item.amount = amount
             item.location = EquipPositions(rawValue: Int(packet.location))
             item.slots = packet.slot.card.map(Int.init)
+            item.isIdentified = packet.IsIdentified != 0
             items[index] = item
         }
     }
