@@ -45,7 +45,7 @@ Acceptance: character spawns on the rAthena map and plays for 10 minutes.
 - [x] P1-03 Keep GPL-3.0 and upstream attribution in About and headers.
 - [x] P1-04 Add `upstream` remote and document the sync procedure.
 - [x] P1-05 Add a minimal `NOTICE` file for upstream and third-party code.
-- [ ] P1-06 Add GitHub Actions build on `macos-15`, arm64, with submodules.
+- [x] P1-06 (on `macos-26`: no macOS 15 image has the toolchain upstream needs) Add GitHub Actions build on `macos-15`, arm64, with submodules.
 - [ ] P1-07 Add unit test job and cache Swift packages.
 - [x] P1-08 Add an asset provisioning script that copies `data.grf` and `BGM`
   into the sandbox Documents directory and validates both.
@@ -122,7 +122,7 @@ Acceptance: target server's daily content usable; gaps documented.
 - [ ] P5-05 Measure RSS with full kRO data; target under 4 GB.
 - [ ] P5-06 Measure cold start; target under 10 seconds.
 - [ ] P5-07 Retina, fullscreen, window restore, display change.
-- [ ] P5-08 Input remapping and optional gamepad.
+- [x] P5-08 Input remapping and optional gamepad.
 - [~] P5-09 (deferred: local-only project) Developer ID signing and hardened runtime.
 - [~] P5-10 (deferred: local-only project) Notarize and staple the app.
 - [~] P5-11 (deferred: local-only project) Build DMG with compatibility manifest.
@@ -133,7 +133,7 @@ Acceptance: local build meets the performance targets on the developer Mac. Sign
 
 ## Phase 6: Maintenance
 
-- [ ] P6-01 Monthly upstream sync.
+- [ ] P6-01 Monthly upstream sync. (Last check 2026-11-08: no upstream commits since the fork point `fe04817b`.)
 - [ ] P6-02 Re-run packet golden tests after every rAthena update.
 - [ ] P6-03 Track rAthena default `PACKETVER`.
 - [ ] P6-04 Keep the compatibility table current.

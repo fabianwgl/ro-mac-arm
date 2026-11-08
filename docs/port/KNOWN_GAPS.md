@@ -28,8 +28,17 @@ per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
   rename, auto feed) and the egg list a pet incubator opens; homunculus window
   (status, feed, rename, delete, call, vaporize, resurrect, auto feed, skill
   list). Menu buttons, Option-J and Option-R.
-- macOS keyboard controls with rebinding, sound and display preferences, saved
-  password in the Keychain, crash marker and log export, launcher.
+- Trade with another player: request (select a player, then the action button or
+  `/exchange`), accept or decline, offer items and zeny, OK, Trade, cancel, and
+  the ack messages (too far, overweight, inventory full). Verified live between
+  two clients ([trade-2026-11-08.json](probe-runs/trade-2026-11-08.json)). Items
+  are offered from a picker, not by drag and drop.
+- macOS keyboard controls with rebinding, WASD walking and Space to attack the
+  nearest monster (the third hotkey row is Option-1..9), game controller (left
+  stick and d-pad walk, A attack, B close window, X/Y/shoulders/triggers hotkey
+  row 1, Menu options; fixed layout, not tried on a physical pad yet), sound and
+  display preferences, saved password in the Keychain, crash marker and log
+  export, launcher.
 
 ## Gaps on the target server
 
@@ -41,14 +50,13 @@ per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
 | Achievements | enabled | menu window, claim button and completion message work; titles need `System/achievement_list.lub` in the client folder, else rows read "Achievement #id"; no title wearing |
 | Attendance | feature on, but `db/re/attendance.yml` has no running period (the 2018 example is commented out), so the server never opens the window or accepts a check-in until a period is added to `db/import/attendance.yml` | window, menu entry and check-in implemented; day numbers only (the server sends no period dates or reward table, reward arrives by mail); untested against the live server for lack of a period |
 | Navigation (`ZC_NAVIGATION_ACTIVE` 0x08e2) | enabled | framed and skipped |
-| Clan, chat rooms, trade, vending, buying store | enabled | missing |
+| Clan, chat rooms, vending, buying store | enabled | missing |
 | Refine, enchant, item reform, Laphine, stylist, roulette | enabled | missing |
 | Bank | one NPC only | missing |
 | Cash shop | code on, no items | missing (nothing to buy) |
 | Battlegrounds | maps loaded | `ZC_BATTLEFIELD_*` framed, no UI |
 | Reputation (`ZC_REPUTE_OPEN`) | enabled | framed and skipped |
 | Character rename, slot move | enabled | framed, no UI |
-| Gamepad | n/a | not implemented |
 | Window position persistence | n/a | game windows are fixed-layout SwiftUI; main and game windows use macOS defaults |
 
 ## Not verified on this machine
