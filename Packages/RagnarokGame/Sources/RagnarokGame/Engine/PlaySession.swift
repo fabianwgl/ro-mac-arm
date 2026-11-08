@@ -494,12 +494,12 @@ final class PlaySession {
         case let packet as PACKET_ZC_REQ_WEAR_EQUIP_ACK:
             inventory.update(from: packet)
             if let item = inventory.items[Int(packet.index)] {
-                messageCenter.addMessage(for: packet, itemID: item.itemID)
+                messageCenter.addMessage(for: packet, itemID: item.itemID, isIdentified: item.isIdentified)
             }
         case let packet as PACKET_ZC_REQ_TAKEOFF_EQUIP_ACK:
             inventory.update(from: packet)
             if let item = inventory.items[Int(packet.index)] {
-                messageCenter.addMessage(for: packet, itemID: item.itemID)
+                messageCenter.addMessage(for: packet, itemID: item.itemID, isIdentified: item.isIdentified)
             }
         case let packet as PACKET_ZC_ITEM_THROW_ACK:
             inventory.update(from: packet)

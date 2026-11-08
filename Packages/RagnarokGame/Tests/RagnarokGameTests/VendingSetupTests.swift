@@ -125,6 +125,7 @@ struct OwnVendingShopTests {
         entry.index = 2
         entry.amount = 20
         entry.itemId = 501
+        entry.identified = 1
 
         var packet = PACKET_ZC_PC_PURCHASE_MYITEMLIST()
         packet.AID = 2_000_001
@@ -133,6 +134,20 @@ struct OwnVendingShopTests {
         let shop = OwnVendingShop(from: packet, title: "Potions")
         #expect(shop.title == "Potions")
         #expect(shop.items == [OwnVendingShop.Item(index: 2, itemID: 501, price: 100, amount: 20)])
+    }
+
+    @Test func shopKeepsTheIdentifiedFlagOfTheOwnItemListPacket() {
+        var entry = PACKET_ZC_PC_PURCHASE_MYITEMLIST_sub()
+        entry.index = 3
+        entry.amount = 1
+        entry.itemId = 1201
+        entry.identified = 0
+
+        var packet = PACKET_ZC_PC_PURCHASE_MYITEMLIST()
+        packet.items = [entry]
+
+        let shop = OwnVendingShop(from: packet, title: "Knives")
+        #expect(shop.item(at: 3)?.isIdentified == false)
     }
 
     @Test func salesReduceStockAndAddUpTheZeny() {

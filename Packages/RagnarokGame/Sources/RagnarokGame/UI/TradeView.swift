@@ -245,7 +245,7 @@ struct TradeView: View {
     @ViewBuilder private func amountInputBox(_ trade: Trade) -> some View {
         if let item = amountItem {
             GameNumberInputBox(
-                gameContext.itemInfoTable.localizedIdentifiedItemName(forItemID: item.itemID) ?? "\(item.itemID)",
+                gameContext.itemInfoTable.localizedItemName(forItemID: item.itemID, isIdentified: item.isIdentified) ?? "\(item.itemID)",
                 bounds: 1...max(min(item.amount, Trade.maxAmountPerAdd), 1)
             ) { amount in
                 playSession.offerTradeItem(index: item.index, amount: amount)

@@ -147,6 +147,8 @@ struct OwnVendingShop: Equatable, Sendable {
         /// What was sold since the shop opened.
         var sold = 0
 
+        var isIdentified = true
+
         var id: Int {
             index
         }
@@ -171,7 +173,13 @@ struct OwnVendingShop: Equatable, Sendable {
         self.init(
             title: title,
             items: packet.items.map { entry in
-                Item(index: Int(entry.index), itemID: Int(entry.itemId), price: Int(entry.price), amount: Int(entry.amount))
+                Item(
+                    index: Int(entry.index),
+                    itemID: Int(entry.itemId),
+                    price: Int(entry.price),
+                    amount: Int(entry.amount),
+                    isIdentified: entry.identified != 0
+                )
             }
         )
     }

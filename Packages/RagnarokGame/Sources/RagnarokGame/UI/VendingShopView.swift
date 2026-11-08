@@ -85,8 +85,8 @@ struct VendingShopView: View {
 
 /// The name of an item as shops list it, with its refine level.
 /// rAthena only lets identified items into a shop, so there is no unidentified name.
-func vendingItemName(itemID: Int, refine: Int, itemInfoTable: ItemInfoTable) -> String {
-    let name = itemInfoTable.localizedIdentifiedItemName(forItemID: itemID) ?? "\(itemID)"
+func vendingItemName(itemID: Int, refine: Int, isIdentified: Bool = true, itemInfoTable: ItemInfoTable) -> String {
+    let name = itemInfoTable.localizedItemName(forItemID: itemID, isIdentified: isIdentified) ?? "\(itemID)"
     return refine > 0 ? "+\(refine) \(name)" : name
 }
 
@@ -118,7 +118,7 @@ private struct VendingShopItemRow: View {
             }
             .frame(width: 32, height: 32)
 
-            Text(vendingItemName(itemID: item.itemID, refine: item.refine, itemInfoTable: gameContext.itemInfoTable))
+            Text(vendingItemName(itemID: item.itemID, refine: item.refine, isIdentified: item.isIdentified, itemInfoTable: gameContext.itemInfoTable))
             .lineLimit(2)
 
             Spacer(minLength: 5)

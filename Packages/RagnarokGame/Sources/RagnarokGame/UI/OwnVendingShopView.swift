@@ -74,7 +74,7 @@ private struct OwnVendingShopRow: View {
             }
             .frame(width: 32, height: 32)
 
-            Text(gameContext.itemInfoTable.localizedIdentifiedItemName(forItemID: item.itemID) ?? "\(item.itemID)")
+            Text(gameContext.itemInfoTable.localizedItemName(forItemID: item.itemID, isIdentified: item.isIdentified) ?? "\(item.itemID)")
                 .lineLimit(2)
 
             Spacer(minLength: 5)

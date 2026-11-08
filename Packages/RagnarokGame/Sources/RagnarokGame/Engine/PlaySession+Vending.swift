@@ -37,7 +37,7 @@ final class VendingState {
     /// The item id of cart slots that were just emptied, by cart index. rAthena removes the item from the cart
     /// (`ZC_DELETE_ITEM_FROM_CART`) before it reports the sale (`ZC_DELETEITEM_FROM_MCSTORE`), so the report
     /// finds its item here.
-    @ObservationIgnored var recentlyRemovedCartItemIDs: [Int : Int] = [:]
+    @ObservationIgnored var recentlyRemovedCartItemIDs: [Int : (itemID: Int, isIdentified: Bool)] = [:]
 
     /// The signs and the shop window belong to the map the player left.
     func resetForMapChange() {
@@ -95,7 +95,7 @@ extension PlaySession {
         case let packet as PACKET_ZC_DELETE_ITEM_FROM_CART:
             let index = Int(packet.index)
             if let item = vending.cart.items[index] {
-                vending.recentlyRemovedCartItemIDs[index] = item.itemID
+                vending.recentlyRemovedCartItemIDs[index] = (itemID: item.itemID, isIdentified: item.isIdentified)
             }
             vending.cart.update(from: packet)
         case _ as PACKET_ZC_CARTOFF:
@@ -267,12 +267,13 @@ extension PlaySession {
     /// The vendor side: someone bought `amount` of the cart item `index` for `zeny` (after tax).
     private func handleVendingSale(_ packet: PACKET_ZC_DELETEITEM_FROM_MCSTORE) {
         let index = Int(packet.index)
-        let itemID = vending.ownShop?.item(at: index)?.itemID
-            ?? vending.cart.items[index]?.itemID
+        let sold: (itemID: Int, isIdentified: Bool)? = vending.ownShop?.item(at: index).map { ($0.itemID, $0.isIdentified) }
+            ?? vending.cart.items[index].map { ($0.itemID, $0.isIdentified) }
             ?? vending.recentlyRemovedCartItemIDs[index]
+        let itemID = sold?.itemID
         vending.recentlyRemovedCartItemIDs.removeValue(forKey: index)
 
-        let itemName = itemID.flatMap { messageCenter.itemInfoTable.localizedIdentifiedItemName(forItemID: $0) }
+        let itemName = sold.flatMap { messageCenter.itemInfoTable.localizedItemName(forItemID: $0.itemID, isIdentified: $0.isIdentified) }
             ?? itemID.map { "item \($0)" }
             ?? "an item"
         addVendingMessage("Sold \(packet.amount) \(itemName) for \(packet.zeny) zeny.", type: .system)
