@@ -52,6 +52,8 @@ final class PlaySession {
     let messageCenter: MessageCenter
 
     var dialog: NPCDialog?
+    /// The NPC whose dialog window a map change closed, until the server's close packet for it arrives.
+    @ObservationIgnored var npcClosedByMapChange: UInt32?
     var dealSelectionNPCID: UInt32?
     var npcShop: NPCShop?
     var storage: Storage?
@@ -333,10 +335,12 @@ final class PlaySession {
             let packet = PacketFactory.CZ_PING_LIVE()
             mapClient?.sendPacket(packet)
         case let packet as PACKET_ZC_NPCACK_MAPMOVE:
+            closeDialogForMapChange()
             let mapName = packet.mapName.replacingOccurrences(of: ".gat", with: ".rsw")
             let position = SIMD2(x: Int(packet.xPos), y: Int(packet.yPos))
             loadMap(mapName: mapName, position: position)
         case let packet as PACKET_ZC_NPCACK_SERVERMOVE:
+            closeDialogForMapChange()
             let mapName = packet.mapName.replacingOccurrences(of: ".gat", with: ".rsw")
             let position = SIMD2(x: Int(packet.xPos), y: Int(packet.yPos))
             let mapServer = MapServerInfo(ip: packet.ip, port: packet.port)
@@ -598,6 +602,7 @@ final class PlaySession {
                 mapScene?.onEffectSpawned(effectID: effectID, objectID: packet.AID)
             }
         case let packet as PACKET_ZC_SAY_DIALOG:
+            npcClosedByMapChange = nil
             if dialog?.npcID == packet.NpcID {
                 dialog?.update(from: packet)
             } else {
@@ -606,7 +611,7 @@ final class PlaySession {
         case let packet as PACKET_ZC_WAIT_DIALOG:
             dialog?.update(from: packet)
         case let packet as PACKET_ZC_CLOSE_DIALOG:
-            dialog?.update(from: packet)
+            handleCloseDialog(packet)
         case let packet as PACKET_ZC_CLEAR_DIALOG:
             if dialog?.npcID == packet.GID {
                 dialog = nil

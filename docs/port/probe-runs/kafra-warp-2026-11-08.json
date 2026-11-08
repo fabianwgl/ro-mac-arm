@@ -1,0 +1,1011 @@
+{
+  "attacksSent" : 0,
+  "chatLinesSent" : 2,
+  "connectionsAccepted" : {
+    "char" : 1,
+    "login" : 1,
+    "map" : 1
+  },
+  "connectPacketCoalesced" : 0,
+  "deaths" : 0,
+  "decodeFailures" : [
+
+  ],
+  "disconnectEvents" : [
+
+  ],
+  "disconnects" : 0,
+  "durationSeconds" : 29.600000000000001,
+  "endedAt" : "2026-11-08T19:00:53Z",
+  "errorCount" : 0,
+  "errors" : [
+
+  ],
+  "lastStage" : "play.loaded",
+  "mapName" : "geffen.rsw",
+  "mapsVisited" : [
+    "geffen.rsw",
+    "prontera.rsw",
+    "geffen.rsw"
+  ],
+  "monstersSeen" : 0,
+  "notes" : [
+
+  ],
+  "options" : {
+    "attackInterval" : 5,
+    "audible" : false,
+    "charName" : "ProbeCore13",
+    "chatInterval" : 30,
+    "deleteTest" : false,
+    "host" : "127.0.0.1",
+    "port" : 6900,
+    "reconnect" : false,
+    "scenario" : "core",
+    "tap" : true,
+    "tasks" : [
+      "P3-09"
+    ],
+    "user" : "probecore",
+    "walkInterval" : 3,
+    "withAudio" : false
+  },
+  "packetsReceivedByOpcode" : [
+    {
+      "bytes" : 1602,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_HC_ACCEPT_ENTER",
+      "opcode" : "0x006b",
+      "roles" : [
+        "char"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 78,
+      "decoded" : 13,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_NOTIFY_TIME",
+      "opcode" : "0x007f",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 7,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_NOTIFY_VANISH",
+      "opcode" : "0x0080",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 12,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_NOTIFY_PLAYERMOVE",
+      "opcode" : "0x0087",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 184,
+      "decoded" : 4,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_NOTIFY_PLAYERCHAT",
+      "opcode" : "0x008e",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 66,
+      "decoded" : 3,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_NPCACK_MAPMOVE",
+      "opcode" : "0x0091",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 352,
+      "decoded" : 44,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_PAR_CHANGE",
+      "opcode" : "0x00b0",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 24,
+      "decoded" : 3,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_LONGPAR_CHANGE",
+      "opcode" : "0x00b1",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 914,
+      "decoded" : 34,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_SAY_DIALOG",
+      "opcode" : "0x00b4",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 30,
+      "decoded" : 5,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_WAIT_DIALOG",
+      "opcode" : "0x00b5",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 24,
+      "decoded" : 4,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_CLOSE_DIALOG",
+      "opcode" : "0x00b6",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 493,
+      "decoded" : 5,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_MENU_LIST",
+      "opcode" : "0x00b7",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 44,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_STATUS",
+      "opcode" : "0x00bd",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 30,
+      "decoded" : 6,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_STATUS_CHANGE",
+      "opcode" : "0x00be",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 18,
+      "decoded" : 3,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_NOTIFY_STOREITEM_COUNTINFO",
+      "opcode" : "0x00f2",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 8,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_DELETE_ITEM_FROM_STORE",
+      "opcode" : "0x00f6",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 2,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_CLOSE_STORE",
+      "opcode" : "0x00f8",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 8,
+      "decoded" : 2,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_ATTACK_RANGE",
+      "opcode" : "0x013a",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 588,
+      "decoded" : 42,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_COUPLESTATUS",
+      "opcode" : "0x0141",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 469,
+      "decoded" : 7,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_SHOW_IMAGE",
+      "opcode" : "0x01b3",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 15,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_USE_ITEM_ACK",
+      "opcode" : "0x01c8",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 45,
+      "decoded" : 3,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_SPRITE_CHANGE",
+      "opcode" : "0x01d7",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 4,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_FRIENDS_LIST",
+      "opcode" : "0x0201",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 4,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_HC_BLOCK_CHARACTER",
+      "opcode" : "0x020d",
+      "roles" : [
+        "char"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 6,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_AID",
+      "opcode" : "0x0283",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 9,
+      "decoded" : 3,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_PARTY_CONFIG",
+      "opcode" : "0x02c9",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 90,
+      "decoded" : 9,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_CONFIG",
+      "opcode" : "0x02d9",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 9,
+      "decoded" : 3,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_CONFIG_NOTIFY",
+      "opcode" : "0x02da",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 13,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_ACCEPT_ENTER",
+      "opcode" : "0x02eb",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 8,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_DELETE_ITEM_FROM_BODY",
+      "opcode" : "0x07fa",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 29,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_HC_ACCEPT_ENTER2",
+      "opcode" : "0x082d",
+      "roles" : [
+        "char"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 12,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_HC_SECOND_PASSWD_LOGIN",
+      "opcode" : "0x08b9",
+      "roles" : [
+        "char"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 24,
+      "decoded" : 3,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_MAPPROPERTY_R2",
+      "opcode" : "0x099b",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 6,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_HC_CHARLIST_NOTIFY",
+      "opcode" : "0x09a0",
+      "roles" : [
+        "char"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 3,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_NOTIFY_UNREADMAIL",
+      "opcode" : "0x09e7",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 1944,
+      "decoded" : 18,
+      "decodeFailures" : 0,
+      "name" : "packet_idle_unit",
+      "opcode" : "0x09ff",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 422,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_ALL_ACH_LIST",
+      "opcode" : "0x0a23",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 66,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_ACH_UPDATE",
+      "opcode" : "0x0a24",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 12,
+      "decoded" : 3,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_SEND_SWAP_EQUIPITEM_INFO",
+      "opcode" : "0x0a9b",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 224,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_AC_ACCEPT_LOGIN",
+      "opcode" : "0x0ac4",
+      "roles" : [
+        "login"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 156,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_HC_NOTIFY_ZONESVR",
+      "opcode" : "0x0ac5",
+      "roles" : [
+        "char"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 48,
+      "decoded" : 4,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_LONGLONGPAR_CHANGE",
+      "opcode" : "0x0acb",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 6,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_RECOVER_PENALTY_OVERWEIGHT",
+      "opcode" : "0x0ade",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 31,
+      "decoded" : 4,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_INVENTORY_START",
+      "opcode" : "0x0b08",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 525,
+      "decoded" : 3,
+      "decodeFailures" : 0,
+      "name" : "packet_itemlist_normal",
+      "opcode" : "0x0b09",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 16,
+      "decoded" : 4,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_INVENTORY_END",
+      "opcode" : "0x0b0b",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 4,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_EXTEND_BODYITEM_SIZE",
+      "opcode" : "0x0b18",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 542,
+      "decoded" : 2,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_SHORTCUT_KEY_LIST",
+      "opcode" : "0x0b20",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 139,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_SKILLINFO_LIST",
+      "opcode" : "0x0b32",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 831,
+      "decoded" : 3,
+      "decodeFailures" : 0,
+      "name" : "packet_itemlist_equip",
+      "opcode" : "0x0b39",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 70,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_ITEM_PICKUP_ACK",
+      "opcode" : "0x0b41",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 58,
+      "decoded" : 1,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_ADD_ITEM_TO_STORE",
+      "opcode" : "0x0b44",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    },
+    {
+      "bytes" : 207,
+      "decoded" : 3,
+      "decodeFailures" : 0,
+      "name" : "PACKET_ZC_REPUTE_INFO",
+      "opcode" : "0x0b8d",
+      "roles" : [
+        "map"
+      ],
+      "unimplemented" : 0,
+      "unknown" : 0
+    }
+  ],
+  "packetsSentByOpcode" : [
+    {
+      "bytes" : 55,
+      "count" : 1,
+      "name" : "PACKET_CA_LOGIN",
+      "opcode" : "0x0064"
+    },
+    {
+      "bytes" : 17,
+      "count" : 1,
+      "name" : "PACKET_CH_ENTER",
+      "opcode" : "0x0065"
+    },
+    {
+      "bytes" : 3,
+      "count" : 1,
+      "name" : "PACKET_CH_SELECT_CHAR",
+      "opcode" : "0x0066"
+    },
+    {
+      "bytes" : 6,
+      "count" : 3,
+      "name" : "PACKET_CZ_NOTIFY_ACTORINIT",
+      "opcode" : "0x007d"
+    },
+    {
+      "bytes" : 28,
+      "count" : 4,
+      "name" : "HEADER_CZ_CONTACTNPC",
+      "opcode" : "0x0090"
+    },
+    {
+      "bytes" : 35,
+      "count" : 5,
+      "name" : "clif_parse_NpcSelectMenu",
+      "opcode" : "0x00b8"
+    },
+    {
+      "bytes" : 30,
+      "count" : 5,
+      "name" : "clif_parse_NpcNextClicked",
+      "opcode" : "0x00b9"
+    },
+    {
+      "bytes" : 68,
+      "count" : 2,
+      "name" : "clif_parse_GlobalMessage",
+      "opcode" : "0x00f3"
+    },
+    {
+      "bytes" : 18,
+      "count" : 3,
+      "name" : "HEADER_CZ_CLOSE_DIALOG",
+      "opcode" : "0x0146"
+    },
+    {
+      "bytes" : 2,
+      "count" : 1,
+      "name" : "clif_parse_CloseKafra",
+      "opcode" : "0x0193"
+    },
+    {
+      "bytes" : 5,
+      "count" : 1,
+      "name" : "PACKET_CZ_REQUEST_MOVE",
+      "opcode" : "0x035f"
+    },
+    {
+      "bytes" : 90,
+      "count" : 15,
+      "name" : "PACKET_CZ_REQUEST_TIME",
+      "opcode" : "0x0360"
+    },
+    {
+      "bytes" : 20,
+      "count" : 4,
+      "name" : "clif_parse_ChangeDir",
+      "opcode" : "0x0361"
+    },
+    {
+      "bytes" : 8,
+      "count" : 1,
+      "name" : "clif_parse_MoveToKafra",
+      "opcode" : "0x0364"
+    },
+    {
+      "bytes" : 8,
+      "count" : 1,
+      "name" : "clif_parse_MoveFromKafra",
+      "opcode" : "0x0365"
+    },
+    {
+      "bytes" : 23,
+      "count" : 1,
+      "name" : "PACKET_CZ_ENTER",
+      "opcode" : "0x0436"
+    },
+    {
+      "bytes" : 8,
+      "count" : 1,
+      "name" : "clif_parse_UseItem",
+      "opcode" : "0x0439"
+    }
+  ],
+  "packetTotals" : {
+    "bytes" : 10531,
+    "decoded" : 265,
+    "decodeFailures" : 0,
+    "unimplemented" : 0,
+    "unknown" : 0
+  },
+  "reachedMap" : true,
+  "reconnects" : 0,
+  "registeredSizeVsWireLengthMismatches" : [
+
+  ],
+  "requestedDurationSeconds" : 60,
+  "samplePositions" : [
+
+  ],
+  "scenario" : {
+    "character" : "ProbeCore13",
+    "failed" : [
+
+    ],
+    "name" : "core",
+    "passed" : [
+      "P3-09"
+    ],
+    "seconds" : 24.800000000000001,
+    "tasks" : [
+      {
+        "checks" : [
+          {
+            "detail" : "object 110001538 job 115",
+            "name" : "find the Kafra Employee at 151,29",
+            "passed" : true
+          },
+          {
+            "detail" : "ZC_SAY_DIALOG x5; text \"[Kafra Employee] \/ Welcome~! \/ The Kafra Services \/ are always on your side. \/ S\"",
+            "name" : "NPC dialog text (CZ_CONTACTNPC, ZC_SAY_DIALOG)",
+            "passed" : true
+          },
+          {
+            "detail" : "CZ_REQ_NEXT_SCRIPT x1; menu [\"Save\", \"Use Storage\", \"Use Teleport Service\", \"Rent a Pushcart\", \"Check Other Information\", \"Cancel\"]",
+            "name" : "dialog next button (CZ_REQ_NEXT_SCRIPT, ZC_MENU_LIST)",
+            "passed" : true
+          },
+          {
+            "detail" : "CZ_CHOOSE_MENU x1; dialog open false",
+            "name" : "cancel the menu (CZ_CHOOSE_MENU 255) ends the conversation",
+            "passed" : true
+          },
+          {
+            "detail" : "menu index 1; ZC_SAY_DIALOG x6; ZC_CLOSE_DIALOG x1",
+            "name" : "Kafra Save (CZ_CHOOSE_MENU \"Save\", dialog ends)",
+            "passed" : true
+          },
+          {
+            "detail" : "storage Storage; zeny 76730 -> 76690; ZC_INVENTORY_START x1",
+            "name" : "Kafra Use Storage opens the storage (fee 40 zeny)",
+            "passed" : true
+          },
+          {
+            "detail" : "inventory 11 -> 8, storage amount 3; ZC_ADD_ITEM_TO_STORE x1; ZC_NOTIFY_STOREITEM_COUNTINFO x1",
+            "name" : "P3-09 storage: put 3 potions in (CZ_MOVE_ITEM_FROM_BODY_TO_STORE, ZC_ADD_ITEM_TO_STORE)",
+            "passed" : true
+          },
+          {
+            "detail" : "inventory 11, storage has potion false; ZC_DELETE_ITEM_FROM_STORE x1",
+            "name" : "P3-09 storage: take 3 potions out (CZ_MOVE_ITEM_FROM_STORE_TO_BODY, ZC_DELETE_ITEM_FROM_STORE)",
+            "passed" : true
+          },
+          {
+            "detail" : "CZ_CLOSE_STORE x1",
+            "name" : "P3-09 storage: close (CZ_CLOSE_STORE)",
+            "passed" : true
+          },
+          {
+            "detail" : "map geffen.rsw at 120,39; zeny 76690 -> 75490; ZC_NPCACK_MAPMOVE x1",
+            "name" : "Kafra teleport to Geffen (CZ_CHOOSE_MENU, ZC_NPCACK_MAPMOVE, map load)",
+            "passed" : true
+          },
+          {
+            "detail" : "dialog closed; ZC_CLOSE_DIALOG x1, ZC_CLEAR_DIALOG x0, CZ_CLOSE_DIALOG x1",
+            "name" : "Kafra dialog window is closed after the warp (no click needed)",
+            "passed" : true
+          },
+          {
+            "detail" : "from 120,39 to 122,34, now 122,34; CZ_REQUEST_MOVE x1, ZC_NOTIFY_PLAYERMOVE x1; dialog closed",
+            "name" : "walking works right after the Kafra warp, dialog never dismissed (CZ_REQUEST_MOVE, ZC_NOTIFY_PLAYERMOVE)",
+            "passed" : true
+          },
+          {
+            "detail" : "Red Potions 11 -> 10; CZ_USE_ITEM x1, ZC_USE_ITEM_ACK x1",
+            "name" : "an item works right after the Kafra warp (CZ_USE_ITEM, ZC_USE_ITEM_ACK)",
+            "passed" : true
+          }
+        ],
+        "id" : "P3-09",
+        "notes" : [
+          "arrived at prontera.rsw 151,33",
+          "Kafra menu: [\"Save\", \"Use Storage\", \"Use Teleport Service\", \"Rent a Pushcart\", \"Check Other Information\", \"Cancel\"]",
+          "teleport destinations: [\"Izlude -> 600 z\", \"Geffen -> 1200 z\", \"Payon -> 1200 z\", \"Morocc -> 1200 z\", \"Orc Dungeon -> 1700 z\", \"Alberta -> 1800 z\", \"Cancel\"]"
+        ],
+        "packetsReceived" : {
+          "packet_idle_unit (0x09ff)" : 13,
+          "packet_itemlist_equip (0x0b39)" : 2,
+          "packet_itemlist_normal (0x0b09)" : 2,
+          "ZC_ADD_ITEM_TO_STORE (0x0b44)" : 1,
+          "ZC_CLOSE_DIALOG (0x00b6)" : 4,
+          "ZC_CLOSE_STORE (0x00f8)" : 1,
+          "ZC_CONFIG (0x02d9)" : 6,
+          "ZC_CONFIG_NOTIFY (0x02da)" : 2,
+          "ZC_COUPLESTATUS (0x0141)" : 24,
+          "ZC_DELETE_ITEM_FROM_BODY (0x07fa)" : 1,
+          "ZC_DELETE_ITEM_FROM_STORE (0x00f6)" : 1,
+          "ZC_INVENTORY_END (0x0b0b)" : 3,
+          "ZC_INVENTORY_START (0x0b08)" : 3,
+          "ZC_ITEM_PICKUP_ACK (0x0b41)" : 1,
+          "ZC_LONGPAR_CHANGE (0x00b1)" : 3,
+          "ZC_MAPPROPERTY_R2 (0x099b)" : 2,
+          "ZC_MENU_LIST (0x00b7)" : 5,
+          "ZC_NOTIFY_PLAYERCHAT (0x008e)" : 2,
+          "ZC_NOTIFY_PLAYERMOVE (0x0087)" : 1,
+          "ZC_NOTIFY_STOREITEM_COUNTINFO (0x00f2)" : 3,
+          "ZC_NOTIFY_TIME (0x007f)" : 9,
+          "ZC_NOTIFY_VANISH (0x0080)" : 1,
+          "ZC_NPCACK_MAPMOVE (0x0091)" : 2,
+          "ZC_PAR_CHANGE (0x00b0)" : 10,
+          "ZC_PARTY_CONFIG (0x02c9)" : 2,
+          "ZC_REPUTE_INFO (0x0b8d)" : 2,
+          "ZC_SAY_DIALOG (0x00b4)" : 34,
+          "ZC_SEND_SWAP_EQUIPITEM_INFO (0x0a9b)" : 2,
+          "ZC_SHOW_IMAGE (0x01b3)" : 7,
+          "ZC_SPRITE_CHANGE (0x01d7)" : 2,
+          "ZC_USE_ITEM_ACK (0x01c8)" : 1,
+          "ZC_WAIT_DIALOG (0x00b5)" : 5
+        },
+        "packetsSent" : {
+          "clif_parse_ChangeDir (0x0361)" : 4,
+          "clif_parse_CloseKafra (0x0193)" : 1,
+          "clif_parse_GlobalMessage (0x00f3)" : 2,
+          "clif_parse_MoveFromKafra (0x0365)" : 1,
+          "clif_parse_MoveToKafra (0x0364)" : 1,
+          "clif_parse_NpcNextClicked (0x00b9)" : 5,
+          "clif_parse_NpcSelectMenu (0x00b8)" : 5,
+          "clif_parse_UseItem (0x0439)" : 1,
+          "CZ_CLOSE_DIALOG (0x0146)" : 3,
+          "CZ_CONTACTNPC (0x0090)" : 4,
+          "CZ_NOTIFY_ACTORINIT (0x007d)" : 2,
+          "CZ_REQUEST_MOVE (0x035f)" : 1,
+          "CZ_REQUEST_TIME (0x0360)" : 11
+        },
+        "result" : "pass",
+        "seconds" : 21.800000000000001,
+        "serverMessages" : [
+          "Current amount of zeny changed.",
+          "Warped.",
+          "You got Red Potion (3)."
+        ],
+        "summary" : "Prontera Kafra: dialog, Save, Use Storage (put\/take), Teleport Service to Geffen, then walk and use an item with no dialog click",
+        "title" : "Kafra save, teleport, and storage"
+      }
+    ]
+  },
+  "sessions" : [
+    {
+      "attempt" : 1,
+      "map" : "geffen.rsw",
+      "mapLoadSeconds" : 4.2999999999999998,
+      "result" : "scenario core passed",
+      "seconds" : 29.300000000000001
+    }
+  ],
+  "stageHistory" : [
+    {
+      "message" : "login.loggingIn",
+      "t" : 0.20000000000000001
+    },
+    {
+      "message" : "login.waitingForMapServer(slot 7)",
+      "t" : 0.29999999999999999
+    },
+    {
+      "message" : "play.loading",
+      "t" : 0.40000000000000002
+    },
+    {
+      "message" : "play.loaded",
+      "t" : 4.7999999999999998
+    },
+    {
+      "message" : "play.loading",
+      "t" : 8.4000000000000004
+    },
+    {
+      "message" : "play.loaded",
+      "t" : 14
+    },
+    {
+      "message" : "play.loading",
+      "t" : 24.199999999999999
+    },
+    {
+      "message" : "play.loaded",
+      "t" : 26.899999999999999
+    }
+  ],
+  "startedAt" : "2026-11-08T19:00:23Z",
+  "streamDesyncs" : 0,
+  "tapEnabled" : true,
+  "timeOnMapSeconds" : 0,
+  "unimplementedPackets" : [
+
+  ],
+  "unknownPackets" : [
+
+  ],
+  "walkRequestsSent" : 0
+}
