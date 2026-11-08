@@ -112,6 +112,9 @@ final public class GameSession {
 
     public func start(_ configuration: GameSession.Configuration) {
         state = .running(configuration: configuration)
+        #if DEBUG || RO_AUTOMATION
+        AutoLogin.attach(to: self)
+        #endif
     }
 
     public func stop() {

@@ -75,7 +75,17 @@ struct LauncherView: View {
         }
         .frame(minWidth: 520, idealWidth: 560, minHeight: 560, idealHeight: 720)
         .onAppear {
+            PerfProbe.mark("launcherShown")
             refreshAssets()
+            #if DEBUG || RO_AUTOMATION
+            // Performance runs (scripts/perf-run.sh): skip Play and open the game window straight away.
+            if let configuration = AutoLogin.launchConfiguration(
+                defaultAddress: settings.serverAddress,
+                defaultPort: UInt16(settings.serverPort) ?? 6900
+            ) {
+                openWindow(id: GameSession.windowID, value: configuration)
+            }
+            #endif
         }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
             refreshAssets()
