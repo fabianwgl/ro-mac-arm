@@ -54,7 +54,7 @@ struct Options {
       --stage-timeout <s>     wait per login stage         (default 120)
       --map-load-timeout <s>  wait for the map to load     (default 300)
       --with-audio            let the client play BGM and sound effects (muted by default)
-      --vending <seller|buyer> run the vending scenario instead of wandering (VendingScenario.swift)
+      --vending <role>         run the vending scenario instead of wandering: seller, buyer, store-owner, store-seller
       --vending-title <text>   shop title the seller sets and the buyer expects (default "Probe potions")
       --vending-map <map>      map both probes warp to       (default prt_fild08)
       --vending-pos <x,y>      cell both probes warp to      (default 170,180)
@@ -133,8 +133,8 @@ struct Options {
             case "--with-audio": options.withAudio = true
             case "--vending":
                 let role = try value(flag)
-                guard role == "seller" || role == "buyer" else {
-                    throw ParseError(description: "--vending expects seller or buyer, not \(role)")
+                guard ["seller", "buyer", "store-owner", "store-seller"].contains(role) else {
+                    throw ParseError(description: "--vending expects seller, buyer, store-owner or store-seller, not \(role)")
                 }
                 options.vendingRole = role
             case "--vending-title": options.vendingTitle = try value(flag)

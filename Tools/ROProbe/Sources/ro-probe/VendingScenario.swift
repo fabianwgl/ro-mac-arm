@@ -7,6 +7,8 @@ import RagnarokResources
 import simd
 
 /// Two probes trade through a vending shop: `--vending seller` opens a shop, `--vending buyer` buys from it.
+/// The buying store is the same turned around: `--vending store-owner` opens a buying store with a license,
+/// `--vending store-seller` sells to it.
 ///
 /// Both log in as GM accounts (group 99), set themselves up with `@` commands and warp to the same cell.
 /// The seller becomes a Merchant with a cart, moves potions into it and uses the Vending skill through the same
@@ -18,6 +20,8 @@ final class VendingScenario {
     enum Role: String {
         case seller
         case buyer
+        case storeOwner = "store-owner"
+        case storeSeller = "store-seller"
     }
 
     let options: Options
@@ -36,6 +40,14 @@ final class VendingScenario {
     private let stockInCart = 40
     private let amountForSale = 30
     private let amountToBuy = 10
+
+    // The buying store: green potions, which the server lets stores buy.
+    private let herbID = 506
+    private let herbPrice = 50
+    private let herbWanted = 20
+    private let herbToSell = 5
+    private let storeZenyLimit = 1_000
+    private let storeLicenseID = 12548
 
     init(options: Options, role: Role, resourceManager: ResourceManager) {
         self.options = options
@@ -60,6 +72,10 @@ final class VendingScenario {
                 passed = try await runSeller(gameSession, playSession)
             case .buyer:
                 passed = try await runBuyer(gameSession, playSession)
+            case .storeOwner:
+                passed = try await runStoreOwner(gameSession, playSession)
+            case .storeSeller:
+                passed = try await runStoreSeller(gameSession, playSession)
             }
         } catch {
             fail("\(error)")
@@ -256,6 +272,7 @@ final class VendingScenario {
         facts["vendorID"] = Int(vendorID)
         facts["signTitle"] = title
         check("sign shows the title", title == options.vendingTitle, detail: title)
+        checkSignIsDrawn(playSession, expected: 1)
         step("sign \"\(title)\" over player \(vendorID)")
 
         let zenyBefore = playSession.playerStatus.zeny
@@ -295,6 +312,148 @@ final class VendingScenario {
         return true
     }
 
+    // MARK: - Buying store owner
+
+    private func runStoreOwner(_ gameSession: GameSession, _ playSession: PlaySession) async throws -> Bool {
+        step("prepare zeny, one herb and a license")
+        command(playSession, "@zeny 100000")
+        try await require(timeout: 15, "zeny") { playSession.playerStatus.zeny >= 100_000 }
+        command(playSession, "@item \(herbID) 1")
+        try await require(timeout: 15, "a herb") { self.inventoryAmount(of: self.herbID, playSession) >= 1 }
+        command(playSession, "@item \(storeLicenseID) 1")
+        try await require(timeout: 15, "the license") { self.inventoryAmount(of: self.storeLicenseID, playSession) >= 1 }
+
+        try await moveToShopCell(gameSession)
+        guard let scene = gameSession.mapScene else {
+            throw ScenarioError("no map scene")
+        }
+        facts["ownerPosition"] = "\(scene.mapName) \(scene.player.gridPosition.x),\(scene.player.gridPosition.y)"
+
+        step("use the license")
+        guard let license = playSession.inventory.items.values.first(where: { $0.itemID == storeLicenseID }) else {
+            throw ScenarioError("no license in the inventory")
+        }
+        playSession.useItem(at: license.index)
+        try await require(timeout: 15, "the buying store set up window (ZC_OPEN_BUYING_STORE)") { playSession.vending.buying.setup != nil }
+        facts["setupSlots"] = playSession.vending.buying.setup?.slots ?? 0
+
+        playSession.setBuyingStoreTitle(options.vendingTitle)
+        playSession.setBuyingStoreZenyLimit(storeZenyLimit)
+        playSession.setBuyingStoreAmount(herbWanted, forItemID: herbID)
+        playSession.setBuyingStorePrice(herbPrice, forItemID: herbID)
+        playSession.openBuyingStore()
+        try await require(timeout: 15, "the buying store to open (ZC_MYITEMLIST_BUYING_STORE)") {
+            playSession.vending.buying.own != nil && playSession.vending.buying.setup == nil
+        }
+        check("store is open with the wanted amount", playSession.vending.buying.own?.item(withID: herbID)?.amount == herbWanted,
+              detail: "\(String(describing: playSession.vending.buying.own?.item(withID: herbID)))")
+        check("store has the zeny limit", playSession.vending.buying.own?.zenyLimit == storeZenyLimit,
+              detail: "limit \(String(describing: playSession.vending.buying.own?.zenyLimit))")
+        check("own sign is set", playSession.vending.buying.signs[playSession.account.accountID] == options.vendingTitle,
+              detail: "\(playSession.vending.buying.signs)")
+
+        let zenyBefore = playSession.playerStatus.zeny
+        let herbsBefore = inventoryAmount(of: herbID, playSession)
+        facts["ownerZenyBefore"] = zenyBefore
+        facts["ownerHerbsBefore"] = herbsBefore
+        step("store open, waiting for a seller (up to \(Int(options.vendingTimeout)) s)")
+
+        let bought = await waitFor(timeout: options.vendingTimeout, "a sale", {
+            self.tick(gameSession)
+            return (playSession.vending.buying.own?.item(withID: self.herbID)?.bought ?? 0) >= self.herbToSell
+        })
+        guard bought else {
+            throw ScenarioError("nothing was sold to the store within \(Int(options.vendingTimeout)) s")
+        }
+        step("bought \(herbToSell), checking")
+        try await pause(2)
+
+        let spent = herbToSell * herbPrice
+        check("owner zeny fell by the price", playSession.playerStatus.zeny == zenyBefore - spent,
+              detail: "zeny \(zenyBefore) -> \(playSession.playerStatus.zeny), expected -\(spent)")
+        check("owner got the herbs", inventoryAmount(of: herbID, playSession) == herbsBefore + herbToSell,
+              detail: "herbs \(herbsBefore) -> \(inventoryAmount(of: herbID, playSession))")
+        check("store counts the purchase", playSession.vending.buying.own?.spentZeny == spent,
+              detail: "spent \(String(describing: playSession.vending.buying.own?.spentZeny))")
+        check("store lowered the zeny limit", playSession.vending.buying.own?.zenyLimit == storeZenyLimit - spent,
+              detail: "limit \(String(describing: playSession.vending.buying.own?.zenyLimit))")
+        check("store wants fewer herbs", playSession.vending.buying.own?.item(withID: herbID)?.amount == herbWanted - herbToSell,
+              detail: "wanted \(String(describing: playSession.vending.buying.own?.item(withID: herbID)?.amount))")
+        facts["ownerZenyAfter"] = playSession.playerStatus.zeny
+        facts["ownerHerbsAfter"] = inventoryAmount(of: herbID, playSession)
+
+        step("close the buying store")
+        playSession.closeOwnBuyingStore()
+        try await pause(1)
+        check("store closed", playSession.vending.buying.own == nil, detail: "")
+        return true
+    }
+
+    // MARK: - Buying store seller
+
+    private func runStoreSeller(_ gameSession: GameSession, _ playSession: PlaySession) async throws -> Bool {
+        step("prepare herbs")
+        let herbsStart = inventoryAmount(of: herbID, playSession)
+        command(playSession, "@item \(herbID) 30")
+        try await require(timeout: 15, "30 more herbs") { self.inventoryAmount(of: self.herbID, playSession) >= herbsStart + 30 }
+
+        try await moveToShopCell(gameSession)
+        guard let scene = gameSession.mapScene else {
+            throw ScenarioError("no map scene")
+        }
+        facts["sellerPosition"] = "\(scene.mapName) \(scene.player.gridPosition.x),\(scene.player.gridPosition.y)"
+
+        step("wait for a buying store sign (up to \(Int(options.vendingTimeout)) s)")
+        let seen = await waitFor(timeout: options.vendingTimeout, "a buying store sign", {
+            self.tick(gameSession)
+            return playSession.vending.buying.signs.contains { scene.objects[$0.key] != nil }
+        })
+        guard seen, let (buyerID, title) = playSession.vending.buying.signs.first(where: { scene.objects[$0.key] != nil }) else {
+            throw ScenarioError("no buying store sign appeared")
+        }
+        facts["buyerID"] = Int(buyerID)
+        facts["signTitle"] = title
+        check("sign shows the title", title == options.vendingTitle, detail: title)
+        checkSignIsDrawn(playSession, expected: 1)
+
+        let zenyBefore = playSession.playerStatus.zeny
+        let herbsBefore = inventoryAmount(of: herbID, playSession)
+        facts["sellerZenyBefore"] = zenyBefore
+        facts["sellerHerbsBefore"] = herbsBefore
+
+        step("click the buyer")
+        scene.handleInteraction(.mapObject(objectID: buyerID))
+        try await require(timeout: 15, "the item list (ZC_ACK_ITEMLIST_BUYING_STORE)") { playSession.vending.buying.store != nil }
+        guard let store = playSession.vending.buying.store, let item = store.items.first(where: { $0.itemID == herbID }) else {
+            throw ScenarioError("the store does not buy herbs: \(String(describing: playSession.vending.buying.store))")
+        }
+        facts["storeItems"] = store.items.map { ["itemID": $0.itemID, "price": $0.price, "amount": $0.amount] }
+        facts["storeZenyLimit"] = store.zenyLimit
+        check("store wants herbs at the price", item.price == herbPrice && item.amount == herbWanted,
+              detail: "price \(item.price), amount \(item.amount)")
+        check("store has the zeny limit", store.zenyLimit == storeZenyLimit, detail: "limit \(store.zenyLimit)")
+        check("store has the buyer title", store.title == options.vendingTitle, detail: store.title)
+
+        playSession.setBuyingStoreQuantity(herbToSell, of: herbID)
+        check("total is the price of the pick", playSession.vending.buying.store?.totalPrice == herbToSell * herbPrice,
+              detail: "total \(String(describing: playSession.vending.buying.store?.totalPrice))")
+        step("sell \(herbToSell)")
+        playSession.sellToBuyingStore()
+        check("window closed after the sale", playSession.vending.buying.store == nil, detail: "")
+
+        try await require(timeout: 15, "the herbs to leave the inventory") { self.inventoryAmount(of: self.herbID, playSession) == herbsBefore - self.herbToSell }
+        try await pause(2)
+
+        let paid = herbToSell * herbPrice
+        check("seller lost the herbs", inventoryAmount(of: herbID, playSession) == herbsBefore - herbToSell,
+              detail: "herbs \(herbsBefore) -> \(inventoryAmount(of: herbID, playSession))")
+        check("seller got paid", playSession.playerStatus.zeny == zenyBefore + paid,
+              detail: "zeny \(zenyBefore) -> \(playSession.playerStatus.zeny), expected +\(paid)")
+        facts["sellerZenyAfter"] = playSession.playerStatus.zeny
+        facts["sellerHerbsAfter"] = inventoryAmount(of: herbID, playSession)
+        return true
+    }
+
     // MARK: - Shared steps
 
     /// Both probes go to the same cell so the sign is in view and the purchase is within reach.
@@ -311,6 +470,18 @@ final class VendingScenario {
         // Let the objects around spawn.
         try await pause(3)
         tick(gameSession)
+    }
+
+    /// The render loop's snapshot holds one text per sign in view (the target selector shows none here).
+    /// This builds the text textures with the real Metal device, the part the headless run has not drawn so far.
+    private func checkSignIsDrawn(_ playSession: PlaySession, expected: Int) {
+        guard let runtime = playSession.mapRuntime else {
+            check("sign is drawn", false, detail: "no map runtime")
+            return
+        }
+        let snapshot = runtime.makeRenderSnapshot(at: .now)
+        check("sign is drawn in the render snapshot", snapshot.texts.count == expected,
+              detail: "texts \(snapshot.texts.count), signs \(playSession.vending.signs.count + playSession.vending.buying.signs.count)")
     }
 
     private func command(_ playSession: PlaySession, _ text: String) {
