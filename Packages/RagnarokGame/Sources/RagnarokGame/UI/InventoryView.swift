@@ -24,6 +24,7 @@ struct InventoryView: View {
     @State private var tab: InventoryTab = .item
     @State private var selectedItem: InventoryItem?
     @State private var throwingItem: InventoryItem?
+    @State private var cartingItem: InventoryItem?
 
     var body: some View {
         VStack(spacing: 3) {
@@ -37,15 +38,16 @@ struct InventoryView: View {
             .gameWindowTitle(Text(gameContext.messageStringTable.localizedMessageString(forID: 106)))
             .gameWindowCloseAction(onClose)
             .geometryGroup()
-            .blur(radius: selectedItem == nil && throwingItem == nil ? 0 : 5)
+            .blur(radius: isItemDialogOpen ? 5 : 0)
             .frame(width: 320)
             .overlay {
-                if selectedItem != nil || throwingItem != nil {
+                if isItemDialogOpen {
                     Color.clear
                         .contentShape(Rectangle())
                         .onTapGesture {
                             selectedItem = nil
                             throwingItem = nil
+                            cartingItem = nil
                         }
                 }
             }
@@ -57,12 +59,21 @@ struct InventoryView: View {
                 throwAmountInputBox
                     .transition(.opacity.combined(with: .scale).animation(.bouncy(duration: 0.25, extraBounce: 0.2)))
             }
+            .overlay {
+                cartAmountInputBox
+                    .transition(.opacity.combined(with: .scale).animation(.bouncy(duration: 0.25, extraBounce: 0.2)))
+            }
 
             ShortcutBarView()
         }
         .shortcutDragContainer()
         .animation(.easeInOut(duration: 0.25), value: selectedItem)
         .animation(.easeInOut(duration: 0.25), value: throwingItem)
+        .animation(.easeInOut(duration: 0.25), value: cartingItem)
+    }
+
+    private var isItemDialogOpen: Bool {
+        selectedItem != nil || throwingItem != nil || cartingItem != nil
     }
 
     private var tabBar: some View {
@@ -123,7 +134,7 @@ struct InventoryView: View {
                         }
                     }
 
-                InventoryItemActions(item: item, throwingItem: $throwingItem) {
+                InventoryItemActions(item: item, throwingItem: $throwingItem, cartingItem: $cartingItem) {
                     selectedItem = nil
                 }
             }
@@ -140,6 +151,20 @@ struct InventoryView: View {
                 throwingItem = nil
             } onClose: {
                 throwingItem = nil
+            }
+        }
+    }
+
+    @ViewBuilder private var cartAmountInputBox: some View {
+        if let item = cartingItem {
+            GameNumberInputBox(
+                gameContext.itemInfoTable.localizedItemName(forItemID: item.itemID, isIdentified: item.isIdentified) ?? "\(item.itemID)",
+                bounds: 1...item.amount
+            ) { amount in
+                playSession.moveItemToCart(index: item.index, amount: amount)
+                cartingItem = nil
+            } onClose: {
+                cartingItem = nil
             }
         }
     }
@@ -163,6 +188,7 @@ struct InventoryView: View {
 private struct InventoryItemActions: View {
     var item: InventoryItem
     @Binding var throwingItem: InventoryItem?
+    @Binding var cartingItem: InventoryItem?
     var dismiss: () -> Void
 
     @Environment(PlaySession.self) private var playSession
@@ -193,6 +219,19 @@ private struct InventoryItemActions: View {
                     } label: {
                         Text("Equip", bundle: #bundle)
                     }
+                }
+            }
+
+            if playSession.canMoveToCart(item) {
+                GameContextMenuButton {
+                    dismiss()
+                    if item.amount > 1 {
+                        cartingItem = item
+                    } else {
+                        playSession.moveItemToCart(index: item.index, amount: 1)
+                    }
+                } label: {
+                    Text(verbatim: "Move to cart")
                 }
             }
 

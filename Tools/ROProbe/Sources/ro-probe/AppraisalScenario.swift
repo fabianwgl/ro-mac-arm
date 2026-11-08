@@ -6,14 +6,16 @@ import RagnarokNetwork
 import RagnarokPackets
 import RagnarokResources
 
-/// Item appraisal, one probe on one account.
+/// Item appraisal and the cart moves, one probe on one account.
 ///
 /// The probe logs in as a GM account (group 99) and sets itself up with `@` commands. Appraisal: an unidentified
 /// Knife (`@item2` with identify flag 0) and Magnifiers. A Magnifier is used through `PlaySession.useItem`, the same
 /// call the inventory menu makes. The server answers with `ZC_ITEMIDENTIFY_LIST`, the probe cancels once (the server
 /// must leave the menu, which a second Magnifier use proves), then picks the Knife and checks that the inventory flag
 /// flips on `ZC_ACK_ITEMIDENTIFY`. The same is done with the Item Appraisal skill of the Merchant. A request for an
-/// index nothing is stored at shows that the server ignores it.
+/// item that is not unidentified shows that the server ignores it. Cart: the cart is put on and off with `@cart`, the
+/// `canMoveToCart` answer follows, and an item moves into the cart and back through the builders the inventory menu
+/// uses.
 @MainActor
 final class AppraisalScenario {
     let options: Options
@@ -27,7 +29,13 @@ final class AppraisalScenario {
 
     private let knifeID = 1201
     private let magnifierID = 611
+    private let potionID = 501
     private let itemAppraisalSkillID = 40
+
+    // The cart moves.
+    private let potionStock = 40
+    private let movedToCart = 25
+    private let movedBack = 10
 
     init(options: Options, resourceManager: ResourceManager) {
         self.options = options
@@ -48,6 +56,7 @@ final class AppraisalScenario {
             let playSession = try await enterMap(gameSession)
             try await runAppraisal(gameSession, playSession)
             try await runItemAppraisalSkill(gameSession, playSession)
+            try await runCart(gameSession, playSession)
             passed = true
         } catch {
             fail("\(error)")
@@ -187,6 +196,68 @@ final class AppraisalScenario {
               detail: "Magnifiers \(magnifiers) -> \(inventoryAmount(of: magnifierID, playSession))")
     }
 
+    // MARK: - Cart
+
+    private func runCart(_ gameSession: GameSession, _ playSession: PlaySession) async throws {
+        step("put the cart on")
+        // A rerun may start with the cart on: take it off first so the packets show the change.
+        if playSession.vending.cart.isActive {
+            command(playSession, "@cart 0")
+            try await require(timeout: 15, "the cart to come off") { !playSession.vending.cart.isActive }
+        }
+        let potionsBefore = inventoryAmount(of: potionID, playSession)
+        command(playSession, "@item \(potionID) \(potionStock)")
+        try await require(timeout: 15, "potions in the inventory") { self.inventoryAmount(of: self.potionID, playSession) >= potionsBefore + self.potionStock }
+        guard let potion = playSession.inventory.items.values.first(where: { $0.itemID == potionID }) else {
+            throw ScenarioError("no potions")
+        }
+        check("no cart, no Move to cart", playSession.canMoveToCart(potion) == false, detail: "cart active \(playSession.vending.cart.isActive)")
+
+        command(playSession, "@cart 1")
+        try await require(timeout: 15, "an active cart") { playSession.vending.cart.isActive }
+        check("cart packets mark the cart active", playSession.vending.cart.isActive, detail: "max weight \(playSession.vending.cart.maxWeight)")
+        check("Move to cart is offered with a cart", playSession.canMoveToCart(potion), detail: "")
+
+        let inventoryStart = inventoryAmount(of: potionID, playSession)
+        let cartStart = cartAmount(of: potionID, playSession)
+        facts["inventoryPotionsStart"] = inventoryStart
+        facts["cartPotionsStart"] = cartStart
+
+        step("move \(movedToCart) potions to the cart")
+        playSession.moveItemToCart(index: potion.index, amount: movedToCart)
+        try await require(timeout: 15, "potions in the cart") { self.cartAmount(of: self.potionID, playSession) == cartStart + self.movedToCart }
+        try await pause(1)
+        check("inventory lost the potions", inventoryAmount(of: potionID, playSession) == inventoryStart - movedToCart,
+              detail: "inventory \(inventoryStart) -> \(inventoryAmount(of: potionID, playSession))")
+        check("cart gained the potions", cartAmount(of: potionID, playSession) == cartStart + movedToCart,
+              detail: "cart \(cartStart) -> \(cartAmount(of: potionID, playSession))")
+
+        guard let cartItem = playSession.vending.cart.items.values.first(where: { $0.itemID == potionID }) else {
+            throw ScenarioError("potions are not in the cart")
+        }
+        step("move \(movedBack) potions back to the inventory")
+        playSession.moveItemFromCart(index: cartItem.index, amount: movedBack)
+        try await require(timeout: 15, "potions back in the inventory") {
+            self.cartAmount(of: self.potionID, playSession) == cartStart + self.movedToCart - self.movedBack
+        }
+        try await pause(1)
+        check("cart lost the potions again", cartAmount(of: potionID, playSession) == cartStart + movedToCart - movedBack,
+              detail: "cart \(cartAmount(of: potionID, playSession))")
+        check("inventory got them back", inventoryAmount(of: potionID, playSession) == inventoryStart - movedToCart + movedBack,
+              detail: "inventory \(inventoryAmount(of: potionID, playSession))")
+        facts["inventoryPotionsEnd"] = inventoryAmount(of: potionID, playSession)
+        facts["cartPotionsEnd"] = cartAmount(of: potionID, playSession)
+
+        step("take the cart off")
+        command(playSession, "@cart 0")
+        try await require(timeout: 15, "the cart to come off") { !playSession.vending.cart.isActive }
+        check("Move to cart is gone without a cart", playSession.canMoveToCart(potion) == false, detail: "")
+
+        // Leave the cart on, as a Merchant would have it.
+        command(playSession, "@cart 1")
+        try await require(timeout: 15, "the cart back on") { playSession.vending.cart.isActive }
+    }
+
     // MARK: - Login to map
 
     private func enterMap(_ gameSession: GameSession) async throws -> PlaySession {
@@ -282,6 +353,10 @@ final class AppraisalScenario {
 
     private func inventoryAmount(of itemID: Int, _ playSession: PlaySession) -> Int {
         playSession.inventory.items.values.filter { $0.itemID == itemID }.reduce(0) { $0 + $1.amount }
+    }
+
+    private func cartAmount(of itemID: Int, _ playSession: PlaySession) -> Int {
+        playSession.vending.cart.items.values.filter { $0.itemID == itemID }.reduce(0) { $0 + $1.amount }
     }
 
     private func pause(_ seconds: TimeInterval) async throws {

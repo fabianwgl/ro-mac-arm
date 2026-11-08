@@ -1,0 +1,279 @@
+{
+  "character" : "Ident",
+  "checks" : [
+    {
+      "detail" : "Dagger \/ Knife",
+      "name" : "unidentified and identified Knife names differ",
+      "passed" : true
+    },
+    {
+      "detail" : "index 10",
+      "name" : "the item list flags the Knife as unidentified",
+      "passed" : true
+    },
+    {
+      "detail" : "[10]",
+      "name" : "picker offers the Knife",
+      "passed" : true
+    },
+    {
+      "detail" : "offered [10], unidentified [10]",
+      "name" : "picker offers exactly the unidentified items",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "picker closed by cancel",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "cancel identified nothing",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "the server left the menu on cancel (a second list arrived)",
+      "passed" : true
+    },
+    {
+      "detail" : "appraisal messages 0 -> 0",
+      "name" : "server ignores an invalid index without an answer",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "picker closed by the pick",
+      "passed" : true
+    },
+    {
+      "detail" : "index 10",
+      "name" : "inventory flag flipped to identified",
+      "passed" : true
+    },
+    {
+      "detail" : "item 1201",
+      "name" : "the item is still the Knife",
+      "passed" : true
+    },
+    {
+      "detail" : "Appraised: Knife.",
+      "name" : "success message",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "no list when nothing is unidentified",
+      "passed" : true
+    },
+    {
+      "detail" : "[11]",
+      "name" : "skill list offers the Knife",
+      "passed" : true
+    },
+    {
+      "detail" : "index 11",
+      "name" : "inventory flag flipped through the skill",
+      "passed" : true
+    },
+    {
+      "detail" : "Magnifiers 2 -> 2",
+      "name" : "the skill does not use a Magnifier",
+      "passed" : true
+    },
+    {
+      "detail" : "cart active false",
+      "name" : "no cart, no Move to cart",
+      "passed" : true
+    },
+    {
+      "detail" : "max weight 80000",
+      "name" : "cart packets mark the cart active",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "Move to cart is offered with a cart",
+      "passed" : true
+    },
+    {
+      "detail" : "inventory 65 -> 40",
+      "name" : "inventory lost the potions",
+      "passed" : true
+    },
+    {
+      "detail" : "cart 15 -> 40",
+      "name" : "cart gained the potions",
+      "passed" : true
+    },
+    {
+      "detail" : "cart 30",
+      "name" : "cart lost the potions again",
+      "passed" : true
+    },
+    {
+      "detail" : "inventory 50",
+      "name" : "inventory got them back",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "Move to cart is gone without a cart",
+      "passed" : true
+    }
+  ],
+  "errors" : [
+
+  ],
+  "facts" : {
+    "cartPotionsEnd" : 30,
+    "cartPotionsStart" : 15,
+    "chatMessages" : [
+      "rAthena Version Git Hash:  d4b8e7b8f16061cc2496d377ac8f777ce72a4f39",
+      "Welcome to rAthena! Enjoy! Please report any bugs you find.",
+      "You got Dagger (1).",
+      "Item created.",
+      "You got Magnifier (5).",
+      "Item created.",
+      "Appraised: Knife.",
+      "You are unable to change your job.",
+      "@jobchange failed.",
+      "All skills have been added to your skill tree.",
+      "HP, SP recovered.",
+      "You got Dagger (1).",
+      "Item created.",
+      "Appraised: Knife.",
+      "Cart Added.",
+      "You got Red Potion (40).",
+      "Item created.",
+      "Cart Added.",
+      "You got Red Potion (10).",
+      "Cart Added.",
+      "Cart Added."
+    ],
+    "inventoryPotionsEnd" : 50,
+    "inventoryPotionsStart" : 65,
+    "knifeIndex" : 10,
+    "knifeNameIdentified" : "Knife",
+    "knifeNameUnidentified" : "Dagger",
+    "magnifiersAfterPick" : 3,
+    "magnifiersBeforePick" : 3,
+    "offeredIndices" : [
+      10
+    ]
+  },
+  "passed" : true,
+  "scenario" : "appraisal",
+  "seconds" : 20.800000000000001,
+  "steps" : [
+    {
+      "step" : "login as ident1",
+      "t" : 0.29999999999999999
+    },
+    {
+      "step" : "select character slot 0",
+      "t" : 0.40000000000000002
+    },
+    {
+      "step" : "on map iz_int04.rsw",
+      "t" : 2.1000000000000001
+    },
+    {
+      "step" : "get an unidentified Knife and Magnifiers",
+      "t" : 2.1000000000000001
+    },
+    {
+      "step" : "chat: @item2 1201 1 0 0 0 0 0 0 0",
+      "t" : 2.1000000000000001
+    },
+    {
+      "step" : "chat: @item 611 5",
+      "t" : 2.2000000000000002
+    },
+    {
+      "step" : "use a Magnifier",
+      "t" : 2.2999999999999998
+    },
+    {
+      "step" : "cancel the picker",
+      "t" : 2.3999999999999999
+    },
+    {
+      "step" : "use a Magnifier again after the cancel",
+      "t" : 3.3999999999999999
+    },
+    {
+      "step" : "send a request for an index nothing is stored at",
+      "t" : 3.5
+    },
+    {
+      "step" : "use a Magnifier and pick the Knife",
+      "t" : 5.0999999999999996
+    },
+    {
+      "step" : "a second identify list has nothing left for the Knife",
+      "t" : 6.4000000000000004
+    },
+    {
+      "step" : "become a Merchant for the Item Appraisal skill",
+      "t" : 12.5
+    },
+    {
+      "step" : "chat: @jobchange 5",
+      "t" : 12.5
+    },
+    {
+      "step" : "chat: @allskill",
+      "t" : 14.6
+    },
+    {
+      "step" : "chat: @heal 9999 9999",
+      "t" : 15.6
+    },
+    {
+      "step" : "chat: @item2 1201 1 0 0 0 0 0 0 0",
+      "t" : 16.699999999999999
+    },
+    {
+      "step" : "use Item Appraisal (skill 40)",
+      "t" : 16.800000000000001
+    },
+    {
+      "step" : "put the cart on",
+      "t" : 18
+    },
+    {
+      "step" : "chat: @cart 0",
+      "t" : 18
+    },
+    {
+      "step" : "chat: @item 501 40",
+      "t" : 18.100000000000001
+    },
+    {
+      "step" : "chat: @cart 1",
+      "t" : 18.199999999999999
+    },
+    {
+      "step" : "move 25 potions to the cart",
+      "t" : 18.300000000000001
+    },
+    {
+      "step" : "move 10 potions back to the inventory",
+      "t" : 19.5
+    },
+    {
+      "step" : "take the cart off",
+      "t" : 20.600000000000001
+    },
+    {
+      "step" : "chat: @cart 0",
+      "t" : 20.600000000000001
+    },
+    {
+      "step" : "chat: @cart 1",
+      "t" : 20.699999999999999
+    }
+  ],
+  "user" : "ident1"
+}

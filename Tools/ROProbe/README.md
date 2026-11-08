@@ -150,8 +150,9 @@ Tools/ROProbe/.build/debug/ro-probe --appraisal-test --user ident1 --pass ident1
 One GM probe (group 99 account). It gets an unidentified Knife (`@item2 1201 1 0 0 0 0 0 0 0`) and Magnifiers
 (`@item 611`), uses a Magnifier through `PlaySession.useItem`, checks the `ZC_ITEMIDENTIFY_LIST` picker, cancels once
 (the second Magnifier use only works when the server left the menu), then picks the Knife and checks that the inventory
-flag flips on `ZC_ACK_ITEMIDENTIFY`. It repeats the pick with the Item Appraisal skill (`@jobchange 5`, `@allskill`).
-A Magnifier is used up by a cancel as well, so a run needs five. Right after a run the server may answer "still recognizes your
+flag flips on `ZC_ACK_ITEMIDENTIFY`. It repeats the pick with the Item Appraisal skill (`@jobchange 5`, `@allskill`),
+then puts a cart on and off with `@cart` to check `canMoveToCart` and moves potions into the cart and back. A Magnifier
+is used up by a cancel as well, so a run needs five. Right after a run the server may answer "still recognizes your
 last log-in"; wait about a minute before the next run.
 
 ### Packet coverage (P0-10)

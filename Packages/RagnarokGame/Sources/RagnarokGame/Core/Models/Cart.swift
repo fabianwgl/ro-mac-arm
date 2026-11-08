@@ -22,6 +22,11 @@ struct Cart: Sendable {
 
     var items: [Int : InventoryItem] = [:]
 
+    /// Whether the player has a cart. rAthena sends the cart list and the cart counts when a cart is put on and
+    /// `ZC_CARTOFF` when it is taken off, so the packets are the only source. Without a cart the server drops
+    /// every move to or from it.
+    var isActive = false
+
     var count = 0
     var maxCount = Cart.capacity
     var weight = 0
@@ -44,6 +49,7 @@ struct Cart: Sendable {
     }
 
     mutating func update(from packet: PACKET_ZC_NOTIFY_CARTITEM_COUNTINFO) {
+        isActive = true
         count = Int(packet.curCount)
         maxCount = Int(packet.maxCount)
         weight = Int(packet.curWeight)
@@ -87,9 +93,11 @@ struct Cart: Sendable {
         }
     }
 
-    /// `ZC_CARTOFF`: rAthena closes the cart and forgets its items, but the cart stays.
+    /// `ZC_CARTOFF`: rAthena sends it when the cart is taken off, and for `@clearcart`, which sends the cart counts
+    /// right after, so the cart is active again.
     mutating func clear() {
         items = [:]
+        isActive = false
         count = 0
     }
 }
