@@ -348,7 +348,7 @@ struct MailAttachmentView: View {
     }
 
     private var helpText: String {
-        var text = gameContext.itemInfoTable.localizedIdentifiedItemName(forItemID: itemID) ?? "\(itemID)"
+        var text = gameContext.itemInfoTable.localizedItemName(forItemID: itemID, isIdentified: isIdentified) ?? "\(itemID)"
         if refine > 0 {
             text = "+\(refine) " + text
         }

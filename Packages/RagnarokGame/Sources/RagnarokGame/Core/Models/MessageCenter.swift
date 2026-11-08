@@ -90,7 +90,7 @@ final class MessageCenter {
 
     func addMessage(for packet: PACKET_ZC_ITEM_PICKUP_ACK) {
         if packet.result == 0 {
-            let itemName = itemInfoTable.localizedIdentifiedItemName(forItemID: Int(packet.nameid)) ?? "\(packet.nameid)"
+            let itemName = itemInfoTable.localizedItemName(forItemID: Int(packet.nameid), isIdentified: packet.IsIdentified != 0) ?? "\(packet.nameid)"
             let messageString = messageStringTable.localizedMessageString(forID: 153, arguments: itemName, packet.count)
             let message = MessageCenter.Message(content: messageString, type: .system, category: .item)
             messages.append(message)
@@ -101,13 +101,13 @@ final class MessageCenter {
         }
     }
 
-    func addMessage(for packet: PACKET_ZC_REQ_WEAR_EQUIP_ACK, itemID: Int) {
+    func addMessage(for packet: PACKET_ZC_REQ_WEAR_EQUIP_ACK, itemID: Int, isIdentified: Bool = true) {
         guard let flag = ItemEquipAcknowledgeFlag(rawValue: Int(packet.result)) else {
             return
         }
 
         if flag == .ok {
-            let itemName = itemInfoTable.localizedIdentifiedItemName(forItemID: itemID) ?? "\(itemID)"
+            let itemName = itemInfoTable.localizedItemName(forItemID: itemID, isIdentified: isIdentified) ?? "\(itemID)"
             let messageString = messageStringTable.localizedMessageString(forID: 170)
             let message = MessageCenter.Message(content: "\(itemName) " + messageString, type: .system, category: .item)
             messages.append(message)
@@ -118,13 +118,13 @@ final class MessageCenter {
         }
     }
 
-    func addMessage(for packet: PACKET_ZC_REQ_TAKEOFF_EQUIP_ACK, itemID: Int) {
+    func addMessage(for packet: PACKET_ZC_REQ_TAKEOFF_EQUIP_ACK, itemID: Int, isIdentified: Bool = true) {
         guard let flag = ItemEquipAcknowledgeFlag(rawValue: Int(packet.flag)) else {
             return
         }
 
         if flag != .ok {
-            let itemName = itemInfoTable.localizedIdentifiedItemName(forItemID: itemID) ?? "\(itemID)"
+            let itemName = itemInfoTable.localizedItemName(forItemID: itemID, isIdentified: isIdentified) ?? "\(itemID)"
             let messageString = messageStringTable.localizedMessageString(forID: 171)
             let message = MessageCenter.Message(content: "\(itemName) " + messageString, type: .error, category: .item)
             messages.append(message)

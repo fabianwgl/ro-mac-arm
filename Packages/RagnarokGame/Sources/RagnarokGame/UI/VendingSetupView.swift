@@ -176,7 +176,7 @@ private struct VendingSetupCartRow: View {
         HStack(spacing: 5) {
             VendingItemIcon(itemID: item.itemID, amount: item.amount)
 
-            Text(gameContext.itemInfoTable.localizedIdentifiedItemName(forItemID: item.itemID) ?? "\(item.itemID)")
+            Text(gameContext.itemInfoTable.localizedItemName(forItemID: item.itemID, isIdentified: item.isIdentified) ?? "\(item.itemID)")
                 .lineLimit(2)
 
             Spacer(minLength: 5)
@@ -207,7 +207,7 @@ private struct VendingInventoryRow: View {
         HStack(spacing: 5) {
             VendingItemIcon(itemID: item.itemID, amount: item.amount)
 
-            Text(gameContext.itemInfoTable.localizedIdentifiedItemName(forItemID: item.itemID) ?? "\(item.itemID)")
+            Text(gameContext.itemInfoTable.localizedItemName(forItemID: item.itemID, isIdentified: item.isIdentified) ?? "\(item.itemID)")
                 .lineLimit(2)
 
             Spacer(minLength: 5)

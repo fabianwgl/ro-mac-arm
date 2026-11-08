@@ -201,10 +201,11 @@ extension PlaySession {
         let index = Int(packet.index)
         let amount = Int(packet.amount)
         let itemID = inventory.items[index]?.itemID
+        let isIdentified = inventory.items[index]?.isIdentified ?? true
 
         inventory.remove(index: index, amount: amount)
 
-        let itemName = itemID.flatMap { messageCenter.itemInfoTable.localizedIdentifiedItemName(forItemID: $0) }
+        let itemName = itemID.flatMap { messageCenter.itemInfoTable.localizedItemName(forItemID: $0, isIdentified: isIdentified) }
             ?? itemID.map { "item \($0)" }
             ?? "an item"
         addVendingMessage("\(itemName) (\(amount)) were sold at \(packet.price)z.", type: .system)
