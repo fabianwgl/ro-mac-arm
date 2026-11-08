@@ -199,6 +199,13 @@ struct MapSceneView: View {
             if let shop = playSession.vending.shop {
                 VendingShopView(shop: shop)
             }
+            if let setup = playSession.vending.setup {
+                VendingSetupView(setup: setup)
+            }
+            if let ownShop = playSession.vending.ownShop {
+                OwnVendingShopView(shop: ownShop)
+                    .offset(x: -24, y: -24)
+            }
         }
         .onChange(of: runtime.scene.state.isPlayerDead) { _, newValue in
             if newValue {

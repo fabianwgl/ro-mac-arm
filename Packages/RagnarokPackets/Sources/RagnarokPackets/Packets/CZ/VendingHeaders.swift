@@ -9,6 +9,12 @@
 // numbers (`parseable_packet(0x0130, ...)`) and rAthena has no HEADER_* constant for them, so the
 // names are the ones its comments give.
 
+/// `CZ_REQ_CLOSESTORE`, `clif_parse_CloseVending`. Closes the player's own shop.
+public let HEADER_CZ_REQ_CLOSESTORE: Int16 = 0x12e
+
 /// `CZ_REQ_BUY_FROMMC`, `clif_parse_VendingListReq`. Asks for the item list of a shop
 /// (the click on a vendor, `CZ_REQ_CLICK_TO_BUY_FROMMC` in other client docs).
 public let HEADER_CZ_REQ_BUY_FROMMC: Int16 = 0x130
+
+/// `CZ_REQ_OPENSTORE2`, `clif_parse_OpenVending`. Confirms or cancels the shop set up window.
+public let HEADER_CZ_REQ_OPENSTORE2: Int16 = 0x1b2

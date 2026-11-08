@@ -68,4 +68,59 @@ struct VendingPacketFactoryTests {
         #expect(uint16(fromCart, at: 2) == 3)
         #expect(uint32(fromCart, at: 4) == 4)
     }
+
+    @Test func openStoreCarriesTitleResultAndItems() throws {
+        let packet = PacketFactory.CZ_REQ_OPENSTORE2(
+            title: "Cheap potions",
+            items: [(index: 2, amount: 20, price: 100), (index: 5, amount: 1, price: 1_000_000)]
+        )
+        let data = try bytes(packet)
+
+        // 01b2 <packet len>.W <shop name>.80B <result>.B { <index>.W <amount>.W <price>.L }*
+        #expect(data.count == 85 + 8 * 2)
+        #expect(uint16(data, at: 0) == 0x1b2)
+        #expect(uint16(data, at: 2) == 101)
+        #expect(Array(data[4..<17]) == [UInt8]("Cheap potions".utf8))
+        #expect(data[17] == 0)
+        #expect(data[84] == 1)
+        #expect(uint16(data, at: 85) == 2)
+        #expect(uint16(data, at: 87) == 20)
+        #expect(uint32(data, at: 89) == 100)
+        #expect(uint16(data, at: 93) == 5)
+        #expect(uint16(data, at: 95) == 1)
+        #expect(uint32(data, at: 97) == 1_000_000)
+    }
+
+    @Test func cancellingTheSetUpHasResultZeroAndNoItems() throws {
+        let data = try bytes(PacketFactory.CZ_REQ_OPENSTORE2(title: "Ignored", items: []))
+
+        #expect(data.count == 85)
+        #expect(uint16(data, at: 0) == 0x1b2)
+        #expect(uint16(data, at: 2) == 85)
+        #expect(data[84] == 0)
+        #expect(data[4] == 0)
+    }
+
+    @Test func longTitlesAreCutToSeventyNineBytes() throws {
+        let title = String(repeating: "a", count: 100)
+        let data = try bytes(PacketFactory.CZ_REQ_OPENSTORE2(title: title, items: [(index: 2, amount: 1, price: 1)]))
+
+        #expect(data.count == 93)
+        #expect(Array(data[4..<83]) == [UInt8](repeating: UInt8(ascii: "a"), count: 79))
+        // The 80th byte is the NUL rAthena needs.
+        #expect(data[83] == 0)
+    }
+
+    @Test func titleCutNeverSplitsACharacter() throws {
+        // 40 two byte characters are 80 bytes: the cut drops the last one.
+        let title = String(repeating: "é", count: 40)
+        let data = try bytes(PacketFactory.CZ_REQ_OPENSTORE2(title: title, items: [(index: 2, amount: 1, price: 1)]))
+
+        let name = Array(data[4..<84]).prefix { $0 != 0 }
+        #expect(String(decoding: name, as: UTF8.self) == String(repeating: "é", count: 39))
+    }
+
+    @Test func closeShopIsTwoBytes() throws {
+        #expect(try bytes(PacketFactory.CZ_REQ_CLOSESTORE()) == [0x2e, 0x01])
+    }
 }

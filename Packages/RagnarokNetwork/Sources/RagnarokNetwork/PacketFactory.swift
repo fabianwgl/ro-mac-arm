@@ -892,6 +892,38 @@ public enum PacketFactory {
         return packet
     }
 
+    /// | `PACKET_CZ_REQ_OPENSTORE2` | `clif_parse_OpenVending` |
+    ///
+    /// Opens the shop with these items (`index` is the cart index of the server), or cancels the set up
+    /// window when `items` is empty. The title is cut to the 79 bytes rAthena keeps (`MESSAGE_SIZE` is 80).
+    public static func CZ_REQ_OPENSTORE2(title: String, items: [(index: Int, amount: Int, price: Int)]) -> PACKET_CZ_REQ_OPENSTORE2 {
+        let isOpening = !items.isEmpty
+        return PACKET_CZ_REQ_OPENSTORE2(
+            storeName: isOpening ? truncatedUTF8(title, maxBytes: 79) : "",
+            isOpening: isOpening,
+            items: items.map { item in
+                PACKET_CZ_REQ_OPENSTORE2_sub(
+                    index: UInt16(truncatingIfNeeded: item.index),
+                    amount: UInt16(truncatingIfNeeded: item.amount),
+                    price: UInt32(truncatingIfNeeded: item.price)
+                )
+            }
+        )
+    }
+
+    /// | `PACKET_CZ_REQ_CLOSESTORE` | `clif_parse_CloseVending` |
+    public static func CZ_REQ_CLOSESTORE() -> PACKET_CZ_REQ_CLOSESTORE {
+        PACKET_CZ_REQ_CLOSESTORE()
+    }
+
+    private static func truncatedUTF8(_ text: String, maxBytes: Int) -> String {
+        var text = text
+        while text.utf8.count > maxBytes {
+            text.removeLast()
+        }
+        return text
+    }
+
     /// | `PACKET_CZ_MOVE_ITEM_FROM_BODY_TO_CART` | `clif_parse_PutItemToCart` |
     public static func CZ_MOVE_ITEM_FROM_BODY_TO_CART(index: Int, amount: Int) -> PACKET_CZ_MOVE_ITEM_FROM_BODY_TO_CART {
         var packet = PACKET_CZ_MOVE_ITEM_FROM_BODY_TO_CART()
