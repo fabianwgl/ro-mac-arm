@@ -19,6 +19,10 @@ struct Options {
     var noEnterWorkaround = false
     var pincode: String?
     var withAudio = false
+    var audible = false
+    var tracePackets = false
+    var scenario: String?
+    var tasks: Set<String> = []
     var coverageOnly = false
     var tradeTest = false
     var route: [RouteStop] = []
@@ -54,7 +58,11 @@ struct Options {
       --pincode <4 digits>    answer the char server pincode stages (enter, create, change) with this pin
       --stage-timeout <s>     wait per login stage         (default 120)
       --map-load-timeout <s>  wait for the map to load     (default 300)
-      --with-audio            let the client play BGM and sound effects (muted by default)
+      --with-audio            let the client load BGM and sound effects (muted by default)
+      --audible               with --with-audio, also leave the BGM and sound effect preferences on (default: off, so a run is silent)
+      --trace-packets         with --scenario, print every packet to stderr while the scenario runs
+      --scenario <name>       run a scripted check set instead of wandering; `core` covers P3-02 and P3-05..P3-13
+      --tasks <ids>           with --scenario, only these tasks, comma separated (for example P3-05,P3-06 or 05,06)
       --vending <role>         run the vending scenario instead of wandering: seller, buyer, store-owner, store-seller
       --vending-title <text>   shop title the seller sets and the buyer expects (default "Probe potions")
       --vending-map <map>      map both probes warp to       (default prt_fild08)
@@ -149,6 +157,19 @@ struct Options {
                 options.vendingX = cell[0]
                 options.vendingY = cell[1]
             case "--vending-timeout": options.vendingTimeout = try number(flag)
+            case "--audible": options.audible = true
+            case "--trace-packets": options.tracePackets = true
+            case "--scenario":
+                let name = try value(flag)
+                guard name == "core" else {
+                    throw ParseError(description: "unknown scenario \(name), expected core")
+                }
+                options.scenario = name
+            case "--tasks":
+                for part in try value(flag).split(separator: ",") {
+                    let id = part.uppercased()
+                    options.tasks.insert(id.hasPrefix("P3-") ? id : "P3-" + id)
+                }
             case "--coverage": options.coverageOnly = true
             case "--trade-test": options.tradeTest = true
             case "-h", "--help":

@@ -29,6 +29,9 @@ final class ProbeRunner {
     private var routeLastOrigin: SIMD2<Int>?
     private var routeStall = 0
 
+    /// Set by the scenario when it ran: true only if every task passed.
+    private(set) var scenarioPassed = false
+
     init(options: Options, stats: ProbeStats, tap: PacketTap?, resourceManager: ResourceManager) {
         self.options = options
         self.stats = stats
@@ -62,7 +65,7 @@ final class ProbeRunner {
 
             switch outcome {
             case .completed:
-                return stats.reachedMap
+                return options.scenario != nil ? scenarioPassed : stats.reachedMap
             case .stopped:
                 return stats.reachedMap
             case .disconnected(let reason), .failed(let reason):
@@ -103,6 +106,12 @@ final class ProbeRunner {
 
     private func makeSession() -> (GameSession, Task<Void, Never>) {
         let gameSession = GameSession(resourceManager: resourceManager)
+        if options.withAudio {
+            // The preferences gate playback only. BGM and sound effects are still requested and decoded, which is
+            // what the audio check looks at. `--audible` leaves them on for a human to listen.
+            gameSession.context.preferences.isBGMEnabled = options.audible
+            gameSession.context.preferences.isSoundEffectEnabled = options.audible
+        }
         let port = tap?.port(for: .login) ?? options.port
         let host = tap == nil ? options.host : "127.0.0.1"
         gameSession.start(GameSession.Configuration(serverAddress: host, serverPort: port))
@@ -195,6 +204,15 @@ final class ProbeRunner {
         stats.recordStage("play.loaded")
         session["map"] = mapName
         session["mapLoadSeconds"] = (loadSeconds * 10).rounded() / 10
+
+        if let scenarioName = options.scenario {
+            Log.line("scenario \(scenarioName) starting on \(mapName)")
+            let scenario = CoreScenario(runner: self, gameSession: gameSession, playSession: playSession)
+            let passed = await scenario.run()
+            scenarioPassed = passed
+            session["result"] = "scenario \(scenarioName) \(passed ? "passed" : "failed")"
+            return .completed
+        }
 
         if mapEntryDate == nil {
             mapEntryDate = Date()
