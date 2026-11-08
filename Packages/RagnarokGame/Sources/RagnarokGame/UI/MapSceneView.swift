@@ -25,6 +25,9 @@ struct MapSceneView: View {
     @State private var chatFocusRequest = 0
     /// Movement keys held down, by key code, with the screen direction each one pushes.
     @State private var heldMovementKeys: [UInt16: SIMD2<Float>] = [:]
+    #if os(macOS)
+    @State private var gamepad = GamepadInput()
+    #endif
 
     var body: some View {
         ZStack {
@@ -230,10 +233,25 @@ struct MapSceneView: View {
         .ignoresSafeArea(.container)
         #if os(macOS)
         .background {
-            KeyEventMonitor(handler: handleKeyEvent) {
+            KeyEventMonitor(handler: handleKeyEvent, onFocusLost: {
+                // Releases of keys and controller input held now would never arrive.
+                gamepad.isActive = false
                 heldMovementKeys.removeAll()
-                updateKeyboardMovement()
-            }
+                updateWalking()
+            }, onFocusGained: {
+                gamepad.isActive = true
+            })
+        }
+        .onAppear {
+            connectGamepad()
+        }
+        .onChange(of: ObjectIdentifier(runtime)) {
+            connectGamepad()
+        }
+        .onDisappear {
+            gamepad.stop()
+            heldMovementKeys.removeAll()
+            updateWalking()
         }
         #endif
         .onGeometryChange(for: CGFloat.self) { geometryProxy in
@@ -306,7 +324,7 @@ struct MapSceneView: View {
             guard heldMovementKeys.removeValue(forKey: event.keyCode) != nil else {
                 return false
             }
-            updateKeyboardMovement()
+            updateWalking()
             return true
         }
 
@@ -328,13 +346,26 @@ struct MapSceneView: View {
         switch action {
         case .moveUp, .moveLeft, .moveDown, .moveRight:
             heldMovementKeys[event.keyCode] = action.movementDirection
-            updateKeyboardMovement()
+            updateWalking()
+        default:
+            perform(action)
+        }
+
+        return true
+    }
+
+    /// Runs an action which happens once per press, from the keyboard or the controller.
+    private func perform(_ action: GameAction) {
+        switch action {
+        case .moveUp, .moveLeft, .moveDown, .moveRight:
+            // Walking is continuous. It follows held keys and the stick, not one-shot actions.
+            break
         case .attack:
             runtime.scene.attackSelectedOrNearestMonster()
         case .shortcut(let row, let slot):
             let rows = playSession.shortcutList.rows
             guard rows.indices.contains(row), rows[row].indices.contains(slot) else {
-                return true
+                return
             }
             playSession.useShortcut(rows[row][slot])
         case .toggleInventory:
@@ -360,22 +391,32 @@ struct MapSceneView: View {
         case .nextShortcutRow:
             let rowCount = playSession.shortcutList.rows.count
             guard rowCount > 0 else {
-                return true
+                return
             }
             playSession.setShortcutRowShift((playSession.shortcutList.rowShift + 1) % rowCount)
         case .closeTopWindow:
             closeTopWindow()
         }
-
-        return true
     }
 
-    /// Drives the scene's thumbstick walking from the held movement keys, so the keyboard
-    /// walks, turns, slides along walls and stops exactly like the touch thumbstick.
-    private func updateKeyboardMovement() {
-        let direction = heldMovementKeys.values.reduce(SIMD2<Float>.zero, +)
-        // The scene ignores thumbstick input shorter than 15 points.
-        let value = simd_length(direction) > 0 ? simd_normalize(direction) * 100 : .zero
+    /// Starts the controller reader, which walks and presses buttons through the same paths as the keyboard.
+    private func connectGamepad() {
+        gamepad.onMovementChange = { _ in
+            updateWalking()
+        }
+        gamepad.onAction = { action in
+            perform(action)
+        }
+        gamepad.start()
+    }
+
+    /// Drives the scene's thumbstick walking from the held movement keys and the controller,
+    /// so both walk, turn, slide along walls and stop exactly like the touch thumbstick.
+    /// This is the only place which sets the thumbstick on macOS: the keyboard and the
+    /// controller are combined here, so letting go of one does not stop the other.
+    private func updateWalking() {
+        let keyboard = GamepadMapping.keyboardMovement(directions: heldMovementKeys.values)
+        let value = GamepadMapping.walking(keyboard: keyboard, gamepad: gamepad.movement)
         runtime.scene.thumbstickValue = CGPoint(x: CGFloat(value.x), y: CGFloat(value.y))
     }
 
