@@ -13,7 +13,7 @@ import RagnarokCore
 // https://github.com/MrAntares/roBrowserLegacy/blob/master/src/DB/Effects/EffectTable.js
 public enum EffectTable {
     // Keep entries sorted in ascending order by `EffectID.rawValue`.
-    private static let table: [EffectID : [EffectDefinition]] = [
+    static let table: [EffectID : [EffectDefinition]] = [
         .ef_hit1: [
             .`3D`(
                 kind: .texture("effect\\pok3.tga"),
@@ -1239,7 +1239,7 @@ public enum EffectTable {
     ]
 
     public static var effectIDs: [EffectID] {
-        table.keys.sorted(using: KeyPathComparator(\.rawValue))
+        Set(table.keys).union(referenceTable.keys).sorted(using: KeyPathComparator(\.rawValue))
     }
 
     public static func definitions(for effectReference: EffectReference) -> [EffectDefinition] {
@@ -1252,7 +1252,7 @@ public enum EffectTable {
     }
 
     public static func definitions(for effectID: EffectID) -> [EffectDefinition] {
-        table[effectID] ?? []
+        table[effectID] ?? referenceTable[effectID] ?? []
     }
 
     public static func definitions(forEffectName effectName: String) -> [EffectDefinition] {
