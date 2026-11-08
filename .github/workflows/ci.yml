@@ -1,8 +1,5 @@
 name: CI
 
-# macos-26 for Xcode 27: upstream sources use toolchain features Xcode 26 lacks
-# (the `#bundle` macro fails there in RagnarokGame).
-
 # GitHub-hosted macOS runners cannot run Docker, so the rAthena integration
 # test is local-only. See docs/port/DOCKER.md.
 
@@ -23,7 +20,7 @@ jobs:
     runs-on: macos-26
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           submodules: recursive
 
@@ -36,7 +33,7 @@ jobs:
         run: xcodebuild -downloadComponent MetalToolchain || true
 
       - name: Cache DerivedData and Swift packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/Library/Developer/Xcode/DerivedData
@@ -78,7 +75,7 @@ jobs:
           - RagnarokGame
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           submodules: recursive
 
@@ -91,7 +88,7 @@ jobs:
         run: xcodebuild -downloadComponent MetalToolchain || true
 
       - name: Cache Swift packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/Library/Caches/org.swift.swiftpm

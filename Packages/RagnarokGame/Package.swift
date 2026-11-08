@@ -51,6 +51,9 @@ let package = Package(
                 "RagnarokScript",
                 "RagnarokShaders",
                 "RagnarokSprite",
+            ],
+            resources: [
+                .process("Resources"),
             ]
         ),
         .testTarget(
