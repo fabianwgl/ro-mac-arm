@@ -123,9 +123,9 @@ Acceptance: target server's daily content usable; gaps documented.
 - [ ] P5-01 Capture Metal frames on M1 for Prontera, Geffen, and an effect map.
 - [ ] P5-02 Fix asset decode stalls and frame spikes.
 - [ ] P5-03 Tune command buffers, state changes, and argument buffers.
-- [ ] P5-04 Verify 120 fps target and record results.
-- [ ] P5-05 Measure RSS with full kRO data; target under 4 GB.
-- [ ] P5-06 Measure cold start; target under 10 seconds.
+- [x] P5-04 (M4, 144 Hz, 2560x1440: 143.9 fps after the refresh rate fix; see [perf.md](perf.md)) Verify 120 fps target and record results.
+- [x] P5-05 (peak RSS 418 to 557 MB) Measure RSS with full kRO data; target under 4 GB.
+- [x] P5-06 (1.1 to 2.8 s process start to first map frame) Measure cold start; target under 10 seconds.
 - [ ] P5-07 Retina, fullscreen, window restore, display change.
 - [x] P5-08 Input remapping and optional gamepad.
 - [~] P5-09 (deferred: local-only project) Developer ID signing and hardened runtime.
