@@ -111,6 +111,9 @@ The [install guide](docs/port/INSTALL.md) covers troubleshooting.
 - Headless client for protocol checks:
   `swift build --package-path Tools/ROProbe`, then
   `Tools/ROProbe/.build/debug/ro-probe --help`.
+- Performance run without a person clicking (fps, RSS, cold start):
+  `scripts/perf-run.sh --map prontera --char PerfPront`. Method and results in
+  [docs/port/perf.md](docs/port/perf.md).
 - Golden packet data: `Tools/packet-golden/generate.sh <rathena-dir>`.
   Coverage: `Tools/packet-golden/coverage.sh`.
 - Task board with per-task status: [docs/port/TASKS.md](docs/port/TASKS.md).

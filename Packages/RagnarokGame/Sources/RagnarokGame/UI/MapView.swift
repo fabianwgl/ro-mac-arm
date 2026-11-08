@@ -84,6 +84,9 @@ final class MapViewController: UIViewController, MTKViewDelegate, UIGestureRecog
         mtkView.colorPixelFormat = renderer.configuration.colorPixelFormat
         mtkView.depthStencilPixelFormat = renderer.configuration.depthStencilPixelFormat
         mtkView.clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)
+        if let fps = PerfProbe.preferredFramesPerSecondOverride {
+            mtkView.preferredFramesPerSecond = fps
+        }
         view.addSubview(mtkView)
 
         #if os(iOS)
@@ -137,6 +140,7 @@ final class MapViewController: UIViewController, MTKViewDelegate, UIGestureRecog
             return
         }
 
+        PerfProbe.shared?.beginFrame(view)
         let now = ContinuousClock.now
         let currentTime = CACurrentMediaTime()
 
@@ -159,6 +163,7 @@ final class MapViewController: UIViewController, MTKViewDelegate, UIGestureRecog
         renderer.render(frame: frame, snapshot: snapshot)
 
         commandBuffer.present(drawable)
+        PerfProbe.shared?.endFrame(commandBuffer)
         commandBuffer.commit()
     }
 
@@ -384,6 +389,9 @@ final class MapViewController: NSViewController, MTKViewDelegate {
         mtkView.colorPixelFormat = renderer.configuration.colorPixelFormat
         mtkView.depthStencilPixelFormat = renderer.configuration.depthStencilPixelFormat
         mtkView.clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)
+        if let fps = PerfProbe.preferredFramesPerSecondOverride {
+            mtkView.preferredFramesPerSecond = fps
+        }
         view.addSubview(mtkView)
 
         let panGestureRecognizer = NSPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
@@ -408,6 +416,7 @@ final class MapViewController: NSViewController, MTKViewDelegate {
             return
         }
 
+        PerfProbe.shared?.beginFrame(view)
         let now = ContinuousClock.now
         let currentTime = CACurrentMediaTime()
 
@@ -430,6 +439,7 @@ final class MapViewController: NSViewController, MTKViewDelegate {
         renderer.render(frame: frame, snapshot: snapshot)
 
         commandBuffer.present(drawable)
+        PerfProbe.shared?.endFrame(commandBuffer)
         commandBuffer.commit()
     }
 

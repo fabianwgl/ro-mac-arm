@@ -1,0 +1,1521 @@
+{
+  "map": "prontera",
+  "runs": [
+    {
+      "app": {
+        "build": "release",
+        "cpuDrawMs": {
+          "avg": 1.48,
+          "max": 4.54,
+          "min": 0.53,
+          "p50": 0.94,
+          "p95": 3.66,
+          "p99": 3.83
+        },
+        "displayMaxHz": 144,
+        "drawable": {
+          "height": 1440,
+          "width": 2560
+        },
+        "endedAt": "2026-11-08T18:41:29Z",
+        "fps": {
+          "atP95FrameTime": 47.01,
+          "atP99FrameTime": 46.38,
+          "average": 47.98
+        },
+        "frameMs": {
+          "avg": 20.84,
+          "max": 32.48,
+          "min": 16.26,
+          "p50": 20.83,
+          "p95": 21.27,
+          "p99": 21.56
+        },
+        "framesOverPercent": {
+          "16.7ms": 99.93,
+          "33.3ms": 0,
+          "8.3ms": 100
+        },
+        "gpuMs": {
+          "avg": 1.66,
+          "max": 2.87,
+          "min": 0.8,
+          "p50": 1.47,
+          "p95": 2.74,
+          "p99": 2.79
+        },
+        "gpuSamples": 1440,
+        "gpuUnavailable": 0,
+        "label": "prontera cold",
+        "machine": {
+          "cpu": "Apple M4",
+          "os": "Version 27.0.1 (Build 26A434)",
+          "physicalMemoryMB": 16384
+        },
+        "memory": {
+          "atFirstMapFrame": {
+            "peakPhysFootprintMB": 514.2,
+            "physFootprintMB": 514.2,
+            "residentMB": 434.4
+          },
+          "peakPhysFootprintMB": 572.4,
+          "physFootprintMB": 565.8,
+          "residentMB": 420.2
+        },
+        "milestonesSinceProcessStart": {
+          "autologinStarted": 1.592,
+          "characterSelectShown": 1.844,
+          "commandsDone": 2.786,
+          "launcherShown": 1.489,
+          "loginSent": 1.717,
+          "mapFirstFrame": 2.817,
+          "mapLoaded": 2.756,
+          "mapLoading": 1.893,
+          "playStage": 1.872
+        },
+        "preferredFramesPerSecond": 60,
+        "processStartedAt": "2026-11-08T18:40:51Z",
+        "samples": 1439,
+        "schema": 1,
+        "warmupSeconds": 5,
+        "windowSeconds": 30
+      },
+      "build": "Release",
+      "character": "PerfPront",
+      "commands": "",
+      "derived": {
+        "autologinToMapFirstFrameS": 1.23,
+        "characterSelectToMapLoadedS": 0.91,
+        "loginToCharacterSelectS": 0.13,
+        "mapLoadedToFirstFrameS": 0.06,
+        "processStartToLauncherShownS": 1.489,
+        "processStartToMapFirstFrameS": 2.817
+      },
+      "external": {
+        "footprintPeakMB": 567.6,
+        "rssLastMB": 419.9,
+        "rssPeakMB": 439.7,
+        "rssSeriesMB": [
+          [
+            0,
+            0.3
+          ],
+          [
+            1,
+            127.2
+          ],
+          [
+            2,
+            291.0
+          ],
+          [
+            3,
+            439.7
+          ],
+          [
+            4,
+            419.9
+          ],
+          [
+            5,
+            420.0
+          ],
+          [
+            6,
+            420.0
+          ],
+          [
+            7,
+            419.8
+          ],
+          [
+            8,
+            419.5
+          ],
+          [
+            9,
+            419.5
+          ],
+          [
+            10,
+            419.5
+          ],
+          [
+            11,
+            419.5
+          ],
+          [
+            12,
+            419.6
+          ],
+          [
+            13,
+            419.8
+          ],
+          [
+            14,
+            419.8
+          ],
+          [
+            15,
+            419.8
+          ],
+          [
+            16,
+            419.8
+          ],
+          [
+            17,
+            419.8
+          ],
+          [
+            18,
+            419.8
+          ],
+          [
+            19,
+            419.8
+          ],
+          [
+            20,
+            419.8
+          ],
+          [
+            21,
+            419.8
+          ],
+          [
+            22,
+            419.8
+          ],
+          [
+            23,
+            419.8
+          ],
+          [
+            24,
+            419.8
+          ],
+          [
+            25,
+            419.8
+          ],
+          [
+            26,
+            419.8
+          ],
+          [
+            27,
+            419.8
+          ],
+          [
+            28,
+            419.8
+          ],
+          [
+            29,
+            419.8
+          ],
+          [
+            30,
+            419.8
+          ],
+          [
+            31,
+            419.9
+          ],
+          [
+            32,
+            419.9
+          ],
+          [
+            33,
+            419.9
+          ],
+          [
+            34,
+            419.9
+          ],
+          [
+            35,
+            419.9
+          ],
+          [
+            36,
+            419.9
+          ],
+          [
+            38,
+            419.9
+          ]
+        ],
+        "samples": 38
+      },
+      "fullscreen": true,
+      "gitRev": "d4f62f19",
+      "hostLoadAverage1mAtLaunch": 5.28,
+      "loop": "",
+      "map": "prontera",
+      "requestedFps": "default",
+      "run": "cold",
+      "wallSeconds": 39
+    },
+    {
+      "app": {
+        "build": "release",
+        "cpuDrawMs": {
+          "avg": 1.02,
+          "max": 1.51,
+          "min": 0.71,
+          "p50": 1.01,
+          "p95": 1.18,
+          "p99": 1.28
+        },
+        "displayMaxHz": 144,
+        "drawable": {
+          "height": 1440,
+          "width": 2560
+        },
+        "endedAt": "2026-11-08T18:42:12Z",
+        "fps": {
+          "atP95FrameTime": 47.92,
+          "atP99FrameTime": 47.03,
+          "average": 47.99
+        },
+        "frameMs": {
+          "avg": 20.84,
+          "max": 21.57,
+          "min": 20.05,
+          "p50": 20.84,
+          "p95": 20.87,
+          "p99": 21.26
+        },
+        "framesOverPercent": {
+          "16.7ms": 100,
+          "33.3ms": 0,
+          "8.3ms": 100
+        },
+        "gpuMs": {
+          "avg": 1.33,
+          "max": 2.35,
+          "min": 0.79,
+          "p50": 1.17,
+          "p95": 2.2,
+          "p99": 2.25
+        },
+        "gpuSamples": 1440,
+        "gpuUnavailable": 0,
+        "label": "prontera warm",
+        "machine": {
+          "cpu": "Apple M4",
+          "os": "Version 27.0.1 (Build 26A434)",
+          "physicalMemoryMB": 16384
+        },
+        "memory": {
+          "atFirstMapFrame": {
+            "peakPhysFootprintMB": 509.7,
+            "physFootprintMB": 509.7,
+            "residentMB": 523.8
+          },
+          "peakPhysFootprintMB": 582.2,
+          "physFootprintMB": 541.6,
+          "residentMB": 238
+        },
+        "milestonesSinceProcessStart": {
+          "autologinStarted": 0.597,
+          "characterSelectShown": 0.762,
+          "commandsDone": 1.833,
+          "launcherShown": 0.544,
+          "loginSent": 0.655,
+          "mapFirstFrame": 1.853,
+          "mapLoaded": 1.797,
+          "mapLoading": 0.814,
+          "playStage": 0.793
+        },
+        "preferredFramesPerSecond": 60,
+        "processStartedAt": "2026-11-08T18:41:35Z",
+        "samples": 1439,
+        "schema": 1,
+        "warmupSeconds": 5,
+        "windowSeconds": 30
+      },
+      "build": "Release",
+      "character": "PerfPront",
+      "commands": "",
+      "derived": {
+        "autologinToMapFirstFrameS": 1.26,
+        "characterSelectToMapLoadedS": 1.03,
+        "loginToCharacterSelectS": 0.11,
+        "mapLoadedToFirstFrameS": 0.06,
+        "processStartToLauncherShownS": 0.544,
+        "processStartToMapFirstFrameS": 1.853
+      },
+      "external": {
+        "footprintPeakMB": 577.5,
+        "rssLastMB": 236.9,
+        "rssPeakMB": 460.0,
+        "rssSeriesMB": [
+          [
+            0,
+            0.3
+          ],
+          [
+            1,
+            386.7
+          ],
+          [
+            2,
+            460.0
+          ],
+          [
+            3,
+            419.2
+          ],
+          [
+            4,
+            402.1
+          ],
+          [
+            5,
+            373.8
+          ],
+          [
+            6,
+            373.6
+          ],
+          [
+            7,
+            373.5
+          ],
+          [
+            8,
+            373.5
+          ],
+          [
+            9,
+            373.5
+          ],
+          [
+            10,
+            373.5
+          ],
+          [
+            11,
+            373.5
+          ],
+          [
+            12,
+            372.6
+          ],
+          [
+            13,
+            225.5
+          ],
+          [
+            14,
+            225.8
+          ],
+          [
+            15,
+            225.8
+          ],
+          [
+            16,
+            225.9
+          ],
+          [
+            17,
+            227.2
+          ],
+          [
+            18,
+            227.2
+          ],
+          [
+            19,
+            227.2
+          ],
+          [
+            20,
+            227.2
+          ],
+          [
+            22,
+            227.2
+          ],
+          [
+            23,
+            227.2
+          ],
+          [
+            24,
+            227.3
+          ],
+          [
+            25,
+            227.3
+          ],
+          [
+            26,
+            227.3
+          ],
+          [
+            27,
+            227.3
+          ],
+          [
+            28,
+            227.4
+          ],
+          [
+            29,
+            227.4
+          ],
+          [
+            30,
+            227.5
+          ],
+          [
+            31,
+            236.1
+          ],
+          [
+            32,
+            236.4
+          ],
+          [
+            33,
+            236.8
+          ],
+          [
+            34,
+            236.8
+          ],
+          [
+            35,
+            236.8
+          ],
+          [
+            36,
+            236.9
+          ]
+        ],
+        "samples": 36
+      },
+      "fullscreen": true,
+      "gitRev": "d4f62f19",
+      "hostLoadAverage1mAtLaunch": 5.13,
+      "loop": "",
+      "map": "prontera",
+      "requestedFps": "default",
+      "run": "warm",
+      "wallSeconds": 37
+    },
+    {
+      "app": {
+        "build": "release",
+        "cpuDrawMs": {
+          "avg": 1.27,
+          "max": 3.76,
+          "min": 0.53,
+          "p50": 1,
+          "p95": 2.93,
+          "p99": 3.42
+        },
+        "displayMaxHz": 144,
+        "drawable": {
+          "height": 1440,
+          "width": 2560
+        },
+        "endedAt": "2026-11-08T18:44:17Z",
+        "fps": {
+          "atP95FrameTime": 70.55,
+          "atP99FrameTime": 68.24,
+          "average": 71.99
+        },
+        "frameMs": {
+          "avg": 13.89,
+          "max": 16.9,
+          "min": 11.08,
+          "p50": 13.89,
+          "p95": 14.18,
+          "p99": 14.65
+        },
+        "framesOverPercent": {
+          "16.7ms": 0.05,
+          "33.3ms": 0,
+          "8.3ms": 100
+        },
+        "gpuMs": {
+          "avg": 2.45,
+          "max": 2.83,
+          "min": 0.81,
+          "p50": 2.35,
+          "p95": 2.74,
+          "p99": 2.79
+        },
+        "gpuSamples": 2160,
+        "gpuUnavailable": 0,
+        "label": "prontera fps120",
+        "machine": {
+          "cpu": "Apple M4",
+          "os": "Version 27.0.1 (Build 26A434)",
+          "physicalMemoryMB": 16384
+        },
+        "memory": {
+          "atFirstMapFrame": {
+            "peakPhysFootprintMB": 551.5,
+            "physFootprintMB": 509,
+            "residentMB": 532.4
+          },
+          "peakPhysFootprintMB": 577.4,
+          "physFootprintMB": 574.9,
+          "residentMB": 314.8
+        },
+        "milestonesSinceProcessStart": {
+          "autologinStarted": 0.479,
+          "characterSelectShown": 0.66,
+          "commandsDone": 1.351,
+          "launcherShown": 0.43,
+          "loginSent": 0.532,
+          "mapFirstFrame": 1.352,
+          "mapLoaded": 1.327,
+          "mapLoading": 0.715,
+          "playStage": 0.694
+        },
+        "preferredFramesPerSecond": 120,
+        "processStartedAt": "2026-11-08T18:43:41Z",
+        "samples": 2159,
+        "schema": 1,
+        "warmupSeconds": 5,
+        "windowSeconds": 30
+      },
+      "build": "Release",
+      "character": "PerfPront",
+      "commands": "",
+      "derived": {
+        "autologinToMapFirstFrameS": 0.87,
+        "characterSelectToMapLoadedS": 0.67,
+        "loginToCharacterSelectS": 0.13,
+        "mapLoadedToFirstFrameS": 0.03,
+        "processStartToLauncherShownS": 0.43,
+        "processStartToMapFirstFrameS": 1.352
+      },
+      "external": {
+        "footprintPeakMB": 576.4,
+        "rssLastMB": 313.8,
+        "rssPeakMB": 540.5,
+        "rssSeriesMB": [
+          [
+            0,
+            0.5
+          ],
+          [
+            1,
+            429.6
+          ],
+          [
+            2,
+            538.5
+          ],
+          [
+            3,
+            540.4
+          ],
+          [
+            4,
+            540.5
+          ],
+          [
+            5,
+            540.5
+          ],
+          [
+            6,
+            540.4
+          ],
+          [
+            7,
+            467.7
+          ],
+          [
+            8,
+            311.0
+          ],
+          [
+            9,
+            311.1
+          ],
+          [
+            10,
+            311.1
+          ],
+          [
+            11,
+            311.6
+          ],
+          [
+            12,
+            313.2
+          ],
+          [
+            13,
+            313.2
+          ],
+          [
+            14,
+            313.3
+          ],
+          [
+            15,
+            313.3
+          ],
+          [
+            16,
+            313.3
+          ],
+          [
+            17,
+            313.3
+          ],
+          [
+            19,
+            313.3
+          ],
+          [
+            20,
+            313.3
+          ],
+          [
+            21,
+            313.3
+          ],
+          [
+            22,
+            313.3
+          ],
+          [
+            23,
+            313.3
+          ],
+          [
+            24,
+            313.4
+          ],
+          [
+            25,
+            313.4
+          ],
+          [
+            26,
+            313.4
+          ],
+          [
+            27,
+            313.4
+          ],
+          [
+            28,
+            313.5
+          ],
+          [
+            29,
+            313.5
+          ],
+          [
+            30,
+            313.5
+          ],
+          [
+            31,
+            318.8
+          ],
+          [
+            32,
+            318.8
+          ],
+          [
+            33,
+            319.1
+          ],
+          [
+            34,
+            316.4
+          ],
+          [
+            35,
+            312.4
+          ],
+          [
+            36,
+            313.8
+          ]
+        ],
+        "samples": 36
+      },
+      "fullscreen": true,
+      "gitRev": "d4f62f19",
+      "hostLoadAverage1mAtLaunch": 8.67,
+      "loop": "",
+      "map": "prontera",
+      "requestedFps": "120",
+      "run": "fps120",
+      "wallSeconds": 37
+    },
+    {
+      "app": {
+        "build": "release",
+        "cpuDrawMs": {
+          "avg": 1.06,
+          "max": 2.4,
+          "min": 0.53,
+          "p50": 1.1,
+          "p95": 1.32,
+          "p99": 1.59
+        },
+        "displayMaxHz": 144,
+        "drawable": {
+          "height": 1440,
+          "width": 2560
+        },
+        "endedAt": "2026-11-08T18:45:42Z",
+        "fps": {
+          "atP95FrameTime": 141.23,
+          "atP99FrameTime": 139.26,
+          "average": 143.92
+        },
+        "frameMs": {
+          "avg": 6.95,
+          "max": 16.98,
+          "min": 6.19,
+          "p50": 6.94,
+          "p95": 7.08,
+          "p99": 7.18
+        },
+        "framesOverPercent": {
+          "16.7ms": 0.02,
+          "33.3ms": 0,
+          "8.3ms": 0.02
+        },
+        "gpuMs": {
+          "avg": 2.11,
+          "max": 4.13,
+          "min": 0.85,
+          "p50": 2.06,
+          "p95": 3.49,
+          "p99": 3.9
+        },
+        "gpuSamples": 4318,
+        "gpuUnavailable": 0,
+        "label": "prontera fps144",
+        "machine": {
+          "cpu": "Apple M4",
+          "os": "Version 27.0.1 (Build 26A434)",
+          "physicalMemoryMB": 16384
+        },
+        "memory": {
+          "atFirstMapFrame": {
+            "peakPhysFootprintMB": 508.7,
+            "physFootprintMB": 507.8,
+            "residentMB": 534.2
+          },
+          "peakPhysFootprintMB": 580.6,
+          "physFootprintMB": 578.8,
+          "residentMB": 543.8
+        },
+        "milestonesSinceProcessStart": {
+          "autologinStarted": 0.419,
+          "characterSelectShown": 0.605,
+          "commandsDone": 1.224,
+          "launcherShown": 0.377,
+          "loginSent": 0.488,
+          "mapFirstFrame": 1.214,
+          "mapLoaded": 1.193,
+          "mapLoading": 0.651,
+          "playStage": 0.63
+        },
+        "preferredFramesPerSecond": 144,
+        "processStartedAt": "2026-11-08T18:45:05Z",
+        "samples": 4317,
+        "schema": 1,
+        "warmupSeconds": 5,
+        "windowSeconds": 30
+      },
+      "build": "Release",
+      "character": "PerfPront",
+      "commands": "",
+      "derived": {
+        "autologinToMapFirstFrameS": 0.79,
+        "characterSelectToMapLoadedS": 0.59,
+        "loginToCharacterSelectS": 0.12,
+        "mapLoadedToFirstFrameS": 0.02,
+        "processStartToLauncherShownS": 0.377,
+        "processStartToMapFirstFrameS": 1.214
+      },
+      "external": {
+        "footprintPeakMB": 578.8,
+        "rssLastMB": 543.5,
+        "rssPeakMB": 543.5,
+        "rssSeriesMB": [
+          [
+            0,
+            0.3
+          ],
+          [
+            1,
+            449.5
+          ],
+          [
+            2,
+            541.8
+          ],
+          [
+            3,
+            541.9
+          ],
+          [
+            4,
+            541.9
+          ],
+          [
+            5,
+            542.0
+          ],
+          [
+            6,
+            541.7
+          ],
+          [
+            7,
+            541.7
+          ],
+          [
+            9,
+            541.6
+          ],
+          [
+            10,
+            541.6
+          ],
+          [
+            11,
+            541.6
+          ],
+          [
+            12,
+            541.6
+          ],
+          [
+            13,
+            541.8
+          ],
+          [
+            14,
+            541.8
+          ],
+          [
+            15,
+            541.8
+          ],
+          [
+            16,
+            541.8
+          ],
+          [
+            17,
+            541.8
+          ],
+          [
+            18,
+            541.8
+          ],
+          [
+            19,
+            541.8
+          ],
+          [
+            20,
+            541.8
+          ],
+          [
+            21,
+            541.8
+          ],
+          [
+            22,
+            541.8
+          ],
+          [
+            23,
+            541.8
+          ],
+          [
+            24,
+            541.8
+          ],
+          [
+            25,
+            541.8
+          ],
+          [
+            26,
+            541.8
+          ],
+          [
+            27,
+            541.8
+          ],
+          [
+            28,
+            541.8
+          ],
+          [
+            29,
+            541.8
+          ],
+          [
+            30,
+            541.8
+          ],
+          [
+            31,
+            542.5
+          ],
+          [
+            32,
+            543.4
+          ],
+          [
+            33,
+            543.4
+          ],
+          [
+            34,
+            543.4
+          ],
+          [
+            35,
+            543.4
+          ],
+          [
+            36,
+            543.5
+          ]
+        ],
+        "samples": 36
+      },
+      "fullscreen": true,
+      "gitRev": "d4f62f19",
+      "hostLoadAverage1mAtLaunch": 6.17,
+      "loop": "",
+      "map": "prontera",
+      "requestedFps": "144",
+      "run": "fps144",
+      "wallSeconds": 37
+    },
+    {
+      "app": {
+        "build": "release",
+        "cpuDrawMs": {
+          "avg": 2.01,
+          "max": 4.32,
+          "min": 0.62,
+          "p50": 1.71,
+          "p95": 3.75,
+          "p99": 3.91
+        },
+        "displayMaxHz": 144,
+        "drawable": {
+          "height": 1440,
+          "width": 2560
+        },
+        "endedAt": "2026-11-08T18:47:07Z",
+        "fps": {
+          "atP95FrameTime": 46.77,
+          "atP99FrameTime": 41.73,
+          "average": 47.91
+        },
+        "frameMs": {
+          "avg": 20.87,
+          "max": 33.84,
+          "min": 14.82,
+          "p50": 20.83,
+          "p95": 21.38,
+          "p99": 23.96
+        },
+        "framesOverPercent": {
+          "16.7ms": 99.65,
+          "33.3ms": 0.07,
+          "8.3ms": 100
+        },
+        "gpuMs": {
+          "avg": 2.15,
+          "max": 4,
+          "min": 0.85,
+          "p50": 2.14,
+          "p95": 3.13,
+          "p99": 3.33
+        },
+        "gpuSamples": 1438,
+        "gpuUnavailable": 0,
+        "label": "prontera effects",
+        "machine": {
+          "cpu": "Apple M4",
+          "os": "Version 27.0.1 (Build 26A434)",
+          "physicalMemoryMB": 16384
+        },
+        "measuredAfterMilestone": "commandsDone",
+        "memory": {
+          "atFirstMapFrame": {
+            "peakPhysFootprintMB": 557.7,
+            "physFootprintMB": 516.2,
+            "residentMB": 424.3
+          },
+          "peakPhysFootprintMB": 597.9,
+          "physFootprintMB": 592.2,
+          "residentMB": 421
+        },
+        "milestonesSinceProcessStart": {
+          "autologinStarted": 0.597,
+          "characterSelectShown": 0.767,
+          "commandsDone": 1.892,
+          "launcherShown": 0.535,
+          "loginSent": 0.687,
+          "mapFirstFrame": 1.925,
+          "mapLoaded": 1.87,
+          "mapLoading": 0.814,
+          "playStage": 0.792
+        },
+        "preferredFramesPerSecond": 60,
+        "processStartedAt": "2026-11-08T18:46:30Z",
+        "samples": 1437,
+        "schema": 1,
+        "warmupSeconds": 5,
+        "windowSeconds": 30
+      },
+      "build": "Release",
+      "character": "PerfPront",
+      "commands": "",
+      "derived": {
+        "autologinToMapFirstFrameS": 1.33,
+        "characterSelectToMapLoadedS": 1.1,
+        "loginToCharacterSelectS": 0.08,
+        "mapLoadedToFirstFrameS": 0.05,
+        "processStartToLauncherShownS": 0.535,
+        "processStartToMapFirstFrameS": 1.925
+      },
+      "external": {
+        "footprintPeakMB": 594.1,
+        "rssLastMB": 419.7,
+        "rssPeakMB": 420.8,
+        "rssSeriesMB": [
+          [
+            0,
+            0.9
+          ],
+          [
+            1,
+            333.9
+          ],
+          [
+            2,
+            417.5
+          ],
+          [
+            3,
+            417.7
+          ],
+          [
+            4,
+            414.5
+          ],
+          [
+            5,
+            417.5
+          ],
+          [
+            6,
+            417.0
+          ],
+          [
+            7,
+            418.8
+          ],
+          [
+            8,
+            417.0
+          ],
+          [
+            9,
+            418.8
+          ],
+          [
+            10,
+            417.0
+          ],
+          [
+            11,
+            418.9
+          ],
+          [
+            12,
+            417.3
+          ],
+          [
+            13,
+            419.1
+          ],
+          [
+            14,
+            417.2
+          ],
+          [
+            15,
+            419.0
+          ],
+          [
+            16,
+            417.2
+          ],
+          [
+            17,
+            419.1
+          ],
+          [
+            18,
+            417.3
+          ],
+          [
+            19,
+            419.1
+          ],
+          [
+            20,
+            417.3
+          ],
+          [
+            21,
+            419.1
+          ],
+          [
+            22,
+            417.3
+          ],
+          [
+            23,
+            417.7
+          ],
+          [
+            24,
+            417.3
+          ],
+          [
+            25,
+            417.7
+          ],
+          [
+            26,
+            418.7
+          ],
+          [
+            27,
+            417.7
+          ],
+          [
+            28,
+            418.7
+          ],
+          [
+            29,
+            417.7
+          ],
+          [
+            30,
+            420.7
+          ],
+          [
+            32,
+            419.7
+          ],
+          [
+            33,
+            420.8
+          ],
+          [
+            34,
+            419.7
+          ],
+          [
+            35,
+            420.8
+          ],
+          [
+            36,
+            419.7
+          ]
+        ],
+        "samples": 36
+      },
+      "fullscreen": true,
+      "gitRev": "d4f62f19",
+      "hostLoadAverage1mAtLaunch": 3.62,
+      "loop": "@effect 89;@effect 92;@effect 113;@effect 83;@effect 30;@effect 77;@effect 96;@effect 25",
+      "map": "prontera",
+      "requestedFps": "default",
+      "run": "effects",
+      "wallSeconds": 37
+    },
+    {
+      "app": {
+        "build": "release",
+        "cpuDrawMs": {
+          "avg": 0.98,
+          "max": 2.1,
+          "min": 0.53,
+          "p50": 0.96,
+          "p95": 1.3,
+          "p99": 1.55
+        },
+        "displayMaxHz": 144,
+        "drawable": {
+          "height": 1440,
+          "width": 2560
+        },
+        "endedAt": "2026-11-08T18:47:48Z",
+        "fps": {
+          "atP95FrameTime": 138.16,
+          "atP99FrameTime": 109.12,
+          "average": 143.59
+        },
+        "frameMs": {
+          "avg": 6.96,
+          "max": 15.47,
+          "min": 1.06,
+          "p50": 6.95,
+          "p95": 7.24,
+          "p99": 9.16
+        },
+        "framesOverPercent": {
+          "16.7ms": 0,
+          "33.3ms": 0,
+          "8.3ms": 1.21
+        },
+        "gpuMs": {
+          "avg": 2.6,
+          "max": 4.59,
+          "min": 0.91,
+          "p50": 2.72,
+          "p95": 4.02,
+          "p99": 4.34
+        },
+        "gpuSamples": 4308,
+        "gpuUnavailable": 0,
+        "label": "prontera effects-fps144",
+        "machine": {
+          "cpu": "Apple M4",
+          "os": "Version 27.0.1 (Build 26A434)",
+          "physicalMemoryMB": 16384
+        },
+        "measuredAfterMilestone": "commandsDone",
+        "memory": {
+          "atFirstMapFrame": {
+            "peakPhysFootprintMB": 554,
+            "physFootprintMB": 509.5,
+            "residentMB": 536.1
+          },
+          "peakPhysFootprintMB": 600.8,
+          "physFootprintMB": 593.3,
+          "residentMB": 556.9
+        },
+        "milestonesSinceProcessStart": {
+          "autologinStarted": 0.43,
+          "characterSelectShown": 0.589,
+          "commandsDone": 1.179,
+          "launcherShown": 0.388,
+          "loginSent": 0.481,
+          "mapFirstFrame": 1.169,
+          "mapLoaded": 1.152,
+          "mapLoading": 0.637,
+          "playStage": 0.617
+        },
+        "preferredFramesPerSecond": 144,
+        "processStartedAt": "2026-11-08T18:47:12Z",
+        "samples": 4307,
+        "schema": 1,
+        "warmupSeconds": 5,
+        "windowSeconds": 30
+      },
+      "build": "Release",
+      "character": "PerfPront",
+      "commands": "",
+      "derived": {
+        "autologinToMapFirstFrameS": 0.74,
+        "characterSelectToMapLoadedS": 0.56,
+        "loginToCharacterSelectS": 0.11,
+        "mapLoadedToFirstFrameS": 0.02,
+        "processStartToLauncherShownS": 0.388,
+        "processStartToMapFirstFrameS": 1.169
+      },
+      "external": {
+        "footprintPeakMB": 594.1,
+        "rssLastMB": 556.9,
+        "rssPeakMB": 557.3,
+        "rssSeriesMB": [
+          [
+            0,
+            0.4
+          ],
+          [
+            1,
+            466.8
+          ],
+          [
+            2,
+            549.2
+          ],
+          [
+            3,
+            555.7
+          ],
+          [
+            4,
+            555.2
+          ],
+          [
+            5,
+            556.4
+          ],
+          [
+            6,
+            555.2
+          ],
+          [
+            7,
+            556.1
+          ],
+          [
+            8,
+            555.1
+          ],
+          [
+            9,
+            556.1
+          ],
+          [
+            10,
+            555.1
+          ],
+          [
+            11,
+            556.2
+          ],
+          [
+            12,
+            555.5
+          ],
+          [
+            13,
+            556.5
+          ],
+          [
+            14,
+            555.5
+          ],
+          [
+            15,
+            556.5
+          ],
+          [
+            16,
+            555.5
+          ],
+          [
+            17,
+            556.5
+          ],
+          [
+            18,
+            555.5
+          ],
+          [
+            19,
+            557.3
+          ],
+          [
+            20,
+            555.9
+          ],
+          [
+            21,
+            557.3
+          ],
+          [
+            22,
+            555.5
+          ],
+          [
+            23,
+            557.3
+          ],
+          [
+            24,
+            555.1
+          ],
+          [
+            25,
+            557.3
+          ],
+          [
+            26,
+            555.1
+          ],
+          [
+            27,
+            557.3
+          ],
+          [
+            28,
+            555.1
+          ],
+          [
+            29,
+            557.3
+          ],
+          [
+            30,
+            555.1
+          ],
+          [
+            31,
+            557.3
+          ],
+          [
+            32,
+            555.1
+          ],
+          [
+            34,
+            557.3
+          ],
+          [
+            35,
+            555.1
+          ],
+          [
+            36,
+            556.9
+          ]
+        ],
+        "samples": 36
+      },
+      "fullscreen": true,
+      "gitRev": "d4f62f19",
+      "hostLoadAverage1mAtLaunch": 4.0,
+      "loop": "@effect 89;@effect 92;@effect 113;@effect 83;@effect 30;@effect 77;@effect 96;@effect 25",
+      "map": "prontera",
+      "requestedFps": "144",
+      "run": "effects-fps144",
+      "wallSeconds": 37
+    }
+  ]
+}

@@ -1,0 +1,1009 @@
+{
+  "map": "geffen",
+  "runs": [
+    {
+      "app": {
+        "build": "release",
+        "cpuDrawMs": {
+          "avg": 0.26,
+          "max": 0.5,
+          "min": 0.17,
+          "p50": 0.26,
+          "p95": 0.4,
+          "p99": 0.44
+        },
+        "displayMaxHz": 144,
+        "drawable": {
+          "height": 1440,
+          "width": 2560
+        },
+        "endedAt": "2026-11-08T18:42:54Z",
+        "fps": {
+          "atP95FrameTime": 47.96,
+          "atP99FrameTime": 47.92,
+          "average": 47.99
+        },
+        "frameMs": {
+          "avg": 20.84,
+          "max": 21.51,
+          "min": 20.16,
+          "p50": 20.84,
+          "p95": 20.85,
+          "p99": 20.87
+        },
+        "framesOverPercent": {
+          "16.7ms": 100,
+          "33.3ms": 0,
+          "8.3ms": 100
+        },
+        "gpuMs": {
+          "avg": 1.25,
+          "max": 2.27,
+          "min": 0.77,
+          "p50": 1.25,
+          "p95": 2.17,
+          "p99": 2.23
+        },
+        "gpuSamples": 1440,
+        "gpuUnavailable": 0,
+        "label": "geffen cold",
+        "machine": {
+          "cpu": "Apple M4",
+          "os": "Version 27.0.1 (Build 26A434)",
+          "physicalMemoryMB": 16384
+        },
+        "memory": {
+          "atFirstMapFrame": {
+            "peakPhysFootprintMB": 423.4,
+            "physFootprintMB": 381.2,
+            "residentMB": 409.4
+          },
+          "peakPhysFootprintMB": 452.6,
+          "physFootprintMB": 450.1,
+          "residentMB": 421.2
+        },
+        "milestonesSinceProcessStart": {
+          "autologinStarted": 0.57,
+          "characterSelectShown": 0.725,
+          "commandsDone": 1.317,
+          "launcherShown": 0.515,
+          "loginSent": 0.633,
+          "mapFirstFrame": 1.332,
+          "mapLoaded": 1.283,
+          "mapLoading": 0.776,
+          "playStage": 0.755
+        },
+        "preferredFramesPerSecond": 60,
+        "processStartedAt": "2026-11-08T18:42:17Z",
+        "samples": 1439,
+        "schema": 1,
+        "warmupSeconds": 5,
+        "windowSeconds": 30
+      },
+      "build": "Release",
+      "character": "PerfGeff",
+      "commands": "",
+      "derived": {
+        "autologinToMapFirstFrameS": 0.76,
+        "characterSelectToMapLoadedS": 0.56,
+        "loginToCharacterSelectS": 0.09,
+        "mapLoadedToFirstFrameS": 0.05,
+        "processStartToLauncherShownS": 0.515,
+        "processStartToMapFirstFrameS": 1.332
+      },
+      "external": {
+        "footprintPeakMB": 450.0,
+        "rssLastMB": 420.9,
+        "rssPeakMB": 420.9,
+        "rssSeriesMB": [
+          [
+            0,
+            0.3
+          ],
+          [
+            1,
+            353.6
+          ],
+          [
+            2,
+            418.0
+          ],
+          [
+            3,
+            418.3
+          ],
+          [
+            4,
+            418.4
+          ],
+          [
+            5,
+            418.5
+          ],
+          [
+            6,
+            418.4
+          ],
+          [
+            7,
+            418.1
+          ],
+          [
+            8,
+            418.1
+          ],
+          [
+            9,
+            418.1
+          ],
+          [
+            10,
+            418.1
+          ],
+          [
+            12,
+            418.1
+          ],
+          [
+            13,
+            418.3
+          ],
+          [
+            14,
+            418.3
+          ],
+          [
+            15,
+            418.3
+          ],
+          [
+            16,
+            418.3
+          ],
+          [
+            17,
+            418.3
+          ],
+          [
+            18,
+            418.3
+          ],
+          [
+            19,
+            418.3
+          ],
+          [
+            20,
+            418.3
+          ],
+          [
+            21,
+            418.3
+          ],
+          [
+            22,
+            418.3
+          ],
+          [
+            23,
+            418.3
+          ],
+          [
+            24,
+            418.3
+          ],
+          [
+            25,
+            418.3
+          ],
+          [
+            26,
+            418.3
+          ],
+          [
+            27,
+            418.3
+          ],
+          [
+            28,
+            418.3
+          ],
+          [
+            29,
+            418.3
+          ],
+          [
+            30,
+            418.3
+          ],
+          [
+            31,
+            420.8
+          ],
+          [
+            32,
+            420.8
+          ],
+          [
+            33,
+            420.8
+          ],
+          [
+            34,
+            420.8
+          ],
+          [
+            35,
+            420.8
+          ],
+          [
+            36,
+            420.9
+          ]
+        ],
+        "samples": 36
+      },
+      "fullscreen": true,
+      "gitRev": "d4f62f19",
+      "hostLoadAverage1mAtLaunch": 15.88,
+      "loop": "",
+      "map": "geffen",
+      "requestedFps": "default",
+      "run": "cold",
+      "wallSeconds": 37
+    },
+    {
+      "app": {
+        "build": "release",
+        "cpuDrawMs": {
+          "avg": 0.25,
+          "max": 0.47,
+          "min": 0.19,
+          "p50": 0.22,
+          "p95": 0.39,
+          "p99": 0.41
+        },
+        "displayMaxHz": 144,
+        "drawable": {
+          "height": 1440,
+          "width": 2560
+        },
+        "endedAt": "2026-11-08T18:43:35Z",
+        "fps": {
+          "atP95FrameTime": 47.95,
+          "atP99FrameTime": 47.85,
+          "average": 47.99
+        },
+        "frameMs": {
+          "avg": 20.84,
+          "max": 24.45,
+          "min": 17.23,
+          "p50": 20.84,
+          "p95": 20.85,
+          "p99": 20.9
+        },
+        "framesOverPercent": {
+          "16.7ms": 100,
+          "33.3ms": 0,
+          "8.3ms": 100
+        },
+        "gpuMs": {
+          "avg": 1.25,
+          "max": 2.33,
+          "min": 0.76,
+          "p50": 1.01,
+          "p95": 2.19,
+          "p99": 2.22
+        },
+        "gpuSamples": 1440,
+        "gpuUnavailable": 0,
+        "label": "geffen warm",
+        "machine": {
+          "cpu": "Apple M4",
+          "os": "Version 27.0.1 (Build 26A434)",
+          "physicalMemoryMB": 16384
+        },
+        "memory": {
+          "atFirstMapFrame": {
+            "peakPhysFootprintMB": 429,
+            "physFootprintMB": 383.5,
+            "residentMB": 411.7
+          },
+          "peakPhysFootprintMB": 454.9,
+          "physFootprintMB": 452.4,
+          "residentMB": 423.4
+        },
+        "milestonesSinceProcessStart": {
+          "autologinStarted": 0.492,
+          "characterSelectShown": 0.649,
+          "commandsDone": 1.2,
+          "launcherShown": 0.445,
+          "loginSent": 0.547,
+          "mapFirstFrame": 1.219,
+          "mapLoaded": 1.176,
+          "mapLoading": 0.698,
+          "playStage": 0.677
+        },
+        "preferredFramesPerSecond": 60,
+        "processStartedAt": "2026-11-08T18:42:59Z",
+        "samples": 1439,
+        "schema": 1,
+        "warmupSeconds": 5,
+        "windowSeconds": 30
+      },
+      "build": "Release",
+      "character": "PerfGeff",
+      "commands": "",
+      "derived": {
+        "autologinToMapFirstFrameS": 0.73,
+        "characterSelectToMapLoadedS": 0.53,
+        "loginToCharacterSelectS": 0.1,
+        "mapLoadedToFirstFrameS": 0.04,
+        "processStartToLauncherShownS": 0.445,
+        "processStartToMapFirstFrameS": 1.219
+      },
+      "external": {
+        "footprintPeakMB": 452.3,
+        "rssLastMB": 423.0,
+        "rssPeakMB": 423.0,
+        "rssSeriesMB": [
+          [
+            0,
+            0.4
+          ],
+          [
+            1,
+            377.1
+          ],
+          [
+            2,
+            420.2
+          ],
+          [
+            3,
+            420.4
+          ],
+          [
+            4,
+            420.5
+          ],
+          [
+            5,
+            420.5
+          ],
+          [
+            6,
+            420.5
+          ],
+          [
+            7,
+            420.2
+          ],
+          [
+            8,
+            420.2
+          ],
+          [
+            9,
+            420.2
+          ],
+          [
+            10,
+            420.2
+          ],
+          [
+            11,
+            420.2
+          ],
+          [
+            13,
+            420.4
+          ],
+          [
+            14,
+            420.4
+          ],
+          [
+            15,
+            420.4
+          ],
+          [
+            16,
+            420.4
+          ],
+          [
+            17,
+            420.4
+          ],
+          [
+            18,
+            420.4
+          ],
+          [
+            19,
+            420.4
+          ],
+          [
+            20,
+            420.4
+          ],
+          [
+            21,
+            420.4
+          ],
+          [
+            22,
+            420.4
+          ],
+          [
+            23,
+            420.5
+          ],
+          [
+            24,
+            420.5
+          ],
+          [
+            25,
+            420.5
+          ],
+          [
+            26,
+            420.5
+          ],
+          [
+            27,
+            420.5
+          ],
+          [
+            28,
+            420.5
+          ],
+          [
+            29,
+            420.5
+          ],
+          [
+            30,
+            420.5
+          ],
+          [
+            31,
+            423.0
+          ],
+          [
+            32,
+            423.0
+          ],
+          [
+            33,
+            423.0
+          ],
+          [
+            34,
+            423.0
+          ],
+          [
+            35,
+            423.0
+          ],
+          [
+            36,
+            423.0
+          ]
+        ],
+        "samples": 36
+      },
+      "fullscreen": true,
+      "gitRev": "d4f62f19",
+      "hostLoadAverage1mAtLaunch": 11.48,
+      "loop": "",
+      "map": "geffen",
+      "requestedFps": "default",
+      "run": "warm",
+      "wallSeconds": 37
+    },
+    {
+      "app": {
+        "build": "release",
+        "cpuDrawMs": {
+          "avg": 1.11,
+          "max": 2.31,
+          "min": 0.16,
+          "p50": 1.46,
+          "p95": 1.83,
+          "p99": 1.96
+        },
+        "displayMaxHz": 144,
+        "drawable": {
+          "height": 1440,
+          "width": 2560
+        },
+        "endedAt": "2026-11-08T18:45:00Z",
+        "fps": {
+          "atP95FrameTime": 68.84,
+          "atP99FrameTime": 68.13,
+          "average": 71.99
+        },
+        "frameMs": {
+          "avg": 13.89,
+          "max": 20.37,
+          "min": 7.37,
+          "p50": 13.89,
+          "p95": 14.53,
+          "p99": 14.68
+        },
+        "framesOverPercent": {
+          "16.7ms": 0.05,
+          "33.3ms": 0,
+          "8.3ms": 99.95
+        },
+        "gpuMs": {
+          "avg": 2.15,
+          "max": 2.78,
+          "min": 0.76,
+          "p50": 2.49,
+          "p95": 2.57,
+          "p99": 2.63
+        },
+        "gpuSamples": 2160,
+        "gpuUnavailable": 0,
+        "label": "geffen fps120",
+        "machine": {
+          "cpu": "Apple M4",
+          "os": "Version 27.0.1 (Build 26A434)",
+          "physicalMemoryMB": 16384
+        },
+        "memory": {
+          "atFirstMapFrame": {
+            "peakPhysFootprintMB": 413.6,
+            "physFootprintMB": 381.2,
+            "residentMB": 409.9
+          },
+          "peakPhysFootprintMB": 451.6,
+          "physFootprintMB": 449.1,
+          "residentMB": 418.8
+        },
+        "milestonesSinceProcessStart": {
+          "autologinStarted": 0.551,
+          "characterSelectShown": 0.712,
+          "commandsDone": 1.268,
+          "launcherShown": 0.502,
+          "loginSent": 0.611,
+          "mapFirstFrame": 1.268,
+          "mapLoaded": 1.242,
+          "mapLoading": 0.769,
+          "playStage": 0.747
+        },
+        "preferredFramesPerSecond": 120,
+        "processStartedAt": "2026-11-08T18:44:23Z",
+        "samples": 2159,
+        "schema": 1,
+        "warmupSeconds": 5,
+        "windowSeconds": 30
+      },
+      "build": "Release",
+      "character": "PerfGeff",
+      "commands": "",
+      "derived": {
+        "autologinToMapFirstFrameS": 0.72,
+        "characterSelectToMapLoadedS": 0.53,
+        "loginToCharacterSelectS": 0.1,
+        "mapLoadedToFirstFrameS": 0.03,
+        "processStartToLauncherShownS": 0.502,
+        "processStartToMapFirstFrameS": 1.268
+      },
+      "external": {
+        "footprintPeakMB": 449.0,
+        "rssLastMB": 418.5,
+        "rssPeakMB": 418.5,
+        "rssSeriesMB": [
+          [
+            0,
+            1.0
+          ],
+          [
+            1,
+            378.9
+          ],
+          [
+            2,
+            415.6
+          ],
+          [
+            3,
+            415.9
+          ],
+          [
+            4,
+            416.0
+          ],
+          [
+            5,
+            416.0
+          ],
+          [
+            6,
+            415.7
+          ],
+          [
+            7,
+            415.7
+          ],
+          [
+            8,
+            415.7
+          ],
+          [
+            9,
+            415.7
+          ],
+          [
+            11,
+            415.7
+          ],
+          [
+            12,
+            415.7
+          ],
+          [
+            13,
+            415.9
+          ],
+          [
+            14,
+            415.9
+          ],
+          [
+            15,
+            415.9
+          ],
+          [
+            16,
+            415.9
+          ],
+          [
+            17,
+            415.9
+          ],
+          [
+            18,
+            418.5
+          ],
+          [
+            19,
+            418.4
+          ],
+          [
+            20,
+            418.4
+          ],
+          [
+            21,
+            418.4
+          ],
+          [
+            22,
+            418.4
+          ],
+          [
+            23,
+            418.4
+          ],
+          [
+            24,
+            418.4
+          ],
+          [
+            25,
+            418.4
+          ],
+          [
+            26,
+            418.4
+          ],
+          [
+            27,
+            418.4
+          ],
+          [
+            28,
+            418.4
+          ],
+          [
+            29,
+            418.4
+          ],
+          [
+            30,
+            418.4
+          ],
+          [
+            31,
+            418.4
+          ],
+          [
+            32,
+            418.5
+          ],
+          [
+            33,
+            418.5
+          ],
+          [
+            34,
+            418.5
+          ],
+          [
+            35,
+            418.5
+          ],
+          [
+            36,
+            418.5
+          ]
+        ],
+        "samples": 36
+      },
+      "fullscreen": true,
+      "gitRev": "d4f62f19",
+      "hostLoadAverage1mAtLaunch": 9.34,
+      "loop": "",
+      "map": "geffen",
+      "requestedFps": "120",
+      "run": "fps120",
+      "wallSeconds": 37
+    },
+    {
+      "app": {
+        "build": "release",
+        "cpuDrawMs": {
+          "avg": 1.06,
+          "max": 2.18,
+          "min": 0.16,
+          "p50": 1.33,
+          "p95": 1.62,
+          "p99": 1.84
+        },
+        "displayMaxHz": 144,
+        "drawable": {
+          "height": 1440,
+          "width": 2560
+        },
+        "endedAt": "2026-11-08T18:46:23Z",
+        "fps": {
+          "atP95FrameTime": 136.59,
+          "atP99FrameTime": 129.46,
+          "average": 143.86
+        },
+        "frameMs": {
+          "avg": 6.95,
+          "max": 14.67,
+          "min": 1.57,
+          "p50": 6.94,
+          "p95": 7.32,
+          "p99": 7.72
+        },
+        "framesOverPercent": {
+          "16.7ms": 0,
+          "33.3ms": 0,
+          "8.3ms": 0.14
+        },
+        "gpuMs": {
+          "avg": 2.51,
+          "max": 4.05,
+          "min": 0.8,
+          "p50": 2.51,
+          "p95": 3.8,
+          "p99": 3.94
+        },
+        "gpuSamples": 4316,
+        "gpuUnavailable": 0,
+        "label": "geffen fps144",
+        "machine": {
+          "cpu": "Apple M4",
+          "os": "Version 27.0.1 (Build 26A434)",
+          "physicalMemoryMB": 16384
+        },
+        "memory": {
+          "atFirstMapFrame": {
+            "peakPhysFootprintMB": 402.7,
+            "physFootprintMB": 376.8,
+            "residentMB": 405.8
+          },
+          "peakPhysFootprintMB": 452.3,
+          "physFootprintMB": 449.6,
+          "residentMB": 418.3
+        },
+        "milestonesSinceProcessStart": {
+          "autologinStarted": 0.428,
+          "characterSelectShown": 0.587,
+          "commandsDone": 1.059,
+          "launcherShown": 0.385,
+          "loginSent": 0.497,
+          "mapFirstFrame": 1.05,
+          "mapLoaded": 1.033,
+          "mapLoading": 0.638,
+          "playStage": 0.618
+        },
+        "preferredFramesPerSecond": 144,
+        "processStartedAt": "2026-11-08T18:45:47Z",
+        "samples": 4315,
+        "schema": 1,
+        "warmupSeconds": 5,
+        "windowSeconds": 30
+      },
+      "build": "Release",
+      "character": "PerfGeff",
+      "commands": "",
+      "derived": {
+        "autologinToMapFirstFrameS": 0.62,
+        "characterSelectToMapLoadedS": 0.45,
+        "loginToCharacterSelectS": 0.09,
+        "mapLoadedToFirstFrameS": 0.02,
+        "processStartToLauncherShownS": 0.385,
+        "processStartToMapFirstFrameS": 1.05
+      },
+      "external": {
+        "footprintPeakMB": 449.8,
+        "rssLastMB": 417.9,
+        "rssPeakMB": 417.9,
+        "rssSeriesMB": [
+          [
+            0,
+            0.3
+          ],
+          [
+            1,
+            405.0
+          ],
+          [
+            2,
+            414.3
+          ],
+          [
+            3,
+            414.3
+          ],
+          [
+            4,
+            414.5
+          ],
+          [
+            5,
+            414.5
+          ],
+          [
+            7,
+            414.3
+          ],
+          [
+            8,
+            414.3
+          ],
+          [
+            9,
+            414.2
+          ],
+          [
+            10,
+            414.2
+          ],
+          [
+            11,
+            414.2
+          ],
+          [
+            12,
+            414.2
+          ],
+          [
+            13,
+            414.4
+          ],
+          [
+            14,
+            414.4
+          ],
+          [
+            15,
+            414.6
+          ],
+          [
+            16,
+            415.0
+          ],
+          [
+            17,
+            415.0
+          ],
+          [
+            18,
+            415.3
+          ],
+          [
+            19,
+            415.3
+          ],
+          [
+            20,
+            415.3
+          ],
+          [
+            21,
+            415.3
+          ],
+          [
+            22,
+            415.3
+          ],
+          [
+            23,
+            415.3
+          ],
+          [
+            24,
+            415.3
+          ],
+          [
+            25,
+            415.3
+          ],
+          [
+            26,
+            415.3
+          ],
+          [
+            27,
+            415.3
+          ],
+          [
+            28,
+            415.3
+          ],
+          [
+            29,
+            415.3
+          ],
+          [
+            30,
+            415.3
+          ],
+          [
+            31,
+            417.9
+          ],
+          [
+            32,
+            417.9
+          ],
+          [
+            33,
+            417.9
+          ],
+          [
+            34,
+            417.9
+          ],
+          [
+            35,
+            417.9
+          ],
+          [
+            36,
+            417.9
+          ]
+        ],
+        "samples": 36
+      },
+      "fullscreen": true,
+      "gitRev": "d4f62f19",
+      "hostLoadAverage1mAtLaunch": 4.2,
+      "loop": "",
+      "map": "geffen",
+      "requestedFps": "144",
+      "run": "fps144",
+      "wallSeconds": 37
+    }
+  ]
+}
