@@ -185,6 +185,11 @@ struct MapSceneView: View {
             }
         }
         .overlay(alignment: .center) {
+            if let candidateIndices = playSession.appraisal.candidateIndices {
+                ItemAppraisalView(inventory: playSession.inventory, candidateIndices: candidateIndices)
+            }
+        }
+        .overlay(alignment: .center) {
             if let dialog = playSession.dialog {
                 NPCDialogView(dialog: dialog)
             }
@@ -466,6 +471,8 @@ struct MapSceneView: View {
             playSession.cancelTrade()
         } else if playSession.mail.draft != nil {
             playSession.closeMailCompose()
+        } else if playSession.appraisal.isPickerOpen {
+            playSession.cancelAppraisal()
         } else if playSession.companions.petEggIndices != nil {
             playSession.cancelPetEggSelection()
         } else if playSession.storage != nil {

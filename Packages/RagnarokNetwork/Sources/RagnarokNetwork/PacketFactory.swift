@@ -1053,4 +1053,15 @@ public enum PacketFactory {
         packet.amount = Int32(truncatingIfNeeded: amount)
         return packet
     }
+
+    /// | `PACKET_CZ_REQ_ITEMIDENTIFY` | `clif_parse_ItemIdentify` |
+    ///
+    /// `index` is the client inventory index from `ZC_ITEMIDENTIFY_LIST`. `PACKET_CZ_REQ_ITEMIDENTIFY.cancelIndex`
+    /// leaves the appraisal menu without identifying anything.
+    public static func CZ_REQ_ITEMIDENTIFY(index: UInt16) -> PACKET_CZ_REQ_ITEMIDENTIFY {
+        var packet = PACKET_CZ_REQ_ITEMIDENTIFY()
+        packet.packetType = HEADER_CZ_REQ_ITEMIDENTIFY
+        packet.index = index
+        return packet
+    }
 }

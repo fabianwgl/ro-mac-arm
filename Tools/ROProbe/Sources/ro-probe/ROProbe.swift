@@ -40,6 +40,10 @@ struct ROProbe {
         let provider = ClientFilesProvider(url: clientURL, allowAudio: options.withAudio, stats: stats)
         let resourceManager = ResourceManager(resourceProvider: provider)
 
+        if options.appraisalTest {
+            exit(await AppraisalScenario(options: options, resourceManager: resourceManager).run() ? 0 : 1)
+        }
+
         if let role = options.vendingRole.flatMap(VendingScenario.Role.init(rawValue:)) {
             let scenario = VendingScenario(options: options, role: role, resourceManager: resourceManager)
             exit(await scenario.run() ? 0 : 1)

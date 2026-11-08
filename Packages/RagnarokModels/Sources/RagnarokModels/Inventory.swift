@@ -85,6 +85,20 @@ public struct Inventory {
         }
     }
 
+    /// Item appraisal: the item becomes identified when the server says it worked. The server does not send the
+    /// item again, so this is the only place the flag flips. Returns the appraised item, or nil on a failure or
+    /// when the index is not in the inventory.
+    @discardableResult
+    public mutating func update(from packet: PACKET_ZC_ACK_ITEMIDENTIFY) -> InventoryItem? {
+        guard packet.isSuccess, var item = items[Int(packet.index)] else {
+            return nil
+        }
+
+        item.isIdentified = true
+        items[item.index] = item
+        return item
+    }
+
     public mutating func update(from packet: PACKET_ZC_USE_ITEM_ACK) {
         let usedItem = UsedItem(from: packet)
         if var item = items[usedItem.index] {

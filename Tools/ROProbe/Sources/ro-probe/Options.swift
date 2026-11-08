@@ -25,6 +25,7 @@ struct Options {
     var tasks: Set<String> = []
     var coverageOnly = false
     var tradeTest = false
+    var appraisalTest = false
     var route: [RouteStop] = []
     var maxReconnectBackoff: TimeInterval = 15
     var stageTimeout: TimeInterval = 120
@@ -70,6 +71,7 @@ struct Options {
       --vending-timeout <s>    how long to wait for the other probe (default 180)
       --coverage              print packet table coverage (P0-10) and exit
       --trade-test            two clients (trade1, trade2) trade items and zeny; --json writes the result
+      --appraisal-test        item appraisal (Magnifier, Item Appraisal skill) and cart moves on one GM account
       -h, --help              this text
 
     """
@@ -172,6 +174,7 @@ struct Options {
                 }
             case "--coverage": options.coverageOnly = true
             case "--trade-test": options.tradeTest = true
+            case "--appraisal-test": options.appraisalTest = true
             case "-h", "--help":
                 print(usage)
                 exit(0)
