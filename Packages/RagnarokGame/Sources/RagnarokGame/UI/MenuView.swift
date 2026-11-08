@@ -21,6 +21,7 @@ enum MenuItem {
     case attendance
     case achievement
     case mail
+    case chatRoom
     case worldMap
     case options
 }
@@ -108,6 +109,14 @@ struct MenuView: View {
                             action(.homunculus)
                         } label: {
                             Image(systemName: "flask.fill")
+                                .font(.game(size: 14))
+                                .foregroundStyle(Color.gameLabel)
+                        }
+                        .frame(width: 32, height: 34)
+                        Button {
+                            action(.chatRoom)
+                        } label: {
+                            Image(systemName: "bubble.left.and.bubble.right.fill")
                                 .font(.game(size: 14))
                                 .foregroundStyle(Color.gameLabel)
                         }
