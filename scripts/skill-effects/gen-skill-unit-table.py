@@ -18,13 +18,19 @@ for line in open(f'{repo}/Packages/RagnarokConstants/Sources/RagnarokConstants/G
     if m:
         skills[m.group(1)] = int(m.group(2))
 
+unit_names = {}
+for line in open(f'{repo}/Packages/RagnarokConstants/Sources/RagnarokConstants/Generated/SkillUnitID.swift'):
+    m = re.match(r'\s+case \.(\w+): (\d+)$', line)
+    if m:
+        unit_names[int(m.group(2))] = m.group(1)
+
 rows = []
 for unit_id, name in sorted(units.items(), key=lambda kv: int(kv[0])):
     case = (name or '').lower()
-    if case not in skills:
+    if case not in skills or int(unit_id) not in unit_names:
         sys.stderr.write(f'skipped unit {unit_id}: {name}\n')
         continue
-    rows.append((int(unit_id), case))
+    rows.append((unit_names[int(unit_id)], case))
 
 print('''//
 //  SkillUnitTable.swift
@@ -38,20 +44,20 @@ import RagnarokConstants
 /// Which skill a ground unit belongs to, keyed by the unit id of `ZC_SKILL_ENTRY*`.
 ///
 /// Unit ids are rAthena's `e_skill_unit_id`. The mapping follows the roBrowser reference
-/// `SkillUnit.js`; unit 0x86 (a dummy unit with no picture) is not listed.
+/// `SkillUnit.js`; the dummy unit (0x86, no picture) is not listed.
 public enum SkillUnitTable {
-    private static let table: [Int : SkillID] = [''')
+    private static let table: [SkillUnitID : SkillID] = [''')
 for unit_id, case in rows:
-    print(f'        0x{unit_id:02x}: .{case},')
+    print(f'        .{unit_id}: .{case},')
 print('''    ]
 
     public static func skillID(forUnitID unitID: Int) -> SkillID? {
-        table[unitID]
+        SkillUnitID(rawValue: unitID).flatMap { table[$0] }
     }
 
     /// The effects that stay on a cell for as long as the unit exists.
     public static func groundEffects(forUnitID unitID: Int) -> [EffectReference] {
-        guard let skillID = table[unitID] else {
+        guard let skillID = skillID(forUnitID: unitID) else {
             return []
         }
         return SkillEffectTable.groundEffects(for: skillID)
