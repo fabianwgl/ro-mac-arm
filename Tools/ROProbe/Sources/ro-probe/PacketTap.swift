@@ -377,7 +377,7 @@ final class StreamFramer: @unchecked Sendable {
                 patchAddress(&frame, opcode: opcode)
             case .clientToServer:
                 let name = sentEntry?.name ?? PacketNames.name(for: opcode) ?? entry?.functionName
-                stats.recordSent(opcode: opcode, name: name, bytes: length)
+                stats.recordSent(opcode: opcode, name: name, bytes: length, payload: Array(frame.prefix(48)))
             }
             if direction == .clientToServer, role == .map, framesSeen == 0 {
                 firstFrameLength = output.count + frame.count

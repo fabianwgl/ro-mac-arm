@@ -54,6 +54,22 @@ final class ProbeStats: @unchecked Sendable {
     private(set) var sessions: [[String: Any]] = []
     private(set) var tapEnabled = true
 
+    /// One entry per packet on the wire, kept only while a scenario runs (`setPacketLogging`).
+    struct LoggedPacket {
+        var time: Double
+        var received: Bool
+        var opcode: Int
+        var name: String
+        /// The frame of a client packet (first bytes only), so a scenario can read the cell of a ground skill.
+        var payload: [UInt8] = []
+    }
+    private var packetLog: [LoggedPacket] = []
+    private var logsPackets = false
+    /// Print every logged packet to stderr as it passes (`--trace-packets`).
+    var tracesPackets = false
+    private(set) var scenario: [String: Any]?
+    private var audioRequests: [String: [String: Any]] = [:]
+
     private(set) var characterCreated: String?
     private(set) var deleteTest: [String: Any]?
     private(set) var reachedMap = false
@@ -91,9 +107,15 @@ final class ProbeStats: @unchecked Sendable {
             entry.firstError = error
         }
         received[opcode] = entry
+        if logsPackets {
+            packetLog.append(LoggedPacket(time: elapsed, received: true, opcode: opcode, name: name ?? entry.name ?? ""))
+            if tracesPackets {
+                Log.line("pkt <- 0x\(String(format: "%04x", opcode)) \(name ?? entry.name ?? "")")
+            }
+        }
     }
 
-    func recordSent(opcode: Int, name: String?, bytes: Int) {
+    func recordSent(opcode: Int, name: String?, bytes: Int, payload: [UInt8] = []) {
         lock.lock()
         defer { lock.unlock() }
 
@@ -104,6 +126,60 @@ final class ProbeStats: @unchecked Sendable {
         entry.count += 1
         entry.bytes += bytes
         sent[opcode] = entry
+        if logsPackets {
+            packetLog.append(LoggedPacket(time: elapsed, received: false, opcode: opcode, name: name ?? entry.name ?? "", payload: payload))
+            if tracesPackets {
+                Log.line("pkt -> 0x\(String(format: "%04x", opcode)) \(name ?? entry.name ?? "")")
+            }
+        }
+    }
+
+    // MARK: - Scenario support
+
+    func setPacketLogging(_ enabled: Bool) {
+        lock.lock()
+        logsPackets = enabled
+        lock.unlock()
+    }
+
+    var packetLogCount: Int {
+        lock.lock()
+        defer { lock.unlock() }
+        return packetLog.count
+    }
+
+    func packets(since index: Int) -> [LoggedPacket] {
+        lock.lock()
+        defer { lock.unlock() }
+        guard index < packetLog.count else {
+            return []
+        }
+        return Array(packetLog[max(index, 0)...])
+    }
+
+    func setScenario(_ result: [String: Any]) {
+        lock.lock()
+        scenario = result
+        lock.unlock()
+    }
+
+    func recordAudio(path: String, found: Bool, bytes: Int, error: String?) {
+        lock.lock()
+        defer { lock.unlock() }
+        var row = audioRequests[path] ?? ["requests": 0]
+        row["requests"] = (row["requests"] as? Int ?? 0) + 1
+        row["found"] = found
+        row["bytes"] = bytes
+        if let error {
+            row["error"] = error
+        }
+        audioRequests[path] = row
+    }
+
+    var audioSnapshot: [String: [String: Any]] {
+        lock.lock()
+        defer { lock.unlock() }
+        return audioRequests
     }
 
     func sentCount(opcode: Int) -> Int {
@@ -337,6 +413,10 @@ final class ProbeStats: @unchecked Sendable {
                 "reconnect": options.reconnect,
                 "deleteTest": options.deleteTest,
                 "tap": tapEnabled,
+                "scenario": options.scenario ?? "none",
+                "tasks": options.tasks.sorted(),
+                "withAudio": options.withAudio,
+                "audible": options.audible,
             ] as [String: Any],
             "tapEnabled": tapEnabled,
             "lastStage": lastStage,
@@ -375,6 +455,16 @@ final class ProbeStats: @unchecked Sendable {
         }
         if let deleteTest {
             result["deleteTest"] = deleteTest
+        }
+        if let scenario {
+            result["scenario"] = scenario
+        }
+        if !audioRequests.isEmpty {
+            result["audioRequests"] = audioRequests.keys.sorted().map { key -> [String: Any] in
+                var row = audioRequests[key] ?? [:]
+                row["path"] = key
+                return row
+            }
         }
         return result
     }
@@ -436,6 +526,17 @@ final class ProbeStats: @unchecked Sendable {
         }
         for event in errors.prefix(20) {
             lines.append("  error @\(String(format: "%.1f", event.time))s: \(event.message)")
+        }
+        if let scenario, let tasks = scenario["tasks"] as? [[String: Any]] {
+            lines.append("scenario \(scenario["name"] ?? "") on \(scenario["character"] ?? "") (\(scenario["seconds"] ?? 0) s)")
+            for task in tasks {
+                let checks = (task["checks"] as? [[String: Any]]) ?? []
+                let passed = checks.filter { ($0["passed"] as? Bool) == true }.count
+                lines.append("  \(task["id"] ?? "") \(String(describing: task["result"] ?? "").uppercased()) \(passed)/\(checks.count)  \(task["title"] ?? "")")
+                for check in checks where (check["passed"] as? Bool) != true {
+                    lines.append("      FAILED: \(check["name"] ?? "") -- \(check["detail"] ?? "")")
+                }
+            }
         }
         lines.append("")
         print(lines.joined(separator: "\n"))

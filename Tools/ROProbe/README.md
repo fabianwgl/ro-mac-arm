@@ -1,6 +1,6 @@
 # ROProbe
 
-`ro-probe` is a headless client for the Phase 0 and Phase 2 checks against a live rAthena server. It drives the
+`ro-probe` is a headless client for the Phase 0, Phase 2 and Phase 3 checks against a live rAthena server. It drives the
 real `GameSession` and `PlaySession` of `Packages/RagnarokGame` with no window: login, char server, character
 create or select, map server, then walk, chat and attack through the same `MapScene` and `PlaySession` entry
 points the UI uses. It counts every packet by opcode and writes a summary to stdout and, with `--json`, to a file.
@@ -13,7 +13,7 @@ It is a standalone SwiftPM package. It depends on the repo packages by relative 
   `@testable import RagnarokGame` and `@testable import RagnarokPackets`. This needs a debug build, which is what
   `swift build` makes. Do not build it with `-c release`.
 - The resource manager reads a kRO client directory like the app does: loose files, then `rdata.grf`, then
-  `data.grf`. BGM and sound effects answer "not found", so the run is silent.
+  `data.grf`. BGM and sound effects answer "not found" unless `--with-audio` is given, so the run is silent.
 - `GameSession` owns its `NetworkClient`s and their packet streams are private. To tally packets without editing
   the client, the probe starts a loopback TCP relay (the "tap") and gives `GameSession` its ports. The relay
   forwards bytes unchanged. It rewrites only the char server address in `AC_ACCEPT_LOGIN` and the map server
@@ -64,7 +64,11 @@ Tools/ROProbe/.build/debug/ro-probe \
 | `--no-tap` | No relay, no per-opcode tally | off |
 | `--no-enter-workaround` | Do not split the map `CZ_ENTER` from the packet after it (shows the client bug) | off |
 | `--stage-timeout`, `--map-load-timeout` | Waits in seconds | `120`, `300` |
-| `--with-audio` | Let the client play BGM and sound effects | off |
+| `--with-audio` | Let the client load (and, with `--audible`, play) BGM and sound effects; every audio request and whether it resolved goes into `audioRequests` in the JSON | off |
+| `--audible` | With `--with-audio`, leave the BGM and sound effect preferences on. Without it the run turns them off so it stays silent while still loading and decoding the files | off |
+| `--trace-packets` | With `--scenario`, print every packet to stderr as it passes | off |
+| `--scenario core` | Run the scripted core gameplay checks (see below) instead of wandering | off |
+| `--tasks P3-05,P3-06` | With `--scenario`, run only these tasks (`05,06` also works) | all |
 | `--coverage` | Print packet table coverage (P0-10) and exit; `--json` writes it too | |
 
 Exit code is 0 when the map was reached (or, with `--delete-test`, when the test passed), 1 otherwise, 2 for bad
@@ -93,6 +97,49 @@ cd ~/dev/rathena/tools/docker && docker compose restart map char login
 The summary counts the disconnect, each failed attempt while the servers are down, and the reconnect that reaches
 the map again. `GameSession` has no reconnect of its own, so the probe builds a fresh `GameSession` per attempt.
 
+### Core scenario (P3-02, P3-05..P3-11, P3-13)
+
+```sh
+# once: an admin account (group_id 99, needed for the @ commands the setup uses)
+docker exec ro-backend-db mariadb -uragnarok -pragnarok ragnarok -e \
+  "INSERT INTO login (userid, user_pass, sex, email, group_id, pincode) VALUES ('probecore','probecore','M','probecore@example.com',99,'');"
+
+Tools/ROProbe/.build/debug/ro-probe --user probecore --pass probecore --char-name ProbeCore \
+  --scenario core --with-audio --json docs/port/probe-runs/core-2026-11-08.json
+```
+
+The scenario logs in, creates the character if it is missing, waits for the map and then runs the tasks below in
+this order: P3-07, P3-05, P3-06, P3-10, P3-11, P3-08, P3-09, P3-02, P3-13. Run it on a fresh character: it changes
+job (Novice, Swordman, Mage), spends skill points and moves the save point. A run takes about 100 s. Wait 15 s or so
+between two runs on one account, or the login server answers "Server still recognizes your last log-in". The exit code is 0 when every task that
+ran passed (a task skipped for a missing flag does not count).
+
+Each check goes through the entry point the UI uses and then waits for the server's answer packet and for the client
+state that packet changes: `PlaySession.useItem`, `equipItem`, `unequipItem`, `throwItem`, `incrementStatusProperty`,
+`upgradeSkillLevel`, `useShortcut` (which is what the skill list calls), `selectDealType`, `purchaseItems`,
+`sellItems`, `selectMenu`, `moveItemToStorage`, and `MapScene.handleInteraction` / `attackMonster` for taps on
+monsters, NPCs, floor items and the ground. Chat GM commands (`@item`, `@blvl`, `@skillpoint`, `@jobchange`,
+`@monster`, `@zeny`, `@storage`, `@heal`, `@warp`) only set a situation up, or are the thing under test (`@warp`).
+While it waits the scenario calls `MapSceneRuntime.update` every 100 ms like the render loop, and asks for the save
+point respawn if the character dies.
+
+| Task | What it does |
+| --- | --- |
+| P3-07 | `@item` adds potions, a spare Knife and a Cotton Shirt; weight rises and falls by the item weight; use a potion; equip the spare knife; take the worn shirt off and put it on again |
+| P3-05 | Kills Porings one at a time with `attackMonster`; experience, a level up from kill experience (falls back to `@blvl 1`), then one STR point |
+| P3-06 | Taps a monster drop and a thrown potion stack on the ground and picks them up |
+| P3-10 | `@skillpoint`, Basic Skill to 9 (the server wants it before any first-job skill, `player_skillup_limit`), `@jobchange 1`, Bash 5 and Magnum Break 1 through `upgradeSkillLevel`, Bash on a Poring, Magnum Break cooldown from `ZC_SKILL_POSTDELAY` |
+| P3-11 | `@jobchange 2`, Cold Bolt, Lightning Bolt 4 and Thunderstorm 1, then Thunderstorm on a selected monster (walks into range, sends `CZ_USE_SKILL_TOGROUND` at the monster's cell) and with nothing selected (own cell); the cell is read from the sent frame |
+| P3-08 | `@warp` to `prt_in`, taps the Tool Dealer, buy list, buys 5 Red Potions and 3 Fly Wings, checks the zeny against the list price, sell list, sells 2 potions, `@storage`, puts 3 potions in and takes them out |
+| P3-09 | Prontera Kafra (151,29): dialog text, next, menu, cancel, then Save, Use Storage (put and take), Use Teleport Service to Geffen |
+| P3-02 | Fly Wing (same map, new cell, walking works afterwards), Butterfly Wing (to the Kafra save point in Prontera, another map), `@warp` to a field map |
+| P3-13 | Needs `--with-audio`. Reads the audio requests the whole run made, decodes the BGM of every visited map through `mp3nametable.txt` with `AVAudioPlayer` and the requested sound effects with the client's own `AVAudioPCMBuffer.buffer`. Playback is for a human (`--audible`) |
+
+The summary gets a `scenario` object: per task `result` (`pass`, `fail`, `skipped`), `checks` (name, passed, detail),
+`notes`, `packetsReceived` and `packetsSent` (counts by name for that task only) and `serverMessages` (what the
+client's message log received, such as GM command answers). The run's own packet log is kept only while a scenario
+runs.
+
 ### Packet coverage (P0-10)
 
 ```sh
@@ -105,7 +152,7 @@ The JSON has these keys: `durationSeconds`, `timeOnMapSeconds`, `lastStage`, `st
 `mapsVisited`, `disconnects`, `reconnects`, `errors`, `chatLinesSent`, `walkRequestsSent`, `attacksSent`,
 `monstersSeen`, `deaths`, `packetTotals`, `packetsReceivedByOpcode`, `unknownPackets`, `unimplementedPackets`,
 `decodeFailures`, `registeredSizeVsWireLengthMismatches`, `packetsSentByOpcode`, `connectPacketCoalesced`,
-`sessions`, `notes`, `deleteTest`.
+`sessions`, `notes`, `deleteTest`, `scenario` (with `--scenario`), `audioRequests` (with `--with-audio`).
 
 `walkRequestsSent` and `attacksSent` count calls the probe made. `packetsSentByOpcode` counts what went on the
 wire (`0x035f` is `CZ_REQUEST_MOVE`, `0x0089`/`0x0437` `CZ_REQUEST_ACT` depending on the packet version).

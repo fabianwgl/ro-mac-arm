@@ -33,7 +33,7 @@ struct ROProbe {
             Log.line("data.grf not found in \(options.clientDir)")
             exit(2)
         }
-        let provider = ClientFilesProvider(url: clientURL, allowAudio: options.withAudio)
+        let provider = ClientFilesProvider(url: clientURL, allowAudio: options.withAudio, stats: stats)
         let resourceManager = ResourceManager(resourceProvider: provider)
 
         var tap: PacketTap?

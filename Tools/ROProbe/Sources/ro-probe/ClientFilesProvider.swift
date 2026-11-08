@@ -12,10 +12,13 @@ struct ClientFilesProvider: ResourceProvider {
     let url: URL
     let archives: [GRFArchive]
     let allowAudio: Bool
+    /// Receives every audio request and whether it resolved, so a run can list what the client asked for.
+    let stats: ProbeStats?
 
-    init(url: URL, allowAudio: Bool) {
+    init(url: URL, allowAudio: Bool, stats: ProbeStats? = nil) {
         self.url = url
         self.allowAudio = allowAudio
+        self.stats = stats
 
         var archives: [GRFArchive] = []
         for name in ["rdata.grf", "data.grf"] {
@@ -28,10 +31,25 @@ struct ClientFilesProvider: ResourceProvider {
     }
 
     func contentsOfResource(at path: ResourcePath) async throws -> Data {
-        if !allowAudio, let last = path.components.last?.lowercased(), last.hasSuffix(".wav") || last.hasSuffix(".mp3") {
+        let isAudio = path.components.last.map { $0.lowercased().hasSuffix(".wav") || $0.lowercased().hasSuffix(".mp3") } ?? false
+        if !allowAudio, isAudio {
             throw ResourceError.resourceNotFound(path)
         }
+        guard isAudio, let stats else {
+            return try await load(path)
+        }
+        let name = path.components.joined(separator: "/")
+        do {
+            let data = try await load(path)
+            stats.recordAudio(path: name, found: true, bytes: data.count, error: nil)
+            return data
+        } catch {
+            stats.recordAudio(path: name, found: false, bytes: 0, error: "\(error)")
+            throw error
+        }
+    }
 
+    private func load(_ path: ResourcePath) async throws -> Data {
         let fileURL = url.absoluteURL.appending(path: L2K(path))
         if FileManager.default.fileExists(atPath: fileURL.path(percentEncoded: false)) {
             return try Data(contentsOf: fileURL)
