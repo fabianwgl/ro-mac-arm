@@ -1053,4 +1053,75 @@ public enum PacketFactory {
         packet.amount = Int32(truncatingIfNeeded: amount)
         return packet
     }
+
+    // MARK: Chat rooms
+    //
+    // The opcodes and sizes are the ones rAthena parses at PACKETVER 20211103 (clif_packetdb.hpp): 0xd5 create (variable),
+    // 0xd9 join (14), 0xde change (variable), 0xe0 give the room away (30), 0xe2 expel (26), 0xe3 leave (2).
+
+    /// `CHATROOM_TITLE_SIZE` is 37 in rAthena: 36 bytes of title and the terminator.
+    public static let chatRoomMaxTitleBytes = 36
+
+    /// The password is an 8 byte field of the packet.
+    public static let chatRoomMaxPasswordBytes = 8
+
+    /// | `PACKET_CZ_CREATE_CHATROOM` | `clif_parse_CreateChatRoom` |
+    ///
+    /// `isPublic` is the `type` byte: 1 public, 0 private (password protected). rAthena keeps at most 20 members
+    /// and stores the title and the password cut to their sizes, the packet is cut the same way.
+    public static func CZ_CREATE_CHATROOM(title: String, limit: Int, isPublic: Bool, password: String) -> PACKET_CZ_CREATE_CHATROOM {
+        let title = truncatedUTF8(title, maxBytes: chatRoomMaxTitleBytes)
+        var packet = PACKET_CZ_CREATE_CHATROOM()
+        packet.packetType = HEADER_CZ_CREATE_CHATROOM
+        packet.packetLength = Int16(2 + 2 + 2 + 1 + 8 + title.utf8.count)
+        packet.limit = UInt16(truncatingIfNeeded: limit)
+        packet.type = isPublic ? 1 : 0
+        packet.password = isPublic ? "" : truncatedUTF8(password, maxBytes: chatRoomMaxPasswordBytes)
+        packet.title = title
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_ENTER_ROOM` | `clif_parse_ChatAddMember` |
+    ///
+    /// `chatID` is the id from `ZC_ROOM_NEWENTRY` (not the owner's account id). A public room ignores the password.
+    public static func CZ_REQ_ENTER_ROOM(chatID: UInt32, password: String) -> PACKET_CZ_REQ_ENTER_ROOM {
+        var packet = PACKET_CZ_REQ_ENTER_ROOM()
+        packet.packetType = HEADER_CZ_REQ_ENTER_ROOM
+        packet.chat_id = chatID
+        packet.password = truncatedUTF8(password, maxBytes: chatRoomMaxPasswordBytes)
+        return packet
+    }
+
+    /// | `PACKET_CZ_CHANGE_CHATROOM` | `clif_parse_ChatRoomStatusChange` |
+    ///
+    /// The owner changes title, limit, public or private and the password in one request. rAthena ignores a request
+    /// whose title is empty (`len <= 0`), so the caller keeps the old title when the owner clears it.
+    public static func CZ_CHANGE_CHATROOM(title: String, limit: Int, isPublic: Bool, password: String) -> PACKET_CZ_CHANGE_CHATROOM {
+        let title = truncatedUTF8(title, maxBytes: chatRoomMaxTitleBytes)
+        var packet = PACKET_CZ_CHANGE_CHATROOM()
+        packet.packetType = HEADER_CZ_CHANGE_CHATROOM
+        packet.packetLength = Int16(2 + 2 + 2 + 1 + 8 + title.utf8.count)
+        packet.limit = UInt16(truncatingIfNeeded: limit)
+        packet.type = isPublic ? 1 : 0
+        packet.password = isPublic ? "" : truncatedUTF8(password, maxBytes: chatRoomMaxPasswordBytes)
+        packet.title = title
+        return packet
+    }
+
+    /// | `PACKET_CZ_REQ_ROLE_CHANGE` | `clif_parse_ChangeChatOwner` |
+    ///
+    /// Gives the room to a member. `role` is 0, which rAthena does not read.
+    public static func CZ_REQ_ROLE_CHANGE(newOwnerName: String) -> PACKET_CZ_REQ_ROLE_CHANGE {
+        PACKET_CZ_REQ_ROLE_CHANGE(role: 0, name: truncatedUTF8(newOwnerName, maxBytes: 24))
+    }
+
+    /// | `PACKET_CZ_REQ_EXPEL_MEMBER` | `clif_parse_KickFromChat` |
+    public static func CZ_REQ_EXPEL_MEMBER(name: String) -> PACKET_CZ_REQ_EXPEL_MEMBER {
+        PACKET_CZ_REQ_EXPEL_MEMBER(name: truncatedUTF8(name, maxBytes: 24))
+    }
+
+    /// | `PACKET_CZ_EXIT_ROOM` | `clif_parse_ChatLeave` |
+    public static func CZ_EXIT_ROOM() -> PACKET_CZ_EXIT_ROOM {
+        PACKET_CZ_EXIT_ROOM()
+    }
 }

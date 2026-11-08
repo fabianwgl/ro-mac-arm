@@ -49,6 +49,7 @@ final class PlaySession {
     var mail = MailState()
     var trade = TradeState()
     var vending = VendingState()
+    var chatRoom = ChatRoomState()
     let messageCenter: MessageCenter
 
     var dialog: NPCDialog?
@@ -225,6 +226,7 @@ final class PlaySession {
 
         mapRuntime?.unload()
         vending.resetForMapChange()
+        chatRoom.resetForMapChange()
 
         let progress = Progress()
         mapPhase = .loading(progress)
@@ -299,6 +301,10 @@ final class PlaySession {
         if handleAchievementPacket(packet) { return }
 
         guard !handleMailPacket(packet) else {
+            return
+        }
+
+        guard !handleChatRoomPacket(packet) else {
             return
         }
 
@@ -1111,6 +1117,10 @@ final class PlaySession {
             mapScene?.toggleSit()
         case .exchange:
             mapScene?.requestTradeWithSelectedPlayer()
+        case .chat:
+            // "/chat Meet here" opens the create window with the title filled in.
+            let title = message.dropFirst().split(separator: " ", maxSplits: 1).dropFirst().first.map(String.init) ?? ""
+            openChatRoomMenu(title: title.trimmingCharacters(in: .whitespaces))
         case .help:
             messageCenter.addSlashCommandHelpMessages()
         }

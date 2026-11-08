@@ -10,6 +10,7 @@ enum SlashCommand: String {
     case sit
     case stand
     case exchange
+    case chat
     case help
 
     static let helpMessageIDs = [33, 38, 132, 133]

@@ -333,6 +333,7 @@ extension MapScene {
         objects.removeValue(forKey: objectID)
         hpspBarObjectIDs.remove(objectID)
         playSession.vending.removeSigns(of: objectID)
+        playSession.chatRoom.removeSigns(ofOwner: objectID)
         if selectedTargetID == objectID {
             selectTarget(nil)
         }
@@ -426,6 +427,11 @@ extension MapScene {
                 }
                 if playSession.hasBuyingStore(buyerID: target.objectID) {
                     playSession.requestBuyingStoreList(buyerID: target.objectID)
+                    return
+                }
+                // The same for a chat room: a click on the owner enters it, or asks for the password.
+                if playSession.hasChatRoomSign(ownerID: target.objectID) {
+                    playSession.requestJoinChatRoom(ownerID: target.objectID)
                     return
                 }
                 selectTarget(target)

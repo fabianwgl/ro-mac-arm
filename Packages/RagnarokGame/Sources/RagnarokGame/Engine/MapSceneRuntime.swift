@@ -251,16 +251,21 @@ final class MapSceneRuntime {
             placements.append((targetNameText, targetPosition + [0, 0, -0.8], textTop))
         }
 
-        let vending = scene.playSession.vending
-        let signs = vending.signs.map { (id: $0.key, title: $0.value, isBuying: false) }
-            + vending.buying.signs.map { (id: $0.key, title: $0.value, isBuying: true) }
+        let playSession = scene.playSession
+        let vending = playSession.vending
+        let chatRooms = playSession.chatRoom.displayedSigns(selfAccountID: playSession.account.accountID) { name in
+            playSession.mapPlayerID(named: name)
+        }
+        let signs = vending.signs.map { (id: $0.key, title: $0.value, style: SignStyle.shop) }
+            + vending.buying.signs.map { (id: $0.key, title: $0.value, style: SignStyle.buyingStore) }
+            + chatRooms.map { (id: $0.ownerID, title: $0.title, style: SignStyle.chatRoom) }
         for sign in signs.sorted(by: { $0.id < $1.id }) {
             guard let owner = scene.objects[sign.id],
                   owner.effectState != .cloak,
                   let ownerPosition = worldPositions[sign.id] else {
                 continue
             }
-            let descriptor = TextDescriptor(shopTitle: sign.title, isBuying: sign.isBuying)
+            let descriptor = TextDescriptor(signTitle: sign.title, style: sign.style)
             placements.append((descriptor, ownerPosition + [0, 0, -0.8], Self.shopSignTop))
         }
 

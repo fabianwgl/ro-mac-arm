@@ -80,6 +80,9 @@ struct MapSceneView: View {
                     } else if item == .attendance {
                         // The server decides: it opens the window with the current state, or refuses.
                         playSession.requestAttendanceWindow()
+                    } else if item == .chatRoom {
+                        // Not a window of its own: the room window if the player is in a room, else the create window.
+                        playSession.openChatRoomMenu()
                     } else {
                         presentedMenuItem = item
                     }
@@ -168,6 +171,8 @@ struct MapSceneView: View {
                     MailboxView(mailbox: playSession.mail.mailbox) {
                         presentedMenuItem = nil
                     }
+                case .chatRoom:
+                    EmptyView()
                 case .worldMap:
                     WorldMapView(currentMapName: runtime.scene.mapName) {
                         presentedMenuItem = nil
@@ -236,6 +241,19 @@ struct MapSceneView: View {
             if let own = playSession.vending.buying.own {
                 OwnBuyingStoreView(store: own)
                     .offset(x: -24, y: -24)
+            }
+            if let room = playSession.chatRoom.current, playSession.chatRoom.isWindowVisible {
+                ChatRoomView(room: room)
+                    .offset(x: 24, y: -24)
+            }
+            if let draft = playSession.chatRoom.createDraft {
+                ChatRoomSettingsView(mode: .create, settings: draft)
+            }
+            if let draft = playSession.chatRoom.settingsDraft {
+                ChatRoomSettingsView(mode: .change, settings: draft)
+            }
+            if let sign = playSession.chatRoom.passwordPrompt {
+                ChatRoomPasswordView(sign: sign)
             }
         }
         .onChange(of: runtime.scene.state.isPlayerDead) { _, newValue in
