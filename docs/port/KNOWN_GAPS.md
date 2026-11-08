@@ -33,6 +33,13 @@ per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
   the ack messages (too far, overweight, inventory full). Verified live between
   two clients ([trade-2026-11-08.json](probe-runs/trade-2026-11-08.json)). Items
   are offered from a picker, not by drag and drop.
+- Chat rooms: create from the menu or `/chat [title]` (title, limit, public or
+  private with a password), click the owner or the sign to join, a password
+  prompt for private rooms, room window with members, messages, leave, and the
+  owner's settings, expel and give owner. Verified live between two clients
+  ([chatroom-2026-11-08.json](probe-runs/chatroom-2026-11-08.json)).
+- NPC dialogs close on a map change, so a Kafra teleport (`warp` then `end`)
+  leaves no window on the new map.
 - Vending: click a vendor or the sign above the head to browse and buy; the
   Vending skill opens the set up window (cart items, prices, title) and your
   own shop window closes it. Buying store: click a buyer to sell to them; the
@@ -56,7 +63,8 @@ per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
 | Achievements | enabled | menu window, claim button and completion message work; titles need `System/achievement_list.lub` in the client folder, else rows read "Achievement #id"; no title wearing |
 | Attendance | feature on, but `db/re/attendance.yml` has no running period (the 2018 example is commented out), so the server never opens the window or accepts a check-in until a period is added to `db/import/attendance.yml` | window, menu entry and check-in implemented; day numbers only (the server sends no period dates or reward table, reward arrives by mail); untested against the live server for lack of a period |
 | Navigation (`ZC_NAVIGATION_ACTIVE` 0x08e2) | enabled | framed and skipped |
-| Clan, chat rooms | enabled | missing |
+| Clan | enabled | missing |
+| Chat room extras | enabled | rooms owned by NPCs (arena and PK waiting rooms, `waitingroom` script command) are not shown or joinable; passwords are capped at 7 bytes because rAthena compares 9 bytes of an 8-byte field |
 | Vending and buying store extras | enabled | no "Move to cart" in the inventory item menu (the shop set up window has "To cart"); signs are text labels, not the signboard art; a title that is not UTF-8 drops the sign; shop rows show refine but not cards; search store (`CZ_SEARCH_STORE_INFO`) not done |
 | Refine, enchant, item reform, Laphine, stylist, roulette | enabled | missing |
 | Bank | one NPC only | missing |
