@@ -83,17 +83,20 @@ Acceptance: 60 minute session, no blocking unknown packet.
 - [x] P3-02 Map transitions, portals, and teleports.
 - [x] P3-03 Chat: public, party, guild, whisper.
 - [x] P3-04 Basic attack, damage, death, and respawn.
-- [ ] P3-05 Experience, level up, and stat points.
-- [ ] P3-06 Loot, drops, and item pickup.
-- [ ] P3-07 Inventory, equipment, and weight.
-- [ ] P3-08 NPC dialog, shops, and storage.
-- [ ] P3-09 Kafra save, teleport, and storage.
-- [ ] P3-10 Skill window, skill use, cooldowns.
-- [ ] P3-11 Ground targeting and area skills.
+- [x] P3-05 Experience, level up, and stat points.
+- [x] P3-06 Loot, drops, and item pickup.
+- [x] P3-07 Inventory, equipment, and weight.
+- [x] P3-08 NPC dialog, shops, and storage.
+- [x] P3-09 Kafra save, teleport, and storage.
+- [x] P3-10 Skill window, skill use, cooldowns.
+- [x] P3-11 Ground targeting and area skills.
 - [x] P3-12 Settings, keybinds, and window layout persistence.
-- [ ] P3-13 Audio: BGM and sound effects.
+- [x] P3-13 Audio: BGM and sound effects.
 - [x] P3-14 Crash handling and local logs.
 - [ ] P3-15 One hour playtest with a written bug list.
+
+Evidence for P3-02 and P3-05..P3-13: headless `ro-probe --scenario core`, see
+[core-verification.md](probe-runs/core-verification.md).
 
 Acceptance: one hour of normal play with no blocking bug.
 

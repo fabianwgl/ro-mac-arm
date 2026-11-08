@@ -53,3 +53,11 @@ Fire Wall (Thunderstorm stands in for the ground skill), party and guild skills,
 Other Information, selling equipped items, storage password, `ZC_NAVIGATE_TO`. Dev characters `ProbeCore6` to
 `ProbeCore13` exist on the server; account `probecore` can be reused (`--char-name` with a new name for a fresh run,
 and a pause of about 15 s between runs).
+
+## Re-run on the integrated tree
+
+2026-11-08, branch `integrate-m2` after the trade, vending, localization, WASD and gamepad merges, fresh character
+`ProbeCore14`: 8 of 9 tasks passed in the full run. P3-10 failed once: the server answered the first Bash with
+nothing (no `ZC_NOTIFY_SKILL`, no `ZC_ACK_TOUCHSKILL`, SP unchanged), most likely because the request came inside
+the attack delay left by the loot task. `--tasks P3-10` on the same character passed 7 of 7 right after (Bash spent
+8 SP). The scenario does not wait for the attack delay before its first skill yet.
