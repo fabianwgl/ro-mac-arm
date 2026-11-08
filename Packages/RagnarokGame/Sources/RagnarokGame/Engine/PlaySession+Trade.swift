@@ -69,6 +69,12 @@ extension PlaySession {
             return
         }
 
+        // rAthena refuses the request with a bare "skill failed" when `basic_skill_check` is on, and the default is on.
+        // The request goes out anyway: the server decides.
+        if (skillList.skills[Trade.basicSkillID]?.level ?? 0) < 1 {
+            addTradeMessage("Trading needs Basic Skill level 1 unless the server waives it.", type: .error)
+        }
+
         trade.outgoingRequest = TradeRequest(accountID: accountID, name: name, baseLevel: 0)
         sendPacket(PacketFactory.CZ_REQ_EXCHANGE_ITEM(accountID: accountID))
         addTradeMessage("Trade request sent to \(name).")
@@ -202,7 +208,7 @@ extension PlaySession {
 
             let name = [accepted, outgoing]
                 .compactMap { $0 }
-                .first { $0.accountID == packet.targetId }?.name
+                .first { $0.accountID == packet.targetId && !$0.name.isEmpty }?.name
                 ?? mapScene?.objects[packet.targetId]?.name
                 ?? "Player"
             trade.incomingRequest = nil

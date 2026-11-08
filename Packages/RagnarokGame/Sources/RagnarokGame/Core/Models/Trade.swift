@@ -99,6 +99,9 @@ struct Trade: Equatable, Sendable {
     /// The most zeny a player can hold (`MAX_ZENY`).
     static let maxZeny = 1_000_000_000
 
+    /// `NV_BASIC`: rAthena wants level 1 of it to trade (`basic_skill_check` in conf/battle/skill.conf).
+    static let basicSkillID = 1
+
     struct Partner: Equatable, Sendable {
         var accountID: UInt32
         var name: String
