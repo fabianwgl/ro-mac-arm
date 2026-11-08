@@ -1,0 +1,217 @@
+{
+  "accounts" : [
+    {
+      "accountID" : 2000003,
+      "character" : "TradeOne",
+      "label" : "A",
+      "user" : "trade1"
+    },
+    {
+      "accountID" : 2000004,
+      "character" : "TradeTwo",
+      "label" : "B",
+      "user" : "trade2"
+    }
+  ],
+  "checks" : [
+    {
+      "detail" : "A SIMD2<Int>(156, 191), B SIMD2<Int>(156, 191), distance 0",
+      "name" : "both players stand within 2 cells",
+      "passed" : true
+    },
+    {
+      "detail" : "A sees TradeTwo, B sees TradeOne",
+      "name" : "the other player's name is on the map object",
+      "passed" : true
+    },
+    {
+      "detail" : "Optional(RagnarokGame.TradeRequest(accountID: 2000003, name: \"TradeOne\", baseLevel: 1))",
+      "name" : "B's prompt names A",
+      "passed" : true
+    },
+    {
+      "detail" : "A message: TradeTwo declined the trade.",
+      "name" : "declined request opens no trade",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "declined request changes no inventory",
+      "passed" : true
+    },
+    {
+      "detail" : "A trades with TradeTwo, B with TradeOne",
+      "name" : "trade window names the partner (A and B)",
+      "passed" : true
+    },
+    {
+      "detail" : "A red 35 of 40, B orange 18 of 20",
+      "name" : "offered items leave the offerer's inventory list",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "partner sees the right item ids",
+      "passed" : true
+    },
+    {
+      "detail" : "A Snapshot(zeny: 10000, items: [1201: 1, 23484: 1, 2301: 1, 501: 40]) B Snapshot(zeny: 6000, items: [1201: 1, 23484: 1, 2301: 1, 502: 20])",
+      "name" : "cancel restores both inventories and zeny",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "B is told about the cancel",
+      "passed" : true
+    },
+    {
+      "detail" : "A trades with TradeTwo, B with TradeOne",
+      "name" : "trade window names the partner (A and B)",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "Trade before OK does nothing",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "locked side cannot add",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "both sides can confirm",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "one confirmation does not finish the trade",
+      "passed" : true
+    },
+    {
+      "detail" : "got Snapshot(zeny: 8500, items: [23484: 1, 2301: 1, 502: 4, 501: 30, 1201: 1]), expected Snapshot(zeny: 8500, items: [23484: 1, 502: 4, 2301: 1, 1201: 1, 501: 30])",
+      "name" : "A holds the orange potions and 1500 less zeny",
+      "passed" : true
+    },
+    {
+      "detail" : "got Snapshot(zeny: 7500, items: [23484: 1, 2301: 1, 502: 16, 501: 10, 1201: 1]), expected Snapshot(zeny: 7500, items: [23484: 1, 501: 10, 502: 16, 1201: 1, 2301: 1])",
+      "name" : "B holds the red potions and 1500 more zeny",
+      "passed" : true
+    },
+    {
+      "detail" : "",
+      "name" : "both are told the trade is complete",
+      "passed" : true
+    },
+    {
+      "detail" : "login Snapshot(zeny: 8500, items: [501: 30, 502: 4, 1201: 1, 23484: 1, 2301: 1]), shown Snapshot(zeny: 8500, items: [23484: 1, 502: 4, 2301: 1, 1201: 1, 501: 30])",
+      "name" : "A's inventory and zeny after a fresh login equal the client's view",
+      "passed" : true
+    },
+    {
+      "detail" : "login Snapshot(zeny: 7500, items: [23484: 1, 502: 16, 1201: 1, 501: 10, 2301: 1]), shown Snapshot(zeny: 7500, items: [23484: 1, 501: 10, 502: 16, 1201: 1, 2301: 1])",
+      "name" : "B's inventory and zeny after a fresh login equal the client's view",
+      "passed" : true
+    }
+  ],
+  "date" : "2026-11-08T18:15:33Z",
+  "messagesA" : [
+    "rAthena Version Git Hash:  d4b8e7b8f16061cc2496d377ac8f777ce72a4f39",
+    "Welcome to rAthena! Enjoy! Please report any bugs you find."
+  ],
+  "messagesB" : [
+    "rAthena Version Git Hash:  d4b8e7b8f16061cc2496d377ac8f777ce72a4f39",
+    "Welcome to rAthena! Enjoy! Please report any bugs you find."
+  ],
+  "passed" : true,
+  "scenario" : "trade",
+  "seconds" : 22,
+  "server" : "127.0.0.1:6900",
+  "snapshots" : {
+    "afterRelogin" : {
+      "A" : {
+        "items" : {
+          "501" : 30,
+          "502" : 4,
+          "1201" : 1,
+          "2301" : 1,
+          "23484" : 1
+        },
+        "zeny" : 8500
+      },
+      "B" : {
+        "items" : {
+          "501" : 10,
+          "502" : 16,
+          "1201" : 1,
+          "2301" : 1,
+          "23484" : 1
+        },
+        "zeny" : 7500
+      }
+    },
+    "afterTrade" : {
+      "A" : {
+        "items" : {
+          "501" : 30,
+          "502" : 4,
+          "1201" : 1,
+          "2301" : 1,
+          "23484" : 1
+        },
+        "zeny" : 8500
+      },
+      "B" : {
+        "items" : {
+          "501" : 10,
+          "502" : 16,
+          "1201" : 1,
+          "2301" : 1,
+          "23484" : 1
+        },
+        "zeny" : 7500
+      }
+    },
+    "beforeTrade" : {
+      "A" : {
+        "items" : {
+          "501" : 40,
+          "1201" : 1,
+          "2301" : 1,
+          "23484" : 1
+        },
+        "zeny" : 10000
+      },
+      "B" : {
+        "items" : {
+          "502" : 20,
+          "1201" : 1,
+          "2301" : 1,
+          "23484" : 1
+        },
+        "zeny" : 6000
+      }
+    },
+    "start" : {
+      "A" : {
+        "items" : {
+          "501" : 40,
+          "1201" : 1,
+          "2301" : 1,
+          "23484" : 1
+        },
+        "zeny" : 10000
+      },
+      "B" : {
+        "items" : {
+          "502" : 20,
+          "1201" : 1,
+          "2301" : 1,
+          "23484" : 1
+        },
+        "zeny" : 6000
+      }
+    }
+  }
+}

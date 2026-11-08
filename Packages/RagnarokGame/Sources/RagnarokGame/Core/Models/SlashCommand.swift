@@ -9,6 +9,7 @@ enum SlashCommand: String {
     case `where`
     case sit
     case stand
+    case exchange
     case help
 
     static let helpMessageIDs = [33, 38, 132, 133]
@@ -21,6 +22,8 @@ enum SlashCommand: String {
         switch name {
         case "h":
             self = .help
+        case "ex":
+            self = .exchange
         default:
             self.init(rawValue: String(name))
         }

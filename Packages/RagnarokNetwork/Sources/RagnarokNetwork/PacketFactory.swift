@@ -857,4 +857,51 @@ public enum PacketFactory {
         packet.string = title + "\u{0}" + body + "\u{0}"
         return packet
     }
+
+    // MARK: Player trade
+    //
+    // The opcodes are the ones rAthena parses at PACKETVER 20211103, see TradeHeaders.swift.
+
+    /// | `PACKET_CZ_REQ_EXCHANGE_ITEM` | `clif_parse_TradeRequest` |
+    public static func CZ_REQ_EXCHANGE_ITEM(accountID: UInt32) -> PACKET_CZ_REQ_EXCHANGE_ITEM {
+        var packet = PACKET_CZ_REQ_EXCHANGE_ITEM()
+        packet.AID = accountID
+        return packet
+    }
+
+    /// | `PACKET_CZ_ACK_EXCHANGE_ITEM` | `clif_parse_TradeAck` |
+    ///
+    /// rAthena reads 3 as accept and 4 as decline.
+    public static func CZ_ACK_EXCHANGE_ITEM(accept: Bool) -> PACKET_CZ_ACK_EXCHANGE_ITEM {
+        var packet = PACKET_CZ_ACK_EXCHANGE_ITEM()
+        packet.result = accept ? 3 : 4
+        return packet
+    }
+
+    /// | `PACKET_CZ_ADD_EXCHANGE_ITEM` | `clif_parse_TradeAddItem` |
+    ///
+    /// `index` is the inventory index of the item as the server sent it. Index 0 adds zeny, and `amount` is then the
+    /// zeny the player offers in total. rAthena casts the amount of an item to 16 bits.
+    public static func CZ_ADD_EXCHANGE_ITEM(index: Int, amount: Int) -> PACKET_CZ_ADD_EXCHANGE_ITEM {
+        var packet = PACKET_CZ_ADD_EXCHANGE_ITEM()
+        packet.packetType = HEADER_CZ_ADD_EXCHANGE_ITEM
+        packet.index = UInt16(truncatingIfNeeded: index)
+        packet.amount = Int32(truncatingIfNeeded: amount)
+        return packet
+    }
+
+    /// | `PACKET_CZ_CONCLUDE_EXCHANGE_ITEM` | `clif_parse_TradeOk` |
+    public static func CZ_CONCLUDE_EXCHANGE_ITEM() -> PACKET_CZ_CONCLUDE_EXCHANGE_ITEM {
+        PACKET_CZ_CONCLUDE_EXCHANGE_ITEM()
+    }
+
+    /// | `PACKET_CZ_CANCEL_EXCHANGE_ITEM` | `clif_parse_TradeCancel` |
+    public static func CZ_CANCEL_EXCHANGE_ITEM() -> PACKET_CZ_CANCEL_EXCHANGE_ITEM {
+        PACKET_CZ_CANCEL_EXCHANGE_ITEM()
+    }
+
+    /// | `PACKET_CZ_EXEC_EXCHANGE_ITEM` | `clif_parse_TradeCommit` |
+    public static func CZ_EXEC_EXCHANGE_ITEM() -> PACKET_CZ_EXEC_EXCHANGE_ITEM {
+        PACKET_CZ_EXEC_EXCHANGE_ITEM()
+    }
 }

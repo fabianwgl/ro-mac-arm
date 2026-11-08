@@ -25,6 +25,10 @@ struct ROProbe {
             exit(0)
         }
 
+        if options.tradeTest {
+            exit(await TradeScenario.run(options: options) ? 0 : 1)
+        }
+
         let stats = ProbeStats()
         stats.setTapEnabled(!options.noTap)
 

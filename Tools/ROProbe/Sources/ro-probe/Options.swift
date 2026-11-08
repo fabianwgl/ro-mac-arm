@@ -20,6 +20,7 @@ struct Options {
     var pincode: String?
     var withAudio = false
     var coverageOnly = false
+    var tradeTest = false
     var route: [RouteStop] = []
     var maxReconnectBackoff: TimeInterval = 15
     var stageTimeout: TimeInterval = 120
@@ -49,6 +50,7 @@ struct Options {
       --map-load-timeout <s>  wait for the map to load     (default 300)
       --with-audio            let the client play BGM and sound effects (muted by default)
       --coverage              print packet table coverage (P0-10) and exit
+      --trade-test            two clients (trade1, trade2) trade items and zeny; --json writes the result
       -h, --help              this text
 
     """
@@ -121,6 +123,7 @@ struct Options {
             case "--map-load-timeout": options.mapLoadTimeout = try number(flag)
             case "--with-audio": options.withAudio = true
             case "--coverage": options.coverageOnly = true
+            case "--trade-test": options.tradeTest = true
             case "-h", "--help":
                 print(usage)
                 exit(0)

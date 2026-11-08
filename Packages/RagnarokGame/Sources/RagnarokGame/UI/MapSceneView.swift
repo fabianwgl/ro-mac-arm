@@ -97,6 +97,14 @@ struct MapSceneView: View {
             .padding(.trailing, 16)
             .padding(.bottom, statusIconBarBottomPadding)
         }
+        .overlay(alignment: .top) {
+            if let player = runtime.scene.state.selectedPlayer, playSession.trade.current == nil {
+                SelectedPlayerView(player: player) {
+                    runtime.scene.requestTradeWithSelectedPlayer()
+                }
+                .padding(.top, 16)
+            }
+        }
         .ignoresSafeArea()
         .overlay {
             #if os(iOS)
@@ -197,6 +205,13 @@ struct MapSceneView: View {
             }
             if let invitation = playSession.guildState.invitation {
                 GuildInvitationView(invitation: invitation)
+            }
+            if let request = playSession.trade.incomingRequest {
+                TradeRequestView(request: request)
+            }
+            if playSession.trade.current != nil {
+                TradeView()
+                    .offset(x: -24, y: -24)
             }
             if playSession.mail.draft != nil {
                 MailComposeView()
@@ -425,7 +440,11 @@ struct MapSceneView: View {
     }
 
     private func closeTopWindow() {
-        if playSession.mail.draft != nil {
+        if playSession.trade.incomingRequest != nil {
+            playSession.answerTradeRequest(accept: false)
+        } else if playSession.trade.current != nil {
+            playSession.cancelTrade()
+        } else if playSession.mail.draft != nil {
             playSession.closeMailCompose()
         } else if playSession.companions.petEggIndices != nil {
             playSession.cancelPetEggSelection()

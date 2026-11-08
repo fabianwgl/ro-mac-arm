@@ -92,8 +92,7 @@ struct ActionBarView: View {
                             .frame(width: 24, height: 24)
                     }
                 }
-                .disabled(selectedTargetType == .pc)
-                .opacity(selectedTargetType == .pc ? 0.5 : 1)
+                .help(selectedTargetType == .pc ? "Request trade" : "")
             }
 
             HStack(spacing: 0) {

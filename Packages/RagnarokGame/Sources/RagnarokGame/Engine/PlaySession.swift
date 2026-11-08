@@ -47,6 +47,7 @@ final class PlaySession {
     var attendance = Attendance()
     var companions = CompanionState()
     var mail = MailState()
+    var trade = TradeState()
     let messageCenter: MessageCenter
 
     var dialog: NPCDialog?
@@ -294,6 +295,10 @@ final class PlaySession {
         if handleAchievementPacket(packet) { return }
 
         guard !handleMailPacket(packet) else {
+            return
+        }
+
+        guard !handleTradePacket(packet) else {
             return
         }
 
@@ -1093,6 +1098,8 @@ final class PlaySession {
             }
         case .sit, .stand:
             mapScene?.toggleSit()
+        case .exchange:
+            mapScene?.requestTradeWithSelectedPlayer()
         case .help:
             messageCenter.addSlashCommandHelpMessages()
         }

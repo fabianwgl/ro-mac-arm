@@ -505,6 +505,13 @@ extension MapScene {
         if state.selectedTargetType != target?.type {
             state.selectedTargetType = target?.type
         }
+
+        let selectedPlayer = target.flatMap { target in
+            target.type == .pc ? MapSceneState.SelectedPlayer(accountID: target.objectID, name: target.name) : nil
+        }
+        if state.selectedPlayer != selectedPlayer {
+            state.selectedPlayer = selectedPlayer
+        }
     }
 
     private func performActionOnSelectedTarget() {
@@ -525,9 +532,21 @@ extension MapScene {
                 faceNPC(selectedTarget)
                 playSession.talkToNPC(npcID: selectedTarget.objectID)
             }
+        case .pc:
+            requestTradeWithSelectedPlayer()
         default:
             break
         }
+    }
+
+    /// Asks the selected player to trade. The server wants both players within 2 cells.
+    func requestTradeWithSelectedPlayer() {
+        guard let selectedTarget, selectedTarget.type == .pc else {
+            playSession.noteTradeNeedsPlayer()
+            return
+        }
+
+        playSession.requestTrade(accountID: selectedTarget.objectID, name: selectedTarget.name)
     }
 
     /// Turns toward the NPC before talking to it, like the official client.
