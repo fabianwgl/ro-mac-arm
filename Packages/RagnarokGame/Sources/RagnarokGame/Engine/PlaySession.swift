@@ -47,6 +47,7 @@ final class PlaySession {
     var attendance = Attendance()
     var companions = CompanionState()
     var mail = MailState()
+    var vending = VendingState()
     let messageCenter: MessageCenter
 
     var dialog: NPCDialog?
@@ -220,6 +221,7 @@ final class PlaySession {
         }
 
         mapRuntime?.unload()
+        vending.resetForMapChange()
 
         let progress = Progress()
         mapPhase = .loading(progress)
@@ -294,6 +296,10 @@ final class PlaySession {
         if handleAchievementPacket(packet) { return }
 
         guard !handleMailPacket(packet) else {
+            return
+        }
+
+        guard !handleVendingPacket(packet) else {
             return
         }
 

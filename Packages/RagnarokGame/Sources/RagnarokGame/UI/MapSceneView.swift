@@ -196,6 +196,9 @@ struct MapSceneView: View {
                 MailComposeView()
                     .offset(x: 24, y: 24)
             }
+            if let shop = playSession.vending.shop {
+                VendingShopView(shop: shop)
+            }
         }
         .onChange(of: runtime.scene.state.isPlayerDead) { _, newValue in
             if newValue {

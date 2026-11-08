@@ -220,49 +220,66 @@ final class MapSceneRuntime {
 
     /// The target selector's object shows its name 2 points under its HP bar.
     /// Without a bar, the name is centered where the bar would be.
+    /// A player with a shop open shows the title of the shop above his head.
     private func makeTexts(worldPositions: [GameObjectID : SIMD3<Float>]) -> [MapSceneRenderSnapshot.Text] {
-        guard scene.preferences.showsNames else {
+        var placements: [(descriptor: TextDescriptor, position: SIMD3<Float>, top: Float)] = []
+
+        if scene.preferences.showsNames,
+           let targetSelector = scene.targetSelector,
+           let target = scene.objects[targetSelector.objectID],
+           let targetPosition = worldPositions[target.objectID],
+           target.effectState != .cloak {
+            let targetNameText = TextDescriptor(name: target.name, objectType: target.type)
+
+            var barBottom: Float? = nil
+            if scene.hpspBarObjectIDs.contains(target.objectID) {
+                let barMesh = BarMesh.mesh(
+                    hp: target.hp,
+                    maxHp: target.maxHp,
+                    sp: target.sp,
+                    maxSp: target.maxSp,
+                    objectType: target.type
+                )
+                barBottom = barMesh.vertices.map(\.position.y).min()
+            }
+
+            let textTop = if let barBottom {
+                barBottom - 2
+            } else {
+                targetNameText.size.y / 2
+            }
+            placements.append((targetNameText, targetPosition + [0, 0, -0.8], textTop))
+        }
+
+        for (vendorID, title) in scene.playSession.vending.signs.sorted(by: { $0.key < $1.key }) {
+            guard let vendor = scene.objects[vendorID],
+                  vendor.effectState != .cloak,
+                  let vendorPosition = worldPositions[vendorID] else {
+                continue
+            }
+            placements.append((TextDescriptor(shopTitle: title), vendorPosition + [0, 0, -0.8], Self.shopSignTop))
+        }
+
+        guard !placements.isEmpty else {
             return []
         }
 
-        guard let targetSelector = scene.targetSelector,
-              let target = scene.objects[targetSelector.objectID],
-              let targetPosition = worldPositions[target.objectID],
-              target.effectState != .cloak else {
-            return []
-        }
-
-        let targetNameText = TextDescriptor(name: target.name, objectType: target.type)
-        let textTextures = renderResources.textTextureCache.synchronize(texts: [targetNameText])
-        guard let textTexture = textTextures[targetNameText] else {
-            return []
-        }
-
-        var barBottom: Float? = nil
-        if scene.hpspBarObjectIDs.contains(target.objectID) {
-            let barMesh = BarMesh.mesh(
-                hp: target.hp,
-                maxHp: target.maxHp,
-                sp: target.sp,
-                maxSp: target.maxSp,
-                objectType: target.type
+        let textTextures = renderResources.textTextureCache.synchronize(texts: placements.map(\.descriptor))
+        return placements.compactMap { placement in
+            guard let texture = textTextures[placement.descriptor] else {
+                return nil
+            }
+            let textMesh = TextMesh(size: placement.descriptor.size, top: placement.top)
+            return MapSceneRenderSnapshot.Text(
+                vertices: textMesh.vertices,
+                worldPosition: placement.position,
+                texture: texture
             )
-            barBottom = barMesh.vertices.map(\.position.y).min()
         }
-
-        let textTop = if let barBottom {
-            barBottom - 2
-        } else {
-            targetNameText.size.y / 2
-        }
-        let textMesh = TextMesh(size: targetNameText.size, top: textTop)
-        let text = MapSceneRenderSnapshot.Text(
-            vertices: textMesh.vertices,
-            worldPosition: targetPosition + [0, 0, -0.8],
-            texture: textTexture
-        )
-        return [text]
     }
+
+    /// The top edge of a shop sign, in sprite pixels above the feet of the vendor: over his head.
+    private static let shopSignTop: Float = 100
 
     private func makeCombatTexts(
         at time: ContinuousClock.Instant,

@@ -857,4 +857,56 @@ public enum PacketFactory {
         packet.string = title + "\u{0}" + body + "\u{0}"
         return packet
     }
+
+    // MARK: Vending
+    //
+    // The opcodes are the ones rAthena parses at PACKETVER 20211103, see VendingHeaders.swift.
+    // Cart indices are the ones the server sends, which already count the 2 that the client adds
+    // to the cart slot (`client_index` in clif.cpp).
+
+    /// | `PACKET_CZ_REQ_BUY_FROMMC` | `clif_parse_VendingListReq` |
+    public static func CZ_REQ_BUY_FROMMC(vendorID: UInt32) -> PACKET_CZ_REQ_BUY_FROMMC {
+        PACKET_CZ_REQ_BUY_FROMMC(AID: vendorID)
+    }
+
+    /// | `PACKET_CZ_PC_PURCHASE_ITEMLIST_FROMMC2` | `clif_parse_PurchaseReq2` |
+    ///
+    /// `shopID` is the `venderId` of the item list the shop sent, rAthena refuses the purchase when the
+    /// shop was closed and opened again since.
+    public static func CZ_PC_PURCHASE_ITEMLIST_FROMMC2(
+        vendorID: UInt32,
+        shopID: UInt32,
+        purchases: [(index: Int, count: Int)]
+    ) -> PACKET_CZ_PC_PURCHASE_ITEMLIST_FROMMC2 {
+        var packet = PACKET_CZ_PC_PURCHASE_ITEMLIST_FROMMC2()
+        packet.packetType = HEADER_CZ_PC_PURCHASE_ITEMLIST_FROMMC2
+        packet.packetLength = Int16(2 + 2 + 4 + 4 + purchases.count * CZ_PURCHASE_ITEM_FROMMC.size)
+        packet.AID = vendorID
+        packet.UniqueID = shopID
+        packet.list = purchases.map { purchase in
+            var item = CZ_PURCHASE_ITEM_FROMMC()
+            item.count = Int16(truncatingIfNeeded: purchase.count)
+            item.index = Int16(truncatingIfNeeded: purchase.index)
+            return item
+        }
+        return packet
+    }
+
+    /// | `PACKET_CZ_MOVE_ITEM_FROM_BODY_TO_CART` | `clif_parse_PutItemToCart` |
+    public static func CZ_MOVE_ITEM_FROM_BODY_TO_CART(index: Int, amount: Int) -> PACKET_CZ_MOVE_ITEM_FROM_BODY_TO_CART {
+        var packet = PACKET_CZ_MOVE_ITEM_FROM_BODY_TO_CART()
+        packet.packetType = HEADER_CZ_MOVE_ITEM_FROM_BODY_TO_CART
+        packet.index = Int16(truncatingIfNeeded: index)
+        packet.count = Int32(truncatingIfNeeded: amount)
+        return packet
+    }
+
+    /// | `PACKET_CZ_MOVE_ITEM_FROM_CART_TO_BODY` | `clif_parse_GetItemFromCart` |
+    public static func CZ_MOVE_ITEM_FROM_CART_TO_BODY(index: Int, amount: Int) -> PACKET_CZ_MOVE_ITEM_FROM_CART_TO_BODY {
+        var packet = PACKET_CZ_MOVE_ITEM_FROM_CART_TO_BODY()
+        packet.packetType = HEADER_CZ_MOVE_ITEM_FROM_CART_TO_BODY
+        packet.index = UInt16(truncatingIfNeeded: index)
+        packet.amount = Int32(truncatingIfNeeded: amount)
+        return packet
+    }
 }

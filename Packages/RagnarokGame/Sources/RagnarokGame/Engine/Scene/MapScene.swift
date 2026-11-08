@@ -332,6 +332,7 @@ extension MapScene {
     func removeObject(objectID: GameObjectID) {
         objects.removeValue(forKey: objectID)
         hpspBarObjectIDs.remove(objectID)
+        playSession.vending.signs.removeValue(forKey: objectID)
         if selectedTargetID == objectID {
             selectTarget(nil)
         }
@@ -418,6 +419,11 @@ extension MapScene {
 
             switch target.type {
             case .pc:
+                // A player with a shop open: a click on him opens the shop, like a click on his sign.
+                if playSession.hasVendingShop(vendorID: target.objectID) {
+                    playSession.requestVendingList(vendorID: target.objectID)
+                    return
+                }
                 selectTarget(target)
                 targetSelector = TargetSelector(objectID: target.objectID, showTime: .now)
             case .monster, .npc, .npc2:
