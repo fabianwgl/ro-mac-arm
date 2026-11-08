@@ -60,7 +60,10 @@ struct KeyBindingsView: View {
         #if os(macOS)
         .background {
             if capturingAction != nil {
-                KeyEventMonitor { chord, _ in
+                KeyEventMonitor { event in
+                    guard event.phase == .down, !event.isRepeat, let chord = event.chord else {
+                        return false
+                    }
                     capture(chord)
                     return true
                 }

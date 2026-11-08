@@ -10,12 +10,31 @@
 import AppKit
 import SwiftUI
 
+/// A key press or release in the game window.
+struct KeyEvent {
+    enum Phase {
+        case down
+        case up
+    }
+
+    var phase: Phase
+    /// The binding the key and modifiers form, or nil for keys no binding can use.
+    var chord: KeyChord?
+    /// The physical key, so a release matches its press even if modifiers changed in between.
+    var keyCode: UInt16
+    var isRepeat: Bool
+    var isTextInputFocused: Bool
+}
+
 /// Installs a local key monitor for the window which hosts this view.
 ///
-/// The handler receives every key-down event in the window and returns true when the
-/// event was consumed. Key events from other windows, including sheets, are ignored.
+/// The handler receives every key-down and key-up event in the window and returns true
+/// when the event was consumed. Key events from other windows, including sheets, are
+/// ignored. `onFocusLost` runs when the window stops being the key window, because key-up
+/// events for keys still held then never arrive.
 struct KeyEventMonitor: NSViewRepresentable {
-    var handler: (KeyChord, _ isTextInputFocused: Bool) -> Bool
+    var handler: (KeyEvent) -> Bool
+    var onFocusLost: () -> Void = {}
 
     func makeNSView(context: Context) -> KeyMonitorHostView {
         let view = KeyMonitorHostView()
@@ -27,6 +46,7 @@ struct KeyEventMonitor: NSViewRepresentable {
 
     func updateNSView(_ nsView: KeyMonitorHostView, context: Context) {
         context.coordinator.handler = handler
+        context.coordinator.onFocusLost = onFocusLost
         nsView.windowDidChange = { [weak coordinator = context.coordinator] window in
             coordinator?.attach(to: window)
         }
@@ -38,18 +58,21 @@ struct KeyEventMonitor: NSViewRepresentable {
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(handler: handler)
+        Coordinator(handler: handler, onFocusLost: onFocusLost)
     }
 
     @MainActor
     final class Coordinator {
-        var handler: (KeyChord, _ isTextInputFocused: Bool) -> Bool
+        var handler: (KeyEvent) -> Bool
+        var onFocusLost: () -> Void
 
         private weak var window: NSWindow?
         private var monitor: Any?
+        private var resignKeyObserver: (any NSObjectProtocol)?
 
-        init(handler: @escaping (KeyChord, _ isTextInputFocused: Bool) -> Bool) {
+        init(handler: @escaping (KeyEvent) -> Bool, onFocusLost: @escaping () -> Void) {
             self.handler = handler
+            self.onFocusLost = onFocusLost
         }
 
         func attach(to window: NSWindow?) {
@@ -60,34 +83,50 @@ struct KeyEventMonitor: NSViewRepresentable {
             detach()
             self.window = window
 
-            guard window != nil else {
+            guard let window else {
                 return
             }
 
-            monitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            resignKeyObserver = NotificationCenter.default.addObserver(
+                forName: NSWindow.didResignKeyNotification,
+                object: window,
+                queue: .main
+            ) { [weak self] _ in
+                MainActor.assumeIsolated {
+                    self?.onFocusLost()
+                }
+            }
+
+            monitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown, .keyUp]) { [weak self] event in
                 let eventWindowID = event.window.map(ObjectIdentifier.init)
+                let phase: KeyEvent.Phase = event.type == .keyUp ? .up : .down
                 let keyCode = event.keyCode
                 let characters = event.characters
                 let charactersIgnoringModifiers = event.charactersIgnoringModifiers
                 let modifiers = KeyChord.Modifiers(event.modifierFlags)
-                let isRepeat = event.isARepeat
+                let isRepeat = phase == .down && event.isARepeat
 
                 let handled = MainActor.assumeIsolated {
                     guard let self,
-                          !isRepeat,
-                          eventWindowID == self.window.map(ObjectIdentifier.init),
-                          let chord = KeyChord(
-                              keyCode: keyCode,
-                              characters: characters,
-                              charactersIgnoringModifiers: charactersIgnoringModifiers,
-                              modifiers: modifiers
-                          ) else {
+                          eventWindowID == self.window.map(ObjectIdentifier.init) else {
                         return false
                     }
 
+                    let chord = KeyChord(
+                        keyCode: keyCode,
+                        characters: characters,
+                        charactersIgnoringModifiers: charactersIgnoringModifiers,
+                        modifiers: modifiers
+                    )
                     let isTextInputFocused = self.window?.firstResponder is NSTextView
                         || self.window?.firstResponder is NSTextField
-                    return self.handler(chord, isTextInputFocused)
+                    return self.handler(KeyEvent(
+                        phase: phase,
+                        chord: chord,
+                        keyCode: keyCode,
+                        isRepeat: isRepeat,
+                        isTextInputFocused: isTextInputFocused
+                    ))
                 }
 
                 return handled ? nil : event
@@ -98,7 +137,11 @@ struct KeyEventMonitor: NSViewRepresentable {
             if let monitor {
                 NSEvent.removeMonitor(monitor)
             }
+            if let resignKeyObserver {
+                NotificationCenter.default.removeObserver(resignKeyObserver)
+            }
             monitor = nil
+            resignKeyObserver = nil
             window = nil
         }
     }

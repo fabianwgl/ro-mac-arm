@@ -5,6 +5,7 @@
 //  Created by Leon Li on 2026/5/30.
 //
 
+import simd
 import SwiftUI
 
 struct MapSceneView: View {
@@ -22,6 +23,8 @@ struct MapSceneView: View {
     @State private var actionBarHeight: CGFloat = 0
     @State private var presentedMenuItem: MenuItem?
     @State private var chatFocusRequest = 0
+    /// Movement keys held down, by key code, with the screen direction each one pushes.
+    @State private var heldMovementKeys: [UInt16: SIMD2<Float>] = [:]
 
     var body: some View {
         ZStack {
@@ -227,8 +230,9 @@ struct MapSceneView: View {
         .ignoresSafeArea(.container)
         #if os(macOS)
         .background {
-            KeyEventMonitor { chord, isTextInputFocused in
-                handleKeyEvent(chord, isTextInputFocused: isTextInputFocused)
+            KeyEventMonitor(handler: handleKeyEvent) {
+                heldMovementKeys.removeAll()
+                updateKeyboardMovement()
             }
         }
         #endif
@@ -295,18 +299,38 @@ struct MapSceneView: View {
     }
 
     #if os(macOS)
-    private func handleKeyEvent(_ chord: KeyChord, isTextInputFocused: Bool) -> Bool {
-        guard let action = keyBindings.action(for: chord) else {
+    private func handleKeyEvent(_ event: KeyEvent) -> Bool {
+        if event.phase == .up {
+            // Releases are matched by key code, so they stop movement even after the
+            // chat field took focus or a modifier changed.
+            guard heldMovementKeys.removeValue(forKey: event.keyCode) != nil else {
+                return false
+            }
+            updateKeyboardMovement()
+            return true
+        }
+
+        if event.isRepeat {
+            // A held movement key keeps walking on its own; swallow its repeats.
+            return heldMovementKeys[event.keyCode] != nil
+        }
+
+        guard let chord = event.chord, let action = keyBindings.action(for: chord) else {
             return false
         }
 
         // Text fields keep their keys. Return is left to the chat field so it can send
         // the message, while Escape still closes the top window.
-        if isTextInputFocused && action != .closeTopWindow {
+        if event.isTextInputFocused && action != .closeTopWindow {
             return false
         }
 
         switch action {
+        case .moveUp, .moveLeft, .moveDown, .moveRight:
+            heldMovementKeys[event.keyCode] = action.movementDirection
+            updateKeyboardMovement()
+        case .attack:
+            runtime.scene.attackSelectedOrNearestMonster()
         case .shortcut(let row, let slot):
             let rows = playSession.shortcutList.rows
             guard rows.indices.contains(row), rows[row].indices.contains(slot) else {
@@ -344,6 +368,15 @@ struct MapSceneView: View {
         }
 
         return true
+    }
+
+    /// Drives the scene's thumbstick walking from the held movement keys, so the keyboard
+    /// walks, turns, slides along walls and stops exactly like the touch thumbstick.
+    private func updateKeyboardMovement() {
+        let direction = heldMovementKeys.values.reduce(SIMD2<Float>.zero, +)
+        // The scene ignores thumbstick input shorter than 15 points.
+        let value = simd_length(direction) > 0 ? simd_normalize(direction) * 100 : .zero
+        runtime.scene.thumbstickValue = CGPoint(x: CGFloat(value.x), y: CGFloat(value.y))
     }
 
     private func toggle(_ item: MenuItem) {

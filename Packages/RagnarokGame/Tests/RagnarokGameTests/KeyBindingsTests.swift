@@ -28,9 +28,15 @@ struct KeyBindingsTests {
             #expect(keyBindings.chord(for: .shortcut(row: 1, slot: slot)) == KeyChord(key: .character(character)))
         }
 
-        for (slot, character) in "qwertyuio".enumerated() {
-            #expect(keyBindings.chord(for: .shortcut(row: 2, slot: slot)) == KeyChord(key: .character(character)))
+        for (slot, character) in "123456789".enumerated() {
+            #expect(keyBindings.chord(for: .shortcut(row: 2, slot: slot)) == KeyChord(key: .character(character), modifiers: .option))
         }
+
+        #expect(keyBindings.chord(for: .moveUp) == KeyChord(key: .character("w")))
+        #expect(keyBindings.chord(for: .moveLeft) == KeyChord(key: .character("a")))
+        #expect(keyBindings.chord(for: .moveDown) == KeyChord(key: .character("s")))
+        #expect(keyBindings.chord(for: .moveRight) == KeyChord(key: .character("d")))
+        #expect(keyBindings.chord(for: .attack) == KeyChord(key: .named(.space)))
 
         #expect(keyBindings.chord(for: .toggleInventory) == KeyChord(key: .character("e"), modifiers: .option))
         #expect(keyBindings.chord(for: .toggleEquipment) == KeyChord(key: .character("q"), modifiers: .option))

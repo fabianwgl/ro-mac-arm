@@ -487,6 +487,17 @@ extension MapScene {
         }
     }
 
+    /// Attacks the selected monster, or else the nearest one. Other targets are left alone.
+    func attackSelectedOrNearestMonster() {
+        if selectedTarget?.type != .monster {
+            guard let target = nearestObject(ofType: .monster, fromPosition: player.gridPosition) else {
+                return
+            }
+            selectTarget(target)
+        }
+        performActionOnSelectedTarget()
+    }
+
     func selectTarget(_ target: MapSceneMapObject?) {
         targetSelector = nil
         selectedTargetID = target?.objectID

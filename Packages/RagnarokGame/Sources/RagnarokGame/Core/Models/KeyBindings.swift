@@ -11,6 +11,11 @@ import Observation
 /// An action which can be triggered by the keyboard.
 public enum GameAction: Hashable, Sendable, Identifiable {
     case shortcut(row: Int, slot: Int)
+    case moveUp
+    case moveLeft
+    case moveDown
+    case moveRight
+    case attack
     case toggleInventory
     case toggleEquipment
     case toggleSkills
@@ -28,6 +33,16 @@ public enum GameAction: Hashable, Sendable, Identifiable {
         switch self {
         case .shortcut(let row, let slot):
             "shortcut.\(row).\(slot)"
+        case .moveUp:
+            "moveUp"
+        case .moveLeft:
+            "moveLeft"
+        case .moveDown:
+            "moveDown"
+        case .moveRight:
+            "moveRight"
+        case .attack:
+            "attack"
         case .toggleInventory:
             "toggleInventory"
         case .toggleEquipment:
@@ -59,6 +74,16 @@ public enum GameAction: Hashable, Sendable, Identifiable {
         switch self {
         case .shortcut(let row, let slot):
             "Shortcut \(row + 1)-\(slot + 1)"
+        case .moveUp:
+            "Move Up"
+        case .moveLeft:
+            "Move Left"
+        case .moveDown:
+            "Move Down"
+        case .moveRight:
+            "Move Right"
+        case .attack:
+            "Attack Nearest"
         case .toggleInventory:
             "Inventory"
         case .toggleEquipment:
@@ -86,6 +111,17 @@ public enum GameAction: Hashable, Sendable, Identifiable {
         }
     }
 
+    /// The screen direction of a movement action, with y pointing down, or nil for other actions.
+    public var movementDirection: SIMD2<Float>? {
+        switch self {
+        case .moveUp: SIMD2(0, -1)
+        case .moveLeft: SIMD2(-1, 0)
+        case .moveDown: SIMD2(0, 1)
+        case .moveRight: SIMD2(1, 0)
+        default: nil
+        }
+    }
+
     /// Every action shown by the key binding editor.
     public static let all: [GameAction] = {
         let shortcuts = (0..<3).flatMap { row in
@@ -93,6 +129,11 @@ public enum GameAction: Hashable, Sendable, Identifiable {
         }
 
         return shortcuts + [
+            .moveUp,
+            .moveLeft,
+            .moveDown,
+            .moveRight,
+            .attack,
             .toggleInventory,
             .toggleEquipment,
             .toggleSkills,
@@ -122,6 +163,16 @@ public enum GameAction: Hashable, Sendable, Identifiable {
         }
 
         switch id {
+        case "moveUp":
+            self = .moveUp
+        case "moveLeft":
+            self = .moveLeft
+        case "moveDown":
+            self = .moveDown
+        case "moveRight":
+            self = .moveRight
+        case "attack":
+            self = .attack
         case "toggleInventory":
             self = .toggleInventory
         case "toggleEquipment":
@@ -416,9 +467,17 @@ public final class KeyBindings {
             chords[.shortcut(row: 1, slot: slot)] = KeyChord(key: .character(character))
         }
 
-        for (slot, character) in "qwertyuio".enumerated() {
-            chords[.shortcut(row: 2, slot: slot)] = KeyChord(key: .character(character))
+        // WASD moves the character, so the third row sits on Option and the digits
+        // instead of the kRO letter row.
+        for (slot, character) in "123456789".enumerated() {
+            chords[.shortcut(row: 2, slot: slot)] = KeyChord(key: .character(character), modifiers: .option)
         }
+
+        chords[.moveUp] = KeyChord(key: .character("w"))
+        chords[.moveLeft] = KeyChord(key: .character("a"))
+        chords[.moveDown] = KeyChord(key: .character("s"))
+        chords[.moveRight] = KeyChord(key: .character("d"))
+        chords[.attack] = KeyChord(key: .named(.space))
 
         chords[.toggleInventory] = KeyChord(key: .character("e"), modifiers: .option)
         chords[.toggleEquipment] = KeyChord(key: .character("q"), modifiers: .option)
