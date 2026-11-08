@@ -33,6 +33,12 @@ per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
   the ack messages (too far, overweight, inventory full). Verified live between
   two clients ([trade-2026-11-08.json](probe-runs/trade-2026-11-08.json)). Items
   are offered from a picker, not by drag and drop.
+- Vending: click a vendor or the sign above the head to browse and buy; the
+  Vending skill opens the set up window (cart items, prices, title) and your
+  own shop window closes it. Buying store: click a buyer to sell to them; the
+  license item (12548) opens the set up window. Cart lists, add and remove.
+  Verified live between two clients
+  ([vending-2026-11-08.json](probe-runs/vending-2026-11-08.json)).
 - macOS keyboard controls with rebinding, WASD walking and Space to attack the
   nearest monster (the third hotkey row is Option-1..9), game controller (left
   stick and d-pad walk, A attack, B close window, X/Y/shoulders/triggers hotkey
@@ -50,7 +56,8 @@ per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
 | Achievements | enabled | menu window, claim button and completion message work; titles need `System/achievement_list.lub` in the client folder, else rows read "Achievement #id"; no title wearing |
 | Attendance | feature on, but `db/re/attendance.yml` has no running period (the 2018 example is commented out), so the server never opens the window or accepts a check-in until a period is added to `db/import/attendance.yml` | window, menu entry and check-in implemented; day numbers only (the server sends no period dates or reward table, reward arrives by mail); untested against the live server for lack of a period |
 | Navigation (`ZC_NAVIGATION_ACTIVE` 0x08e2) | enabled | framed and skipped |
-| Clan, chat rooms, vending, buying store | enabled | missing |
+| Clan, chat rooms | enabled | missing |
+| Vending and buying store extras | enabled | no "Move to cart" in the inventory item menu (the shop set up window has "To cart"); signs are text labels, not the signboard art; a title that is not UTF-8 drops the sign; shop rows show refine but not cards; search store (`CZ_SEARCH_STORE_INFO`) not done |
 | Refine, enchant, item reform, Laphine, stylist, roulette | enabled | missing |
 | Bank | one NPC only | missing |
 | Cash shop | code on, no items | missing (nothing to buy) |
