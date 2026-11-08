@@ -31,10 +31,12 @@ struct KeyEvent {
 /// The handler receives every key-down and key-up event in the window and returns true
 /// when the event was consumed. Key events from other windows, including sheets, are
 /// ignored. `onFocusLost` runs when the window stops being the key window, because key-up
-/// events for keys still held then never arrive.
+/// events for keys still held then never arrive. `onFocusGained` runs when it becomes the
+/// key window, and once when the monitor attaches to a window which already is.
 struct KeyEventMonitor: NSViewRepresentable {
     var handler: (KeyEvent) -> Bool
     var onFocusLost: () -> Void = {}
+    var onFocusGained: () -> Void = {}
 
     func makeNSView(context: Context) -> KeyMonitorHostView {
         let view = KeyMonitorHostView()
@@ -47,6 +49,7 @@ struct KeyEventMonitor: NSViewRepresentable {
     func updateNSView(_ nsView: KeyMonitorHostView, context: Context) {
         context.coordinator.handler = handler
         context.coordinator.onFocusLost = onFocusLost
+        context.coordinator.onFocusGained = onFocusGained
         nsView.windowDidChange = { [weak coordinator = context.coordinator] window in
             coordinator?.attach(to: window)
         }
@@ -58,21 +61,24 @@ struct KeyEventMonitor: NSViewRepresentable {
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(handler: handler, onFocusLost: onFocusLost)
+        Coordinator(handler: handler, onFocusLost: onFocusLost, onFocusGained: onFocusGained)
     }
 
     @MainActor
     final class Coordinator {
         var handler: (KeyEvent) -> Bool
         var onFocusLost: () -> Void
+        var onFocusGained: () -> Void
 
         private weak var window: NSWindow?
         private var monitor: Any?
         private var resignKeyObserver: (any NSObjectProtocol)?
+        private var becomeKeyObserver: (any NSObjectProtocol)?
 
-        init(handler: @escaping (KeyEvent) -> Bool, onFocusLost: @escaping () -> Void) {
+        init(handler: @escaping (KeyEvent) -> Bool, onFocusLost: @escaping () -> Void, onFocusGained: @escaping () -> Void) {
             self.handler = handler
             self.onFocusLost = onFocusLost
+            self.onFocusGained = onFocusGained
         }
 
         func attach(to window: NSWindow?) {
@@ -94,6 +100,25 @@ struct KeyEventMonitor: NSViewRepresentable {
             ) { [weak self] _ in
                 MainActor.assumeIsolated {
                     self?.onFocusLost()
+                }
+            }
+
+            becomeKeyObserver = NotificationCenter.default.addObserver(
+                forName: NSWindow.didBecomeKeyNotification,
+                object: window,
+                queue: .main
+            ) { [weak self] _ in
+                MainActor.assumeIsolated {
+                    self?.onFocusGained()
+                }
+            }
+
+            if window.isKeyWindow {
+                // Attaching can happen during a view update, so report the focus afterwards.
+                Task { @MainActor [weak self, weak window] in
+                    if let self, let window, self.window === window, window.isKeyWindow {
+                        self.onFocusGained()
+                    }
                 }
             }
 
@@ -140,8 +165,12 @@ struct KeyEventMonitor: NSViewRepresentable {
             if let resignKeyObserver {
                 NotificationCenter.default.removeObserver(resignKeyObserver)
             }
+            if let becomeKeyObserver {
+                NotificationCenter.default.removeObserver(becomeKeyObserver)
+            }
             monitor = nil
             resignKeyObserver = nil
+            becomeKeyObserver = nil
             window = nil
         }
     }
