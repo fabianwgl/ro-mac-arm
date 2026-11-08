@@ -14,29 +14,60 @@ struct ItemInfo: Decodable {
     var identifiedItemDescription: String?
 }
 
+/// Item names and descriptions.
+///
+/// A lookup tries the table of the locale, then the English table, then (for identified names) the name the server's
+/// item database gives. It returns `nil` only for an id none of them knows.
 final public class ItemInfoTable {
-    let itemInfosByID: [Int : ItemInfo]
+    let sources: [LocalizedSource<Int, ItemInfo>]
+    let serverItemNamesByID: [Int : String]
 
-    public init(locale: Locale = .current) {
-        guard let url = Bundle.module.url(forResource: "ItemInfo", withExtension: "json", locale: locale) else {
-            self.itemInfosByID = [:]
-            return
-        }
+    public convenience init(locale: Locale = .current) {
+        self.init(
+            sources: LocalizedSource<Int, ItemInfo>.sources(named: "ItemInfo", locale: locale),
+            serverItemNamesByID: ServerNameTable.shared.itemNamesByID
+        )
+    }
 
-        do {
-            let decoder = JSONDecoder()
-            let data = try Data(contentsOf: url)
-            self.itemInfosByID = try decoder.decode([Int : ItemInfo].self, from: data)
-        } catch {
-            self.itemInfosByID = [:]
-        }
+    init(sources: [LocalizedSource<Int, ItemInfo>], serverItemNamesByID: [Int : String]) {
+        self.sources = sources
+        self.serverItemNamesByID = serverItemNamesByID
     }
 
     public func localizedIdentifiedItemName(forItemID itemID: Int) -> String? {
-        itemInfosByID[itemID]?.identifiedItemName
+        text(\.identifiedItemName, forItemID: itemID) ?? serverItemNamesByID[itemID]
     }
 
     public func localizedIdentifiedItemDescription(forItemID itemID: Int) -> String? {
-        itemInfosByID[itemID]?.identifiedItemDescription
+        text(\.identifiedItemDescription, forItemID: itemID)
+    }
+
+    /// The name of an item before it is appraised, such as `Dagger` for a Knife. `nil` for an item that has none.
+    public func localizedUnidentifiedItemName(forItemID itemID: Int) -> String? {
+        text(\.unidentifiedItemName, forItemID: itemID)
+    }
+
+    public func localizedUnidentifiedItemDescription(forItemID itemID: Int) -> String? {
+        text(\.unidentifiedItemDescription, forItemID: itemID)
+    }
+
+    /// The name a player sees: the unidentified name for an item that is not appraised yet, and the identified name
+    /// for everything else, including an unidentified item that has no unidentified name.
+    public func localizedItemName(forItemID itemID: Int, isIdentified: Bool) -> String? {
+        if !isIdentified, let name = localizedUnidentifiedItemName(forItemID: itemID) {
+            return name
+        }
+        return localizedIdentifiedItemName(forItemID: itemID)
+    }
+
+    public func localizedItemDescription(forItemID itemID: Int, isIdentified: Bool) -> String? {
+        if !isIdentified, let description = localizedUnidentifiedItemDescription(forItemID: itemID) {
+            return description
+        }
+        return localizedIdentifiedItemDescription(forItemID: itemID)
+    }
+
+    private func text(_ keyPath: KeyPath<ItemInfo, String?>, forItemID itemID: Int) -> String? {
+        LocalizedSource.text(forKey: itemID, in: sources, keyPath)
     }
 }

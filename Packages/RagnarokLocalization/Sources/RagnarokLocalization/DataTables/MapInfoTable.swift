@@ -11,35 +11,33 @@ struct MapInfo: Decodable {
     var displayName: String
     var signMainTitle: String?
     var signSubTitle: String?
+
+    var optionalDisplayName: String? {
+        displayName
+    }
 }
 
+/// Map names and sign titles. A lookup tries the table of the locale, then the English table.
 final public class MapInfoTable {
-    let mapInfosByName: [String : MapInfo]
+    let sources: [LocalizedSource<String, MapInfo>]
 
-    public init(locale: Locale = .current) {
-        guard let url = Bundle.module.url(forResource: "MapInfo", withExtension: "json", locale: locale) else {
-            self.mapInfosByName = [:]
-            return
-        }
+    public convenience init(locale: Locale = .current) {
+        self.init(sources: LocalizedSource<String, MapInfo>.sources(named: "MapInfo", locale: locale))
+    }
 
-        do {
-            let decoder = JSONDecoder()
-            let data = try Data(contentsOf: url)
-            self.mapInfosByName = try decoder.decode([String : MapInfo].self, from: data)
-        } catch {
-            self.mapInfosByName = [:]
-        }
+    init(sources: [LocalizedSource<String, MapInfo>]) {
+        self.sources = sources
     }
 
     public func localizedMapName(forMapName mapName: String) -> String? {
-        mapInfosByName[mapName]?.displayName
+        LocalizedSource.text(forKey: mapName, in: sources, \.optionalDisplayName)
     }
 
     public func localizedMapSignMainTitle(forMapName mapName: String) -> String? {
-        mapInfosByName[mapName]?.signMainTitle
+        LocalizedSource.text(forKey: mapName, in: sources, \.signMainTitle)
     }
 
     public func localizedMapSignSubTitle(forMapName mapName: String) -> String? {
-        mapInfosByName[mapName]?.signSubTitle
+        LocalizedSource.text(forKey: mapName, in: sources, \.signSubTitle)
     }
 }

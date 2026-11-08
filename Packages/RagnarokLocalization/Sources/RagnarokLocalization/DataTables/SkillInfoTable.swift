@@ -12,29 +12,31 @@ struct SkillInfo: Decodable {
     var skillDescription: String?
 }
 
+/// Skill names and descriptions.
+///
+/// A lookup tries the table of the locale, then the English table, then (for names) the name the server's skill
+/// database gives. It returns `nil` only for an id none of them knows.
 final public class SkillInfoTable {
-    let skillInfosByID: [Int : SkillInfo]
+    let sources: [LocalizedSource<Int, SkillInfo>]
+    let serverSkillNamesByID: [Int : String]
 
-    public init(locale: Locale = .current) {
-        guard let url = Bundle.module.url(forResource: "SkillInfo", withExtension: "json", locale: locale) else {
-            self.skillInfosByID = [:]
-            return
-        }
+    public convenience init(locale: Locale = .current) {
+        self.init(
+            sources: LocalizedSource<Int, SkillInfo>.sources(named: "SkillInfo", locale: locale),
+            serverSkillNamesByID: ServerNameTable.shared.skillNamesByID
+        )
+    }
 
-        do {
-            let decoder = JSONDecoder()
-            let data = try Data(contentsOf: url)
-            self.skillInfosByID = try decoder.decode([Int : SkillInfo].self, from: data)
-        } catch {
-            self.skillInfosByID = [:]
-        }
+    init(sources: [LocalizedSource<Int, SkillInfo>], serverSkillNamesByID: [Int : String]) {
+        self.sources = sources
+        self.serverSkillNamesByID = serverSkillNamesByID
     }
 
     public func localizedSkillName(forSkillID skillID: Int) -> String? {
-        skillInfosByID[skillID]?.skillName
+        LocalizedSource.text(forKey: skillID, in: sources, \.skillName) ?? serverSkillNamesByID[skillID]
     }
 
     public func localizedSkillDescription(forSkillID skillID: Int) -> String? {
-        skillInfosByID[skillID]?.skillDescription
+        LocalizedSource.text(forKey: skillID, in: sources, \.skillDescription)
     }
 }
