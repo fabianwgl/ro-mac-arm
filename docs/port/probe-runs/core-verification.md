@@ -35,15 +35,16 @@ per task (`packetsReceived`, `packetsSent`).
 
 ## Findings
 
-- No client bug showed up in these flows, so no package was changed and there are no new package tests.
+- One client bug showed up (the Kafra window staying open after the warp, below); nothing else needed a package change.
 - The first failing runs were probe bugs, fixed in the scenario: `@jobchange` wants the job id; first-job skills appear
   only after Basic Skill 9; Porings loot the drops, so the hunt spawns one at a time; Thunderstorm is interrupted when
   a monster hits the caster.
-- The server keeps an NPC script open until the dialog window is dismissed, and refuses walking and item use meanwhile
-  (one early run: the Kafra dialog left open after the teleport, then Fly Wing worked but a walk and Butterfly Wing
-  were ignored). The client keeps showing the Kafra window with a Close button on the new map after the Kafra warp.
-  The scenario presses what the window shows (Next, Close, Cancel) before it goes on. Whether the window should close
-  by itself on a map change is a UI decision, not changed here.
+- The Kafra teleport script ends with `warp` then `end;`, so rAthena frees the script at once (`end` sends
+  `ZC_CLOSE_DIALOG`, and `script_free_state` clears `sd->npc_id`); the server never refused a walk or an item after it.
+  The client did: it kept the Kafra window with its Close button on the new map. Fixed in `PlaySession`: a map move
+  closes the dialog, and the `ZC_CLOSE_DIALOG` that follows is answered with `CZ_CLOSE_DIALOG` (see
+  `kafra-warp-2026-11-08.json`, P3-09 13/13: window closed, walk and Red Potion work with no click). The scenario no
+  longer presses the window after the warp.
 - A headless run cannot judge: window layout and drag and drop in the inventory, equipment, shop, storage and skill
   windows, the shortcut bar and cooldown overlay, the look of skill effects, and BGM and effect playback.
 

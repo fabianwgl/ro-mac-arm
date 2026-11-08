@@ -1046,35 +1046,63 @@ final class CoreScenario {
                 playSession.selectMenu(UInt8(geffen + 1))
                 let changed = await awaitMapChange(since: teleportMark)
                 check("Kafra teleport to Geffen (CZ_CHOOSE_MENU, ZC_NPCACK_MAPMOVE, map load)", changed?.map == "geffen.rsw", "map \(changed?.map ?? "none") at \(changed.map { "\($0.position.x),\($0.position.y)" } ?? "?"); zeny \(zenyBeforeTeleport) -> \(status.zeny); ZC_NPCACK_MAPMOVE x\(received("ZC_NPCACK_MAPMOVE", since: teleportMark))")
+                // The script ends right after the warp with its dialog still open (`mes`, `select`, `warp`, `end`, no
+                // `close`). The window must be gone on the new map and the server must let the player act at once: no
+                // button is pressed here.
+                check("Kafra dialog window is closed after the warp (no click needed)", playSession.dialog == nil, "dialog \(playSession.dialog.map { "open: \"\($0.message.replacingOccurrences(of: "\n", with: " / ").prefix(60))\" action \(String(describing: $0.action))" } ?? "closed"); ZC_CLOSE_DIALOG x\(received("ZC_CLOSE_DIALOG", since: teleportMark)), ZC_CLEAR_DIALOG x\(received("ZC_CLEAR_DIALOG", since: teleportMark)), CZ_CLOSE_DIALOG x\(sent("CZ_CLOSE_DIALOG", since: teleportMark))")
+                await checkWalkWorks("walking works right after the Kafra warp, dialog never dismissed (CZ_REQUEST_MOVE, ZC_NOTIFY_PLAYERMOVE)")
+                await checkItemUseWorks("an item works right after the Kafra warp (CZ_USE_ITEM, ZC_USE_ITEM_ACK)")
             } else {
                 check("Kafra teleport to Geffen", false, "no destination list: dialog \(dialogText())")
             }
         } else {
             check("Kafra teleport to Geffen", false, "no Teleport Service entry in the menu")
         }
-        await dismissDialog()
-        report.summary = "Prontera Kafra: dialog, Save, Use Storage (put/take), Teleport Service to Geffen"
+        report.summary = "Prontera Kafra: dialog, Save, Use Storage (put/take), Teleport Service to Geffen, then walk and use an item with no dialog click"
         end()
     }
 
-    /// Presses whatever button the open dialog window shows (Next, Close, Cancel on a menu) until it is gone. The server
-    /// keeps the script, and with it every walk and item request, waiting until the player does this.
-    private func dismissDialog() async {
-        for _ in 0..<10 {
-            guard let dialog = playSession.dialog else { return }
-            let text = dialog.message.replacingOccurrences(of: "\n", with: " / ").prefix(60)
-            if dialog.menu != nil {
-                note("dialog window left open (menu), cancelled: \"\(text)\"")
-                playSession.cancelMenu()
-            } else if dialog.action == .next {
-                note("dialog window left open (next), pressed next: \"\(text)\"")
-                playSession.requestNextMessage()
-            } else if dialog.action == .close {
-                note("dialog window left open (close), pressed close: \"\(text)\"")
-                playSession.closeDialog()
-            }
-            await pause(0.7)
+    /// Asks the server to walk to a random reachable cell a few cells away and checks that it answers and the player
+    /// arrives. The server ignores `CZ_REQUEST_MOVE` while an NPC script is attached to the player.
+    private func checkWalkWorks(_ name: String) async {
+        guard let scene = self.scene else {
+            check(name, false, "no scene")
+            return
         }
+        let origin = scene.player.gridPosition
+        var target: SIMD2<Int>?
+        for _ in 0..<80 {
+            let candidate = SIMD2(origin.x + Int.random(in: -6...6), origin.y + Int.random(in: -6...6))
+            if candidate != origin, distance(candidate, origin) >= 3, scene.mapGrid.contains(candidate), scene.mapGrid[candidate].isWalkable, scene.pathFinder.canRequestMove(from: origin, to: candidate) {
+                target = candidate
+                break
+            }
+        }
+        guard let target else {
+            check(name, false, "no walkable cell near \(origin.x),\(origin.y)")
+            return
+        }
+        let walkMark = mark()
+        scene.handleInteraction(.ground(position: target))
+        let walked = await pump(15) { self.received("ZC_NOTIFY_PLAYERMOVE", since: walkMark) > 0 && self.scene?.player.gridPosition == target }
+        check(name, walked, "from \(origin.x),\(origin.y) to \(target.x),\(target.y), now \(self.scene?.player.gridPosition.x ?? -1),\(self.scene?.player.gridPosition.y ?? -1); CZ_REQUEST_MOVE x\(sent("CZ_REQUEST_MOVE", since: walkMark)), ZC_NOTIFY_PLAYERMOVE x\(received("ZC_NOTIFY_PLAYERMOVE", since: walkMark)); dialog \(playSession.dialog == nil ? "closed" : "open")")
+    }
+
+    /// Eats a Red Potion: the server refuses item use while an NPC script is attached.
+    private func checkItemUseWorks(_ name: String) async {
+        if firstItem(501) == nil {
+            await gm("@item 501 5", settle: 0.5)
+            _ = await pump(8) { self.firstItem(501) != nil }
+        }
+        guard let potion = firstItem(501) else {
+            check(name, false, "no Red Potion")
+            return
+        }
+        let before = potion.amount
+        let useMark = mark()
+        playSession.useItem(at: potion.index)
+        let used = await pump(8) { (self.firstItem(501)?.amount ?? 0) < before }
+        check(name, used, "Red Potions \(before) -> \(firstItem(501)?.amount ?? 0); CZ_USE_ITEM x\(sent("CZ_USE_ITEM", since: useMark)), ZC_USE_ITEM_ACK x\(received("ZC_USE_ITEM_ACK", since: useMark))")
     }
 
     /// After choosing a Kafra entry: next buttons until the next menu.
@@ -1095,7 +1123,6 @@ final class CoreScenario {
 
     private func p302() async {
         begin("P3-02", "Map transitions, portals, and teleports")
-        await dismissDialog()
         // Teleport items: Fly Wing (same map, random cell) and Butterfly Wing (save point).
         await gm("@item 602 2", settle: 0.5)
         _ = await pump(8) { self.firstItem(602) != nil }
