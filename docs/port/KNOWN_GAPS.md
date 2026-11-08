@@ -33,6 +33,9 @@ per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
   the ack messages (too far, overweight, inventory full). Verified live between
   two clients ([trade-2026-11-08.json](probe-runs/trade-2026-11-08.json)). Items
   are offered from a picker, not by drag and drop.
+- Item appraisal: Magnifier or Item Appraisal opens a picker of unidentified
+  items; "Move to cart" in the inventory item menu when a cart is on.
+  Verified live ([appraisal-2026-11-08.json](probe-runs/appraisal-2026-11-08.json)).
 - Chat rooms: create from the menu or `/chat [title]` (title, limit, public or
   private with a password), click the owner or the sign to join, a password
   prompt for private rooms, room window with members, messages, leave, and the
@@ -65,14 +68,14 @@ per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
 | Navigation (`ZC_NAVIGATION_ACTIVE` 0x08e2) | enabled | framed and skipped |
 | Clan | enabled | missing |
 | Chat room extras | enabled | rooms owned by NPCs (arena and PK waiting rooms, `waitingroom` script command) are not shown or joinable; passwords are capped at 7 bytes because rAthena compares 9 bytes of an 8-byte field |
-| Vending and buying store extras | enabled | no "Move to cart" in the inventory item menu (the shop set up window has "To cart"); signs are text labels, not the signboard art; a title that is not UTF-8 drops the sign; shop rows show refine but not cards; search store (`CZ_SEARCH_STORE_INFO`) not done |
+| Vending and buying store extras | enabled | no cart window, so items move back to the inventory only through the shop set up window; signs are text labels, not the signboard art; a title that is not UTF-8 drops the sign; shop rows show refine but not cards; search store (`CZ_SEARCH_STORE_INFO`) not done |
 | Refine, enchant, item reform, Laphine, stylist, roulette | enabled | missing |
 | Bank | one NPC only | missing |
 | Cash shop | code on, no items | missing (nothing to buy) |
 | Battlegrounds | maps loaded | `ZC_BATTLEFIELD_*` framed, no UI |
 | Reputation (`ZC_REPUTE_OPEN`) | enabled | framed and skipped |
 | Character rename, slot move | enabled | framed, no UI |
-| Names and descriptions | n/a | English names for every server item, skill and monster (locale table, then English table, then the server's English name; see [localization.md](localization.md)); 203 of 1,265 maps show the map file name; 384 skills have no English description and show the Aegis name; no appraisal (Magnifier) window, so unidentified drops stay unidentified; refine and slot suffixes are not drawn in names |
+| Names and descriptions | n/a | English names for every server item, skill and monster (locale table, then English table, then the server's English name; see [localization.md](localization.md)); 203 of 1,265 maps show the map file name; 384 skills have no English description and show the Aegis name; appraisal works (Magnifier and Item Appraisal picker) but the one-click identify packet (0x0a35) is not handled; refine and slot suffixes are not drawn in names |
 | Window position persistence | n/a | game windows are fixed-layout SwiftUI; main and game windows use macOS defaults |
 
 ## Not verified on this machine
