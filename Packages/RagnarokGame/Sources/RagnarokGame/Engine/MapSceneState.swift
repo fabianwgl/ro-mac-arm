@@ -18,6 +18,14 @@ final class MapSceneState {
 
     var selectedTargetType: MapObjectType?
 
+    /// The player that is selected, when the selected target is one. Trade requests go to this player.
+    var selectedPlayer: SelectedPlayer?
+
+    struct SelectedPlayer: Equatable {
+        var accountID: UInt32
+        var name: String
+    }
+
     init(playerPosition: SIMD2<Int>, playerDirection: SpriteDirection) {
         self.playerPosition = playerPosition
         self.playerDirection = playerDirection

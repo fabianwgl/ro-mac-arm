@@ -66,6 +66,10 @@ struct ActionControlPadView: View {
                 if selectedTargetType == .npc {
                     GameTalkIcon()
                         .frame(width: 34, height: 34)
+                } else if selectedTargetType == .pc {
+                    Image(systemName: "person.fill")
+                        .font(.game(size: 20, weight: .bold))
+                        .foregroundStyle(.white)
                 } else {
                     GameSwordIcon()
                         .frame(width: 40, height: 40)
