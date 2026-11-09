@@ -18,6 +18,7 @@ work is Phase 7 in [TASKS.md](TASKS.md).
 - [RISKS.md](RISKS.md): risk register and mitigations.
 - [KNOWN_GAPS.md](KNOWN_GAPS.md): what works, what is missing, what is out of scope.
 - [COMPATIBILITY.md](COMPATIBILITY.md): client build against each server.
+- [agent-brief-g1-g2.md](agent-brief-g1-g2.md): prompt for the agent that takes the next tasks (P7-01 to P7-05).
 - [RESEARCH.md](RESEARCH.md): prior art, kRO sources, and source facts.
 - [INSTALL.md](INSTALL.md), [RELEASING.md](RELEASING.md), [UPSTREAM_SYNC.md](UPSTREAM_SYNC.md), [patches.md](patches.md): install, release, sync, local divergences.
 
