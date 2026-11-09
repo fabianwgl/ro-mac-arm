@@ -53,6 +53,8 @@ extension PlaySession {
             }
         case let packet as PACKET_ZC_BAN_LIST:
             guildState.guild.apply(expulsions: packet.chars.map(Guild.Expulsion.init(from:)))
+        case let packet as PACKET_ZC_GUILD_SKILLINFO:
+            handleGuildSkills(packet)
         case let packet as PACKET_ZC_GUILD_NOTICE:
             guildState.guild.apply(notice: Guild.Notice(subject: packet.subject, body: packet.notice))
         case let packet as PACKET_ZC_RESULT_MAKE_GUILD:
@@ -83,14 +85,14 @@ extension PlaySession {
     // MARK: - Requests
 
     /// Asks the server for everything the guild window shows: menu flags, basic info with relations,
-    /// position names with members, position details and the expulsion list.
+    /// position names with members, position details, the skill list and the expulsion list.
     func refreshGuild() {
         guard guildState.guild.isInGuild else {
             return
         }
 
         sendPacket(PacketFactory.CZ_REQ_GUILD_MENUINTERFACE())
-        for type: Int32 in [0, 1, 2, 4] {
+        for type: Int32 in [0, 1, 2, 3, 4] {
             sendPacket(PacketFactory.CZ_REQ_GUILD_MENU(type: type))
         }
     }
@@ -177,7 +179,41 @@ extension PlaySession {
         sendPacket(PacketFactory.CZ_GUILD_NOTICE(guildID: guild.guildID, subject: subject, notice: notice))
     }
 
+    /// Master only. rAthena handles a guild skill id in `CZ_UPGRADE_SKILLLEVEL` (`pc_skillup`) and answers with a fresh
+    /// `ZC_GUILD_SKILLINFO` for every online member. It sends nothing when the request is refused.
+    func upgradeGuildSkill(_ skill: Guild.Skill) {
+        let guild = guildState.guild
+        guard guild.canUpgrade(skill) else {
+            return
+        }
+
+        upgradeSkillLevel(skillID: skill.id)
+    }
+
+    /// Casts a guild skill on the player, the way the skill list does for a self skill. Emergency Call, Battle Orders,
+    /// Regeneration and Restoration all take the caster as the target; the server applies them to the guild.
+    func useGuildSkill(_ skill: Guild.Skill) {
+        guard guildState.guild.isInGuild, skill.isUsable else {
+            return
+        }
+
+        useSkill(skillID: skill.id, level: skill.level, onTarget: account.accountID)
+    }
+
     // MARK: - Packet Handling
+
+    private func handleGuildSkills(_ packet: PACKET_ZC_GUILD_SKILLINFO) {
+        let skills = packet.skillInfo.map(Guild.Skill.init(from:))
+        let raised = guildState.guild.apply(skills: skills, points: Int(packet.skillPoint))
+
+        for skill in raised {
+            addGuildMessage("\(guildSkillName(skill)) is now level \(skill.level).")
+        }
+    }
+
+    func guildSkillName(_ skill: Guild.Skill) -> String {
+        context.skillInfoTable.localizedSkillName(forSkillID: skill.id) ?? skill.name
+    }
 
     private func handleGuildBelonging(_ packet: PACKET_ZC_UPDATE_GDID) {
         let belonging = Guild.Belonging(
@@ -303,6 +339,20 @@ extension Guild.Info {
             masterCharacterID: UInt32(bitPattern: packet.masterGID),
             masterName: packet.masterName,
             castleName: packet.manageLand
+        )
+    }
+}
+
+extension Guild.Skill {
+    init(from data: GUILD_SKILLDATA) {
+        self.init(
+            id: Int(data.id),
+            name: data.name,
+            level: Int(data.level),
+            spCost: Int(data.sp),
+            range: Int(data.range2),
+            type: Int(data.inf),
+            isUpgradable: data.upFlag != 0
         )
     }
 }

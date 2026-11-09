@@ -75,6 +75,32 @@ struct Guild: Equatable, Sendable {
         }
     }
 
+    /// One entry of `ZC_GUILD_SKILLINFO`.
+    struct Skill: Identifiable, Equatable, Sendable {
+        /// `inf` bit of a skill the caster uses on itself, rAthena's `INF_SELF_SKILL`.
+        static let selfTypeFlag = 0x04
+
+        var id: Int
+        /// Aegis name, for example `GD_EMERGENCYCALL`.
+        var name: String
+        var level: Int
+        var spCost: Int
+        var range: Int
+        /// rAthena's `skill_get_inf`: 0 for a passive skill.
+        var type: Int
+        /// The server sets this for the guild master when the skill is below its maximum level.
+        var isUpgradable: Bool
+
+        var isPassive: Bool {
+            type == 0
+        }
+
+        /// Skills the guild master casts on the guild, for example Battle Orders and Emergency Call.
+        var isUsable: Bool {
+            level > 0 && type & Self.selfTypeFlag != 0
+        }
+    }
+
     struct Expulsion: Identifiable, Equatable, Sendable {
         var characterID: UInt32
         var name: String
@@ -142,6 +168,8 @@ struct Guild: Equatable, Sendable {
     private(set) var positions: [Position] = []
     private(set) var relations: [Relation] = []
     private(set) var expulsions: [Expulsion] = []
+    private(set) var skills: [Skill] = []
+    private(set) var skillPoints = 0
 
     var isInGuild: Bool {
         guildID != 0
@@ -314,6 +342,36 @@ struct Guild: Equatable, Sendable {
 
     mutating func apply(expulsions: [Expulsion]) {
         self.expulsions = expulsions
+    }
+
+    /// `ZC_GUILD_SKILLINFO`: the skill point count and every skill the guild can see, learned or not.
+    ///
+    /// Returns the skills whose level went up since the last list. The first list reports none.
+    @discardableResult
+    mutating func apply(skills: [Skill], points: Int) -> [Skill] {
+        let previous = self.skills
+        self.skills = skills
+        skillPoints = points
+
+        guard !previous.isEmpty else {
+            return []
+        }
+
+        return skills.filter { skill in
+            guard let before = previous.first(where: { $0.id == skill.id }) else {
+                return false
+            }
+            return skill.level > before.level
+        }
+    }
+
+    func skill(id: Int) -> Skill? {
+        skills.first(where: { $0.id == id })
+    }
+
+    /// Only the master spends guild skill points, and only on a skill the server marked as upgradable.
+    func canUpgrade(_ skill: Skill) -> Bool {
+        isMaster && skillPoints > 0 && skill.isUpgradable
     }
 
     /// `ZC_UPDATE_CHARSTAT`: a member logged in or out.

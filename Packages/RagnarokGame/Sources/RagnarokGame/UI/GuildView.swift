@@ -7,12 +7,14 @@
 
 import Foundation
 import RagnarokConstants
+import RagnarokResources
 import SwiftUI
 
 private enum GuildTab: CaseIterable {
     case info
     case members
     case positions
+    case skills
     case notice
 }
 
@@ -45,6 +47,8 @@ struct GuildView: View {
                                 Text(verbatim: "Members")
                             case .positions:
                                 Text(verbatim: "Positions")
+                            case .skills:
+                                Text(verbatim: "Skills")
                             case .notice:
                                 Text(verbatim: "Notice")
                             }
@@ -102,6 +106,8 @@ struct GuildView: View {
             }
         case .positions:
             GuildPositionsTab(guild: guild)
+        case .skills:
+            GuildSkillsTab(guild: guild)
         case .notice:
             GuildNoticeTab(guild: guild)
         }
@@ -466,6 +472,123 @@ private struct GuildPositionsTab: View {
             parts.append("Expel")
         }
         parts.append("Tax \(position.expRate)%")
+        return parts.joined(separator: " | ")
+    }
+}
+
+// MARK: - Skills
+
+private struct GuildSkillsTab: View {
+    var guild: Guild
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack {
+                Text(verbatim: "Skill points")
+                    .font(.game(size: 11))
+                    .foregroundStyle(Color.gameProminentLabel)
+
+                Text(verbatim: "\(guild.skillPoints)")
+                    .font(.game())
+                    .foregroundStyle(Color.gameLabel)
+
+                Spacer(minLength: 0)
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    if guild.skills.isEmpty {
+                        Text(verbatim: "No skill list yet.")
+                            .font(.game(size: 11))
+                            .foregroundStyle(Color.gameProminentLabel)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(8)
+                    }
+
+                    ForEach(guild.skills) { skill in
+                        GuildSkillRow(skill: skill, canUpgrade: guild.canUpgrade(skill), canUse: guild.isMaster)
+                    }
+                }
+            }
+            .background(Color(#colorLiteral(red: 0.9764705882, green: 0.9764705882, blue: 0.9764705882, alpha: 1)))
+        }
+    }
+}
+
+private struct GuildSkillRow: View {
+    var skill: Guild.Skill
+    var canUpgrade: Bool
+    var canUse: Bool
+
+    @Environment(GameContext.self) private var gameContext
+    @Environment(PlaySession.self) private var playSession
+
+    @State private var iconImage: Resources.Image?
+
+    var body: some View {
+        HStack(spacing: 6) {
+            ZStack {
+                if let iconImage {
+                    Image(decorative: iconImage.cgImage, scale: 1)
+                        .resizable()
+                        .interpolation(.none)
+                }
+            }
+            .frame(width: 24, height: 24)
+
+            VStack(alignment: .leading, spacing: 1) {
+                Text(verbatim: playSession.guildSkillName(skill))
+                    .font(.game())
+                    .foregroundStyle(Color.gameLabel)
+                    .lineLimit(1)
+
+                Text(verbatim: detail)
+                    .font(.game(size: 11))
+                    .foregroundStyle(Color.gameProminentLabel)
+                    .lineLimit(1)
+            }
+            .opacity(skill.level == 0 ? 0.5 : 1)
+
+            Spacer(minLength: 0)
+
+            if canUse && skill.isUsable {
+                Button {
+                    playSession.useGuildSkill(skill)
+                } label: {
+                    Text(verbatim: "Use")
+                }
+                .buttonStyle(.game)
+                .frame(width: 40, height: 18)
+            }
+
+            if canUpgrade {
+                Button {
+                    playSession.upgradeGuildSkill(skill)
+                } label: {
+                    Text(verbatim: "Lv Up")
+                }
+                .buttonStyle(.game)
+                .frame(width: 46, height: 18)
+            }
+        }
+        .padding(.leading, 8)
+        .padding(.trailing, 6)
+        .padding(.vertical, 3)
+        .task(id: skill.name) {
+            let path = ResourcePath.generateSkillIconImagePath(skillAegisName: skill.name)
+            iconImage = try? await gameContext.resourceManager.image(at: path, removesMagentaPixels: true)
+        }
+    }
+
+    private var detail: String {
+        var parts = ["Lv \(skill.level)"]
+        if skill.isPassive {
+            parts.append("Passive")
+        } else if skill.level > 0 {
+            parts.append("SP \(skill.spCost)")
+        }
         return parts.joined(separator: " | ")
     }
 }
