@@ -27,6 +27,7 @@ struct Options {
     var tradeTest = false
     var chatRoomTest = false
     var appraisalTest = false
+    var guildTest = false
     var route: [RouteStop] = []
     var maxReconnectBackoff: TimeInterval = 15
     var stageTimeout: TimeInterval = 120
@@ -74,6 +75,7 @@ struct Options {
       --trade-test            two clients (trade1, trade2) trade items and zeny; --json writes the result
       --chatroom-test         two clients (room1, room2) use chat rooms: create, join, talk, rename, expel, give, leave; --json writes the result
       --appraisal-test        item appraisal (Magnifier, Item Appraisal skill) and cart moves on one GM account
+      --guild-test            guild skills (list, level up, Battle Orders) and the guild emblem on one GM account
       -h, --help              this text
 
     """
@@ -178,6 +180,7 @@ struct Options {
             case "--trade-test": options.tradeTest = true
             case "--chatroom-test": options.chatRoomTest = true
             case "--appraisal-test": options.appraisalTest = true
+            case "--guild-test": options.guildTest = true
             case "-h", "--help":
                 print(usage)
                 exit(0)

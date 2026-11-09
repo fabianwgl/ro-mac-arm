@@ -168,6 +168,28 @@ then puts a cart on and off with `@cart` to check `canMoveToCart` and moves poti
 is used up by a cancel as well, so a run needs five. Right after a run the server may answer "still recognizes your
 last log-in"; wait about a minute before the next run.
 
+### Guild test
+
+```sh
+# once: an admin account (group_id 99, needed for @item, @guildlvup and @gvgon)
+docker exec ro-backend-db mariadb -uragnarok -pragnarok ragnarok -e \
+  "INSERT INTO login (userid, user_pass, sex, email, group_id, pincode) VALUES ('guild1','guild1','M','guild1@example.com',99,'');"
+
+Tools/ROProbe/.build/debug/ro-probe --guild-test --user guild1 --pass guild1 --char-name GuildTwo \
+  --json docs/port/probe-runs/guild-2026-11-09.json
+```
+
+One GM probe. A character without a guild gets an Emperium (`@item 714`) and founds "<character> Guild" through
+`PlaySession.createGuild`; a rerun keeps the guild of the last run and skips what it already has. Skills: it waits for
+`ZC_GUILD_SKILLINFO`, takes a skill point per level from `@guildlvup 1` and levels Official Guild Approval to 1, Guild
+Extension to 2 and Battle Orders to 1 through `PlaySession.upgradeGuildSkill`, the call the Skills tab makes. Battle
+Orders only shows up in the list once the other two are learned. It is then cast with `PlaySession.useGuildSkill` on
+the current map in guild war mode (`@gvgon`, switched off again after), and the check is its status on the master.
+Emblem: a generated 96 by 96 PNG with a transparent quarter goes through `PlaySession.changeGuildEmblem`; the server
+must count the emblem version up and send a 24 by 24 picture with that color and the transparency, first unasked and
+then again for a plain `CZ_REQ_GUILD_EMBLEM_IMG`. The color changes with the clock so a rerun never uploads the
+emblem the guild already has.
+
 ### Packet coverage (P0-10)
 
 ```sh

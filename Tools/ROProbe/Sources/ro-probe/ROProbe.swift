@@ -48,6 +48,10 @@ struct ROProbe {
             exit(await AppraisalScenario(options: options, resourceManager: resourceManager).run() ? 0 : 1)
         }
 
+        if options.guildTest {
+            exit(await GuildScenario(options: options, resourceManager: resourceManager).run() ? 0 : 1)
+        }
+
         if let role = options.vendingRole.flatMap(VendingScenario.Role.init(rawValue:)) {
             let scenario = VendingScenario(options: options, role: role, resourceManager: resourceManager)
             exit(await scenario.run() ? 0 : 1)

@@ -1,0 +1,323 @@
+{
+  "character" : "GuildTwo",
+  "checks" : [
+    {
+      "detail" : "GuildTwo Guild (2)",
+      "name" : "the character is the master of its guild",
+      "passed" : true
+    },
+    {
+      "detail" : "7 skills",
+      "name" : "the list has Official Guild Approval",
+      "passed" : true
+    },
+    {
+      "detail" : "Official Guild Approval, Strengthen Guardians, Guild Extension",
+      "name" : "skills have a display name",
+      "passed" : true
+    },
+    {
+      "detail" : "GD_APPROVAL",
+      "name" : "no level up is offered without skill points",
+      "passed" : true
+    },
+    {
+      "detail" : "points 1, upgradable true",
+      "name" : "the master may level up GD_APPROVAL",
+      "passed" : true
+    },
+    {
+      "detail" : "1 -> 0",
+      "name" : "the level up cost one skill point",
+      "passed" : true
+    },
+    {
+      "detail" : "Official Guild Approval",
+      "name" : "the level up is announced",
+      "passed" : true
+    },
+    {
+      "detail" : "GD_EXTENSION",
+      "name" : "no level up is offered without skill points",
+      "passed" : true
+    },
+    {
+      "detail" : "points 1, upgradable true",
+      "name" : "the master may level up GD_EXTENSION",
+      "passed" : true
+    },
+    {
+      "detail" : "1 -> 0",
+      "name" : "the level up cost one skill point",
+      "passed" : true
+    },
+    {
+      "detail" : "Guild Extension",
+      "name" : "the level up is announced",
+      "passed" : true
+    },
+    {
+      "detail" : "GD_EXTENSION",
+      "name" : "no level up is offered without skill points",
+      "passed" : true
+    },
+    {
+      "detail" : "points 1, upgradable true",
+      "name" : "the master may level up GD_EXTENSION",
+      "passed" : true
+    },
+    {
+      "detail" : "1 -> 0",
+      "name" : "the level up cost one skill point",
+      "passed" : true
+    },
+    {
+      "detail" : "Guild Extension",
+      "name" : "the level up is announced",
+      "passed" : true
+    },
+    {
+      "detail" : "GD_BATTLEORDER",
+      "name" : "no level up is offered without skill points",
+      "passed" : true
+    },
+    {
+      "detail" : "points 1, upgradable true",
+      "name" : "the master may level up GD_BATTLEORDER",
+      "passed" : true
+    },
+    {
+      "detail" : "1 -> 0",
+      "name" : "the level up cost one skill point",
+      "passed" : true
+    },
+    {
+      "detail" : "Battle Order",
+      "name" : "the level up is announced",
+      "passed" : true
+    },
+    {
+      "detail" : "level 1",
+      "name" : "GD_APPROVAL is at level 1 or above",
+      "passed" : true
+    },
+    {
+      "detail" : "level 2",
+      "name" : "GD_EXTENSION is at level 2 or above",
+      "passed" : true
+    },
+    {
+      "detail" : "level 1",
+      "name" : "GD_BATTLEORDER is at level 1 or above",
+      "passed" : true
+    },
+    {
+      "detail" : "type 4, level 1",
+      "name" : "Battle Orders is a skill the master can use",
+      "passed" : true
+    },
+    {
+      "detail" : "type 0",
+      "name" : "Official Guild Approval is passive and has no Use button",
+      "passed" : true
+    },
+    {
+      "detail" : "new",
+      "name" : "Battle Orders put its status on the master",
+      "passed" : true
+    },
+    {
+      "detail" : "0 -> 1",
+      "name" : "the server counted the emblem version up",
+      "passed" : true
+    },
+    {
+      "detail" : "24 x 24",
+      "name" : "the emblem the server sent after the upload is 24 by 24",
+      "passed" : true
+    },
+    {
+      "detail" : "[63, 48, 207, 255], uploaded [64, 48, 208]",
+      "name" : "the emblem the server sent after the upload has the uploaded color in the middle",
+      "passed" : true
+    },
+    {
+      "detail" : "[0, 0, 0, 0]",
+      "name" : "the emblem the server sent after the upload is transparent where the upload was",
+      "passed" : true
+    },
+    {
+      "detail" : "24 x 24",
+      "name" : "the emblem the server sent for a request is 24 by 24",
+      "passed" : true
+    },
+    {
+      "detail" : "[63, 48, 207, 255], uploaded [64, 48, 208]",
+      "name" : "the emblem the server sent for a request has the uploaded color in the middle",
+      "passed" : true
+    },
+    {
+      "detail" : "[0, 0, 0, 0]",
+      "name" : "the emblem the server sent for a request is transparent where the upload was",
+      "passed" : true
+    }
+  ],
+  "errors" : [
+
+  ],
+  "facts" : {
+    "battleOrdersActiveBefore" : false,
+    "chatMessages" : [
+      "rAthena Version Git Hash:  d4b8e7b8f16061cc2496d377ac8f777ce72a4f39",
+      "Welcome to rAthena! Enjoy! Please report any bugs you find.",
+      "You got Emperium (1).",
+      "Item created.",
+      "Guild has been created.",
+      "Guild level changed.",
+      "Official Guild Approval is now level 1.",
+      "Guild level changed.",
+      "Guild Extension is now level 1.",
+      "Guild level changed.",
+      "Guild Extension is now level 2.",
+      "Guild level changed.",
+      "Battle Order is now level 1.",
+      "GvG: On.",
+      "GvG: Off."
+    ],
+    "emblemColor" : [
+      64,
+      48,
+      208
+    ],
+    "emblemFileBytes" : 584,
+    "emblemVersionAfter" : 1,
+    "emblemVersionBefore" : 0,
+    "guildCreated" : true,
+    "guildID" : 2,
+    "guildName" : "GuildTwo Guild",
+    "skillPointsAtStart" : 0,
+    "skillsAtEnd" : [
+      "GD_APPROVAL 1",
+      "GD_KAFRACONTRACT 0",
+      "GD_GUARDRESEARCH 0",
+      "GD_GUARDUP 0",
+      "GD_EXTENSION 2",
+      "GD_GLORYGUILD 0",
+      "GD_LEADERSHIP 0",
+      "GD_GLORYWOUNDS 0",
+      "GD_BATTLEORDER 1",
+      "GD_DEVELOPMENT 0"
+    ],
+    "skillsAtStart" : [
+      "GD_APPROVAL 0",
+      "GD_GUARDUP 0",
+      "GD_EXTENSION 0",
+      "GD_GLORYGUILD 0",
+      "GD_LEADERSHIP 0",
+      "GD_GLORYWOUNDS 0",
+      "GD_DEVELOPMENT 0"
+    ]
+  },
+  "passed" : true,
+  "scenario" : "guild",
+  "seconds" : 7.2000000000000002,
+  "steps" : [
+    {
+      "step" : "login as guild1",
+      "t" : 0.20000000000000001
+    },
+    {
+      "step" : "create character GuildTwo",
+      "t" : 0.29999999999999999
+    },
+    {
+      "step" : "select character slot 1",
+      "t" : 0.40000000000000002
+    },
+    {
+      "step" : "on map iz_int.rsw",
+      "t" : 1.2
+    },
+    {
+      "step" : "get an Emperium and found a guild",
+      "t" : 3.2000000000000002
+    },
+    {
+      "step" : "chat: @item 714 1",
+      "t" : 3.2000000000000002
+    },
+    {
+      "step" : "ask for the guild window data",
+      "t" : 3.5
+    },
+    {
+      "step" : "raise the guild level for a skill point",
+      "t" : 3.5
+    },
+    {
+      "step" : "chat: @guildlvup 1",
+      "t" : 3.5
+    },
+    {
+      "step" : "level up GD_APPROVAL from 0",
+      "t" : 3.6000000000000001
+    },
+    {
+      "step" : "raise the guild level for a skill point",
+      "t" : 3.7000000000000002
+    },
+    {
+      "step" : "chat: @guildlvup 1",
+      "t" : 3.7000000000000002
+    },
+    {
+      "step" : "level up GD_EXTENSION from 0",
+      "t" : 3.7999999999999998
+    },
+    {
+      "step" : "raise the guild level for a skill point",
+      "t" : 3.8999999999999999
+    },
+    {
+      "step" : "chat: @guildlvup 1",
+      "t" : 3.8999999999999999
+    },
+    {
+      "step" : "level up GD_EXTENSION from 1",
+      "t" : 4
+    },
+    {
+      "step" : "raise the guild level for a skill point",
+      "t" : 4.0999999999999996
+    },
+    {
+      "step" : "chat: @guildlvup 1",
+      "t" : 4.0999999999999996
+    },
+    {
+      "step" : "level up GD_BATTLEORDER from 0",
+      "t" : 4.2000000000000002
+    },
+    {
+      "step" : "switch the map to guild war mode and use Battle Orders",
+      "t" : 4.2999999999999998
+    },
+    {
+      "step" : "chat: @gvgon",
+      "t" : 4.2999999999999998
+    },
+    {
+      "step" : "chat: @gvgoff",
+      "t" : 6
+    },
+    {
+      "step" : "upload an emblem",
+      "t" : 7
+    },
+    {
+      "step" : "forget the emblem and ask for it again",
+      "t" : 7.0999999999999996
+    }
+  ],
+  "user" : "guild1"
+}
