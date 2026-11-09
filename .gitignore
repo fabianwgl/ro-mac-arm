@@ -98,6 +98,8 @@ iOSInjectionProject/
 BGM/
 /data/
 /client-files/
+# Screenshots of the running game show Gravity art.
+/docs/port/gui-runs/
 
 # Fork: build and packaging output
 *.dmg

@@ -3,11 +3,11 @@
 Native Apple Silicon client for rAthena. Swift 6 and Metal. Fork of
 [arkadeleon/ragnarok-offline](https://github.com/arkadeleon/ragnarok-offline).
 
-Status: Phase 0-2 done and Phase 3 core in place (2026-11-06). The fork lives in
-this repository (upstream remote `upstream`); these plan documents moved to
-`docs/port/`. Evidence: [phase0-probe-report.md](phase0-probe-report.md),
-[packet-coverage.md](packet-coverage.md), [TASKS.md](TASKS.md) status section,
-[KNOWN_GAPS.md](KNOWN_GAPS.md).
+Status 2026-11-09: the core game loop is verified headless against a Docker
+rAthena; nobody has played the client yet. The direction was revised that day:
+solo play on this Mac against the embedded server, 1st and 2nd jobs, a thin
+fork that merges upstream weekly. Start with [PLAN.md](PLAN.md); the current
+work is Phase 7 in [TASKS.md](TASKS.md).
 
 ## Documents
 
@@ -16,21 +16,23 @@ this repository (upstream remote `upstream`); these plan documents moved to
 - [DOCKER.md](DOCKER.md): local rAthena test stack, ports, accounts, reset.
 - [TASKS.md](TASKS.md): phased checklist.
 - [RISKS.md](RISKS.md): risk register and mitigations.
+- [KNOWN_GAPS.md](KNOWN_GAPS.md): what works, what is missing, what is out of scope.
+- [COMPATIBILITY.md](COMPATIBILITY.md): client build against each server.
 - [RESEARCH.md](RESEARCH.md): prior art, kRO sources, and source facts.
 - [INSTALL.md](INSTALL.md), [RELEASING.md](RELEASING.md), [UPSTREAM_SYNC.md](UPSTREAM_SYNC.md), [patches.md](patches.md): install, release, sync, local divergences.
 
 ## Decisions
 
 - Base: `arkadeleon/ragnarok-offline`, GPL-3.0, Swift 6, Metal, PACKETVER 20211103.
-- Target: rAthena at the pinned commit below on a private server, macOS 15+,
-  arm64 only.
-- Test server: official rAthena Docker stack, pinned to commit
-  `d4b8e7b8f16061cc2496d377ac8f777ce72a4f39`, stock packet obfuscation (zero keys at 20211103, verified).
+- Audience: one player, this Mac. No friends server, no release.
+- Content: Novice, 1st and 2nd jobs.
+- Play server: the rAthena embedded in the app (`swift-rathena`), once gate G1
+  passes. Reference server for tests: the official rAthena Docker stack pinned
+  to `d4b8e7b8f16061cc2496d377ac8f777ce72a4f39`.
+- Upstream: merged weekly. Upstream owns single-player content; the fork owns
+  the macOS shell, the verification tools and fixes, and offers fixes back.
 - No Gravity assets in the repository. The user supplies kRO client files.
-- No App Store distribution. GPL-3.0 conflicts with App Store DRM terms.
-- Keep the upstream remote and rebase monthly. Do not rewrite working packages.
-- Estimate: 11-18 weeks solo full-time to a playable core, 20-33 weeks to a
-  signed v1.0 for one server.
+- macOS 15+, arm64 only.
 
 ## Why this base
 

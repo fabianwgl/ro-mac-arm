@@ -5,9 +5,11 @@ One page per tested client build. Copy
 the release and fill in every field. Add a row here for each release or
 development milestone.
 
-| Client build | rAthena commit | PACKETVER | Obfuscation | Known gaps |
-| --- | --- | --- | --- | --- |
-| `main` | `d4b8e7b8f16061cc2496d377ac8f777ce72a4f39` | 20211103 | stock (zero keys) | see KNOWN_GAPS.md |
+| Client build | Server | rAthena commit | PACKETVER | Obfuscation | Known gaps |
+| --- | --- | --- | --- | --- | --- |
+| `main` | Docker `ro-backend` (reference for the probe) | `d4b8e7b8f16061cc2496d377ac8f777ce72a4f39`, Renewal | 20211103 | stock (zero keys) | see KNOWN_GAPS.md |
+| `integrate-m2` | Docker `ro-backend` | same | 20211103 | stock (zero keys) | see KNOWN_GAPS.md |
+| not tested yet | Embedded `swift-rathena` at `eec09e4f` (what the player uses, TASKS.md P7-01) | base not recorded yet; last merge from rAthena 2026-09-08. Renewal and Pre-Renewal builds | 20211103 | not checked | not checked |
 
 Notes:
 

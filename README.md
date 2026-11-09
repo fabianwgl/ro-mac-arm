@@ -1,79 +1,85 @@
 # RO Mac Client
 
-A native macOS client for Ragnarok Online on Apple silicon, built for a private
-[rAthena](https://github.com/rathena/rathena) server. Swift 6, SwiftUI and Metal,
-arm64 only, macOS 15 or newer.
+A native macOS client for Ragnarok Online on Apple silicon, for playing alone
+on your own Mac. Swift 6, SwiftUI and Metal, arm64 only, macOS 15 or newer.
 
 This is a fork of [Ragnarok Offline](https://github.com/arkadeleon/ragnarok-offline)
-by Leon Li (GPL-3.0). Upstream is a toolkit with a built-in single-player server;
-this fork turns it into a game client for an external rAthena server and keeps
-upstream mergeable (`upstream` remote, monthly sync, local changes logged in
-[docs/port/patches.md](docs/port/patches.md)).
+by Leon Li (GPL-3.0). Upstream is a toolkit with a game client and a built-in
+[rAthena](https://github.com/rathena/rathena) server. The fork stays thin: it
+adds a Mac launcher, keyboard and controller input, preferences, tools that
+verify the client against a real rAthena, and the fixes those tools found. It
+merges upstream every week (`upstream` remote); changes to upstream's own files
+are logged in [docs/port/patches.md](docs/port/patches.md).
 
 No Gravity assets are included. You need your own kRO client files.
 
 ## Goal
 
-Play a private rAthena server (pinned commit `d4b8e7b8`, `PACKETVER 20211103`)
-from a native Mac app: log in, pick a character, enter maps, move, chat, fight,
-loot, use NPCs, manage gear, and stay connected for hours without protocol
-errors. Full kRO parity is not a goal. The target is the content this server
-actually enables. This is a local-only project for now: no App Store, no signed
-distribution.
+One person plays on one Mac: start the app, press Play, and take a Novice
+through the 1st and 2nd jobs. Walk, fight, loot, use skills and NPCs, manage
+gear. No Docker and no database to set up: the server is the rAthena built
+into the app.
+
+Not goals: multiplayer, 3rd jobs and later, a release for other people,
+official servers. This is a personal project.
 
 The full plan is in [docs/port/PLAN.md](docs/port/PLAN.md).
 
-## Status (2026-11-06)
+## Status (2026-11-09)
 
 | Milestone | State |
 | --- | --- |
 | M0 Build upstream, Docker rAthena login | Done |
 | M1 Log in to rAthena, walk, chat | Done |
-| M2 Playable core | In progress: core loop coded, per-item verification and a playtest left |
-| M3 Target-server content | About half of the enabled systems usable |
-| M4 v1.0 local build | Not started |
+| M2 Playable core, proven by a person | Verified headless. Not yet played by a person, and not yet run against the built-in server |
+| M3 Content for 1st and 2nd jobs | Skills cast and show numbers; 83 of 224 have their own effect |
+| M4 v1.0 | Frame rate, memory and start-up measured and inside the targets |
 
-What works today:
+What works today, against a stock rAthena in Docker:
 
 - **Account:** login (including pincode), character create, select and delete,
   and reconnect after a server restart.
 - **Movement:** walking, map changes, the hand-off between map servers, and
   warp portals.
-- **Chat:** public, whisper (`/w`), party (`%`) and guild (`$`).
-- **Core game from upstream:** combat, skills, inventory, equipment, NPC
-  dialogs, shops, storage and Kafra.
-- **Social:** party, friends, guild, quest log, RODEX mail, achievements and
-  attendance.
-- **Companions:** pet and homunculus windows.
-- **macOS:** keyboard controls with rebinding, sound and display preferences,
-  the saved password in the Keychain, crash detection and log export, and a
-  launcher window. The upstream tools (GRF browser, databases, viewers) sit
-  behind View > Developer Tools.
+- **Core game:** combat, experience, skills and ground skills, inventory,
+  equipment, loot, NPC dialogs, shops, storage and Kafra.
+- **Companions and quests:** pet and homunculus windows, quest log.
+- **macOS:** keyboard controls with rebinding, WASD, game controller, sound
+  and display preferences, the saved password in the Keychain, crash detection
+  and log export, and a launcher window. The upstream tools (GRF browser,
+  databases, viewers, the built-in server) sit behind View > Developer Tools.
+- **Built before the project became solo, kept but frozen:** chat channels,
+  party, friends, guild, trade, vending, buying stores, chat rooms, RODEX
+  mail, achievements and attendance.
 
 Proof:
 
 - A 60-minute session against stock rAthena with 0 disconnects and 0 unknown
   packets ([probe report](docs/port/phase0-probe-report.md)).
+- A scripted run of the core game loop, 66 of 66 checks
+  ([core verification](docs/port/probe-runs/core-verification.md)).
 - Golden packet tests compiled from the rAthena headers.
-- [Packet coverage](docs/port/packet-coverage.md).
+- [Packet coverage](docs/port/packet-coverage.md) and
+  [performance measurements](docs/port/perf.md).
 
-Open systems are listed in [docs/port/KNOWN_GAPS.md](docs/port/KNOWN_GAPS.md):
-trade, vending, refine and enchant, clan, chat rooms, mercenaries, navigation
-and others.
+All of that proof is headless: a probe drives the real game session without a
+window. What is missing is listed in
+[docs/port/KNOWN_GAPS.md](docs/port/KNOWN_GAPS.md).
 
 ## Next
 
-1. Finish M2:
-   - Verify every Phase 3 item against the local server.
-   - Do a GUI run of the real app with screenshots.
-   - Fix what turns up.
-   - Re-run the soak test.
-   - Then a one-hour playtest.
-2. Plan and build the remaining systems in KNOWN_GAPS.md, starting with
-   trade, vending, buying store, refine and enchant.
-3. Performance work: 120 fps, memory under 4 GB, cold start under 10 s.
+1. Run the built-in server in this fork and make Play start it.
+2. A scripted run of the real app with a screenshot of every window, then a
+   one-hour playtest by a person. No new features before that.
+3. Merge upstream weekly, get CI green, offer the fixes upstream.
+4. Then the gaps for 1st and 2nd jobs: job changes, visible statuses, the
+   cart window, skill effects.
 
 ## Run it
+
+These steps use the Docker server, which is what has been tested. Play
+against the built-in server is the plan but is not wired into the launcher
+yet.
 
 Requirements: an Apple silicon Mac, macOS 15+, Xcode 27, Docker Desktop, and
 the 2021-04-06 kRO full client.

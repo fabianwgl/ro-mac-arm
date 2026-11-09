@@ -1,272 +1,313 @@
 # Risk Register
 
-Scoring: likelihood and impact are low, medium, or high. Review at every
-milestone.
+Scoring: likelihood and impact are low, medium, or high. Review at every gate
+([PLAN.md](PLAN.md) section 6).
 
-## R1: Upstream assumes a bundled local server
+Reviewed 2026-11-09 with the change of direction (solo play, 1st and 2nd jobs,
+thin fork). The order below is by how much each risk matters now.
 
-Likelihood: medium. Impact: high.
+| Risk | Likelihood | Impact | State |
+| --- | --- | --- | --- |
+| R17 Nothing has been seen by a person | high | high | open, new |
+| R18 The work exists on one disk | medium | high | open, new |
+| R19 Building what upstream builds | high | medium | open, new |
+| R4 Upstream churn | high | medium | open, measured |
+| R11 Input and UI feel | high | medium | open, raised |
+| R20 Two servers, one set of evidence | medium | medium | open, new |
+| R12 Scope creep | medium | high | open, now bounded |
+| R21 CI lags the local toolchain | high | low | open, new |
+| R22 Frozen code rots | medium | low | open, new |
+| R3 UI and content gaps | medium | medium | open, narrowed |
+| R7 Swift 6 concurrency and memory bugs | medium | medium | open |
+| R10 GRF and format edge cases | low | medium | open |
+| R13 Upstream abandonment | low | high | open |
+| R6 Gravity assets and legal exposure | low | high | open, lower |
+| R9 Packet version drift | low | medium | open, lower |
+| R14 to R16 Docker stack | low | low | open, development only |
+| R1 Upstream assumes a bundled server | | | closed |
+| R2 Packet obfuscation | | | closed |
+| R5 GPL and distribution | | | dormant |
+| R8 Metal performance | | | closed for this Mac |
 
-`arkadeleon/ragnarok-offline` ships an embedded Swift rAthena server and a
-`ServerManager`. The game client screen does expose server address and port and
-passes them to `GameSession.Configuration`, so external mode looks present, but
-it is untested against a real rAthena process.
-
-Mitigation:
-
-- Phase 0 proves login to an external rAthena before any fork work.
-- If settings cannot reach an external host, patch the smallest possible layer.
-- Do not rewrite `RagnarokNetwork` unless P0 proves it cannot work.
-
-Trigger: no external connection after one week of Phase 0.
-
-## R2: Packet obfuscation
-
-Status 2026-11-06: closed for PACKETVER 20211103. rAthena uses zero keys after
-2018-03-07; the client works against stock rAthena (see DOCKER.md step 3).
-Reopen only if the target server changes to an obfuscated packet date.
+## R17: Nothing has been seen by a person
 
 Likelihood: high. Impact: high.
 
-Stock rAthena enables `PACKET_OBFUSCATION`. Upstream does not implement it.
+Every check so far is a unit test or a headless probe run. The probe calls the
+same entry points as the UI but draws nothing, so a window that is laid out
+wrong, an effect in the wrong place or controls that feel wrong pass every
+check. The first screenshot of the real window found a defect in one look.
+None of the windows the fork added has been on a screen in front of a person.
 
 Mitigation:
 
-- Disable it on the development server with `#undef PACKET_OBFUSCATION` in
-  `src/custom/defines_post.hpp`, then rebuild.
-- Document the requirement in the install guide.
-- Implement it before v1.0 if the target server must stay stock.
-- Add golden tests for obfuscated and plain packets.
+- Feature freeze until a person has played for an hour (gate G3).
+- A scripted GUI run with a screenshot per window before that (gate G2).
+- A feature is done at step 4 of the verification ladder, not at step 2.
 
-Trigger: client disconnects immediately after login on a stock server.
+Trigger: any new window or effect merged without a screenshot.
 
-## R3: UI and content gaps
+## R18: The work exists on one disk
+
+Likelihood: medium. Impact: high.
+
+Everything since PR #1 is local: one branch, not pushed, plus agent worktrees.
+One worktree held a finished commit that was not merged, with uncommitted
+work on top of it; it was found by accident.
+
+Mitigation:
+
+- Push after every merged piece of work.
+- One integration branch. An agent worktree is removed when its commits are
+  merged, after a check for uncommitted files.
+- The public or private question is settled first so pushing is not put off.
+
+Trigger: more than a day of commits not on `origin`.
+
+## R19: Building what upstream builds
 
 Likelihood: high. Impact: medium.
 
-Upstream may not cover every window, skill, or NPC flow used by the server.
+Upstream works toward the same solo game with a written list
+([ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md)): skill effects, cart, pets,
+quests, settings, then homunculus, refine and navigation. The fork has
+already built some of these its own way (66 skill effects, pet and
+homunculus windows, preferences, the quest log). When upstream ships its
+version, one of the two is thrown away and the merge is the price.
 
 Mitigation:
 
-- Scope v1.0 to the target server's enabled content.
-- Keep a known-gaps list from Phase 0.
-- Prefer server-side feature flags over client-side guesses.
+- The ownership table in PLAN.md section 4: single-player content is
+  upstream's.
+- What the fork already built in upstream's area is offered upstream early,
+  so there is one version.
+- At each weekly merge, read what upstream added and prefer it over the local
+  version (UPSTREAM_SYNC.md).
 
-Trigger: a required daily flow has no UI after Phase 3.
+Trigger: a weekly merge conflicts in a file where both sides added the same
+feature.
 
 ## R4: Upstream churn
 
 Likelihood: high. Impact: medium.
 
-Upstream is active and changes `RagnarokNetwork` and `RagnarokGame` often.
+Measured 2026-11-09: 16 commits in the last 7 days, 156 in 30, 437 in 90,
+most of them in `RagnarokGame`, where the fork changes 31 upstream files.
+The fork is 365 files and 68,000 lines away from upstream. A monthly merge
+would meet about 150 commits at once.
 
 Mitigation:
 
-- Monthly sync, small local patches, no long-lived forks of core files.
-- Contribute reusable fixes upstream when possible.
-- Keep a `patches/` note for every local divergence.
+- Weekly merge. Small conflicts often, not large ones rarely.
+- New code in new files; hooks in upstream files stay small.
+- Every modified upstream file is listed in [patches.md](patches.md).
+- Fixes go upstream so the patch list shrinks.
 
-Trigger: merge conflicts block work for more than two days.
+Trigger: a weekly merge takes more than half a day.
 
-## R5: GPL and distribution
+## R11: Input and UI feel
 
-Likelihood: high. Impact: high.
+Likelihood: high. Impact: medium.
 
-Upstream is GPL-3.0. App Store DRM is incompatible. Shipping binaries requires
-source distribution.
+The windows are upstream's: SwiftUI, fixed layout, round touch buttons for
+sit, attack and pick up, made for iOS and visionOS as much as for the Mac.
+The fork added keyboard bindings, WASD and a controller, but nobody has
+judged how it feels. A solo player with no server to keep them will stop
+playing a client that feels wrong.
 
 Mitigation:
 
-- Distribute outside the App Store.
-- Publish the exact source archive with every binary.
-- Keep attribution and license files in the app and DMG.
-- Do not copy GPL code into a differently licensed component.
+- The playtest decides, not the plan.
+- After it: one decision on the look of the windows (PLAN.md section 2).
+- Shell work (keyboard, mouse, window behavior) is the fork's own area and
+  comes before content.
 
-Trigger: any plan to ship through the App Store.
+Trigger: the playtest bug list is mostly about feel.
 
-## R6: Gravity assets and legal exposure
+## R20: Two servers, one set of evidence
+
+Likelihood: medium. Impact: medium.
+
+All protocol evidence is from the Docker rAthena at `d4b8e7b8`. The player
+will use the embedded `swift-rathena`, a different rAthena snapshot (last
+merged from rAthena in September 2026) with SQLite, another config and
+another command set. It has never been run in this fork.
+
+Mitigation:
+
+- Gate G1 before anything else depends on it.
+- COMPATIBILITY.md records both servers.
+- The packet structs come from upstream's generator, which reads rAthena
+  headers, so the client and the embedded server should agree; the fork's
+  hand-written packets (`PACKET_ZC_GUILD_EMBLEM_IMG_LEGACY` and others) are
+  the ones to recheck.
+
+Trigger: the probe passes on Docker and fails on the embedded server.
+
+## R12: Scope creep
 
 Likelihood: medium. Impact: high.
 
-The client reads proprietary data and speaks a proprietary protocol. Gravity may
-object to distribution.
+The old rule, "the content the target server enables", allowed everything,
+and work went into guilds, vending and mail for a player who turns out to be
+alone. The cap is now explicit: 1st and 2nd jobs, solo.
 
 Mitigation:
 
-- No assets in git or in the DMG.
-- Require the user to supply their own kRO client.
-- Keep the project non-commercial.
-- Respond quickly to takedown requests.
+- The non-goals list in PLAN.md section 3 and the frozen list in section 8.
+- Every new task names the line of the v1.0 definition it serves.
 
-Trigger: public release with assets or a commercial plan.
+Trigger: work starts on something in the non-goals or the frozen list.
+
+## R21: CI lags the local toolchain
+
+Likelihood: high. Impact: low.
+
+The developer Mac runs Xcode 27. The hosted runner has Xcode 26.6, where
+`swift test` for RagnarokGame does not compile (`#bundle` without a resource
+bundle). CI has been red since the first run and nothing has been pushed
+since 2026-11-06, so it guards nothing.
+
+Mitigation:
+
+- Run that package's tests through `xcodebuild test` on the runner (P7-08).
+- Until CI is green, the local test run before each merge is the only check;
+  say so in the merge.
+
+Trigger: a second package fails on the runner only.
+
+## R22: Frozen code rots
+
+Likelihood: medium. Impact: low.
+
+Half of the fork's source is multiplayer code no one will use. Each upstream
+merge can break it, and its tests are the only users.
+
+Mitigation:
+
+- Keep its unit tests in the normal test run.
+- Offer it upstream (P7-12). If upstream declines and it starts to cost merge
+  time, delete it; git keeps it.
+
+Trigger: a merge is blocked by a frozen file twice.
+
+## R3: UI and content gaps
+
+Likelihood: medium. Impact: medium.
+
+Inside the cap, known gaps are: 141 of 224 active skills without a skill
+specific effect, statuses that only show as an icon, no cart window, job
+changes not walked.
+
+Mitigation: PLAN.md section 5 says which of these v1.0 needs; P7-14 orders
+them; [KNOWN_GAPS.md](KNOWN_GAPS.md) marks each gap as in or out of scope.
+
+Trigger: the playtest cannot continue because of a missing window.
 
 ## R7: Swift 6 concurrency and memory bugs
 
 Likelihood: medium. Impact: medium.
 
-Network, asset loading, and rendering cross actor boundaries.
+Network, asset loading and rendering cross actor boundaries. The embedded
+server adds four servers in the app's own process.
 
 Mitigation:
 
 - Follow upstream patterns first.
 - Add actors only where a measured race exists.
-- Use thread sanitizer and address sanitizer in CI.
-- Keep the render loop free of allocation in steady state.
+- A thread sanitizer run of the package tests before v1.0.
 
-Trigger: intermittent crash or hang under load.
-
-## R8: Metal performance
-
-Likelihood: low. Impact: medium.
-
-RO is a 2002 workload. The GPU should be idle. The risk is frame spikes from
-asset decode and UI, not shader cost.
-
-Mitigation:
-
-- Profile before optimizing.
-- Cap caches by bytes.
-- Stream textures and models.
-- Use a fixed benchmark scene per release.
-
-Trigger: frame time above 8.3 ms on M1.
-
-## R9: Packet version drift
-
-Likelihood: medium. Impact: high.
-
-rAthena changes its default `PACKETVER` over time.
-
-Mitigation:
-
-- Pin the target server commit.
-- Keep `PACKET_VERSION` configurable.
-- Add support only when the target server changes.
-- Re-run golden tests after every rAthena update.
-
-Trigger: server update changes the default packet date.
+Trigger: intermittent crash or hang during play.
 
 ## R10: GRF and format edge cases
 
-Likelihood: medium. Impact: medium.
+Likelihood: low. Impact: medium.
 
-Encrypted GRFs, RSM2 models, custom effects, and malformed files can crash the
-client.
+One kRO data set is in use (2021-04-06) and loads. Upstream owns the format
+readers.
 
-Mitigation:
+Mitigation: fail closed with a visible error; report format bugs upstream.
 
-- Fail closed with a visible error, never crash.
-- Add fixture tests for encrypted and malformed files.
-- Keep a diagnostics window with the failing path.
-
-Trigger: a valid kRO client fails to load.
-
-## R11: Input and UI feel
-
-Likelihood: medium. Impact: low.
-
-A native client that feels wrong will not replace the Windows client for daily
-play.
-
-Mitigation:
-
-- Match keyboard defaults from kRO.
-- Support window layout and scale.
-- Test with a real player for one hour per milestone.
-
-Trigger: playtesters return to the Windows client for UI reasons.
-
-## R12: Scope creep
-
-Likelihood: high. Impact: high.
-
-Full kRO parity is a multi-year project.
-
-Mitigation:
-
-- v1.0 is defined by the target server's content, not by kRO.
-- Every new feature needs a server-side use case.
-- Keep the non-goals list visible in `PLAN.md`.
-
-Trigger: work starts on a system the target server does not enable.
+Trigger: a file the client needs fails to load.
 
 ## R13: Upstream abandonment
 
-Likelihood: medium. Impact: high.
+Likelihood: low. Impact: high.
 
-The project depends on one active upstream maintainer.
-
-Mitigation:
-
-- Keep the fork buildable at all times.
-- Mirror releases and source archives.
-- Document every local patch so the fork can continue alone.
-
-Trigger: upstream has no commits for three months.
-
-## R14: Docker stack drift and host port conflicts
-
-Likelihood: medium. Impact: low.
-
-The official rAthena Docker files and `sql-files` change with `master`. Port 3306
-may already be taken by a local MySQL or MariaDB. A stale database volume keeps
-an old schema after `sql-files` changes.
+The thin-fork strategy leans on one maintainer. Today that maintainer is the
+most active part of the project.
 
 Mitigation:
 
-- Pin the rAthena commit and record it in the compatibility manifest.
-- Check port 3306 before starting; move the host side to 3307 if needed.
-- Reset with `docker compose down --volumes` after schema changes.
-- Treat the stack as development-only; never expose it to the internet.
+- The fork builds on its own at every commit.
+- If upstream stops, the ownership table is dropped and the fork builds what
+  it needs.
 
-Trigger: the stack fails to start, or the schema does not match the pinned code.
+Trigger: no upstream commits for a month.
 
-## R15: Docker architecture mismatch
+## R6: Gravity assets and legal exposure
+
+Likelihood: low. Impact: high.
+
+No release is planned, which removes most of this. What remains: the
+repository is public, so nothing derived from Gravity files may be committed.
+Screenshots of the game count.
+
+Mitigation:
+
+- `.gitignore` covers client files and the GUI run folder.
+- The name tables in the tree are generated from rAthena's YAML, not from
+  kRO files ([localization.md](localization.md)).
+
+Trigger: a commit contains a game screenshot or an extracted asset.
+
+## R9: Packet version drift
+
+Likelihood: low. Impact: medium.
+
+Both servers are at PACKETVER 20211103 and both are pinned: the Docker stack
+by commit, the embedded one by submodule.
+
+Mitigation: rerun the golden tests when either pin moves.
+
+Trigger: an upstream merge moves the `swift-rathena` submodule.
+
+## R14 to R16: Docker stack
 
 Likelihood: low. Impact: low.
 
-An x86 image under emulation would be slow and may fail to compile.
+Port conflicts, architecture mismatch and stale database volumes. The stack
+is a development reference now and the player does not need it. Fixes are in
+[DOCKER.md](DOCKER.md): check port 3306, check the image is `arm64`, reset
+with `docker compose down --volumes`.
 
-Mitigation:
+## Closed or dormant
 
-- Use Docker Desktop for Apple Silicon.
-- Check `docker image inspect ... --format '{{.Architecture}}'` prints `arm64`.
-- Rebuild with `docker compose build --no-cache` if it does not.
-
-Trigger: build times are extreme or the builder crashes with an exec format
-error.
-
-## R16: Stale Docker database volume
-
-Likelihood: medium. Impact: low.
-
-MariaDB imports `sql-files` only when the volume is empty. Schema changes or a
-failed import leave the stack on old tables.
-
-Mitigation:
-
-- Inspect `docker compose logs db` after the first start.
-- Reset with `docker compose down --volumes` and start `db` again.
-- Keep test data disposable.
-
-Trigger: missing tables, login failures after a server update, or SQL import
-errors in the db log.
+- **R1 Upstream assumes a bundled local server.** Closed. The external server
+  path works (Phases 0 to 3). The bundled server is now wanted, not feared.
+- **R2 Packet obfuscation.** Closed for PACKETVER 20211103: rAthena's keys
+  are zero after 2018-03-07 and the client works against a stock server.
+- **R5 GPL and distribution.** Dormant. Nothing is distributed. The source is
+  public under GPL-3.0 already. Returns if a binary is ever handed to someone.
+- **R8 Metal performance.** Closed for this Mac: 143.9 fps at 2560x1440 on a
+  144 Hz display, GPU time 2 to 3 ms on average ([perf.md](perf.md)). The M1 target of
+  the original plan was never measured and no longer applies.
 
 ## Assumptions
 
-- The target server stays on `PACKETVER 20211103` for the first release.
-- Upstream remains GPL-3.0 and keeps the current package split.
-- External server mode works or needs only a thin patch.
-- Docker Desktop works on the development Mac with arm64 images.
-- The developer has Swift and Metal experience.
-- The user has the legal 2021 kRO archive at
-  `~/Downloads/kRO_FullClient_20210406.zip`.
+- One player, this Mac, no release.
+- The embedded server works in the fork's build (unproven, gate G1).
+- Upstream stays GPL-3.0, active, and keeps the current package split.
+- Upstream accepts at least the bug fixes. If it accepts nothing, the fork
+  carries its patches and R4 gets worse.
+- The kRO 2021-04-06 data stays the data set.
 
 ## Kill criteria
 
-- P0 cannot connect to an external server and the fix requires a network rewrite.
-  Reassess and consider `Korangar` as the base.
-- Packet obfuscation cannot be implemented within Phase 2 and the server cannot
-  disable it. Stop and re-plan.
-- Upstream relicenses or becomes closed. Freeze the current fork and maintain it
-  internally.
+- The playtest shows the client is not something the developer wants to play
+  and the reasons are upstream's design (windows, controls), not bugs. Then
+  stop feature work and either wait for upstream or reconsider the base.
+- Weekly merges cost more than the fork's own work for a month. Then cut the
+  frozen systems, and if that is not enough, reduce the fork to the shell and
+  the tools.
+- Upstream relicenses or goes closed. Freeze at the last GPL commit.

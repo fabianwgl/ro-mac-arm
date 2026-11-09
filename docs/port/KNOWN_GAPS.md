@@ -1,9 +1,38 @@
 # Known gaps
 
-Release-notes list for RO Mac Client against rAthena `d4b8e7b8`, PACKETVER
-20211103 (plan task P4-10). Scope is the content the target server enables
-([server-content.md](server-content.md)), not full kRO parity. The detailed
-per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
+What the client does and does not do against rAthena `d4b8e7b8` (Docker),
+PACKETVER 20211103. Everything below was checked on the Docker server; the
+embedded server the player will use has not been tried yet (TASKS.md P7-01).
+The detailed per-packet backlog is upstream's
+[ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
+
+## Scope after 2026-11-09
+
+v1.0 is solo play with 1st and 2nd jobs ([PLAN.md](PLAN.md) sections 2 and 5).
+That sorts the gaps in the table further down into three groups.
+
+**Needed for v1.0.** Owner per the split in PLAN.md section 4.
+
+| Gap | Owner | Task |
+| --- | --- | --- |
+| Statuses the player cannot see: stone, freeze, stun, poison, curse and the buffs of the 1st and 2nd jobs show at most an icon | upstream (status icons are on its list); fork after gate G3 if still missing | P7-14b |
+| No cart window: a Merchant can only move cart items through the vending set up window | upstream (cart is on its list); fork after G3 if still missing | P7-14c |
+| Job changes have never been walked through the job NPCs | fork (verification) | P7-14a |
+| 141 of 224 active skills have no skill specific effect; 42 of 45 ground unit skills draw nothing, Warp Portal and Safety Wall among them ([skill-effects.md](skill-effects.md)) | upstream; wanted, not required | P7-14d |
+| The status window and the window's close, minimize and zoom buttons overlap | fork (shell) | P7-05 |
+| Window positions are not remembered | fork (shell) | after G3 |
+| 384 skills have no English description and show the Aegis name; 203 of 1,265 maps show the file name | fork (generated tables) | after G3 |
+
+**Inside the cap but not needed for v1.0.** Upstream's to build: homunculus
+skill upgrade and orders (Alchemist), pet taming and evolution, refine,
+navigation, the one-click identify packet, refine and slot suffixes in item
+names.
+
+**Out of scope.** Frozen or never to be built here: every guild, mail, chat
+room, vending and buying store gap except the cart window, clan, bank, cash
+shop, battlegrounds, reputation, character rename and slot move, achievement
+titles, attendance, mercenaries, enchant, item reform, Laphine, stylist,
+roulette.
 
 ## Works
 
@@ -61,7 +90,10 @@ per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
   display preferences, saved password in the Keychain, crash marker and log
   export, launcher.
 
-## Gaps on the target server
+## Gaps on the Docker server
+
+The full list, as it stood before the scope was cut. "Server state" is the
+stock rAthena configuration.
 
 | Area | Server state | Client state |
 | --- | --- | --- |

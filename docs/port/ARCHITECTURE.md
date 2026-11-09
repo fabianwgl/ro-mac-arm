@@ -3,8 +3,9 @@
 ## 1. Shape
 
 Fork of `arkadeleon/ragnarok-offline`. Keep the upstream package split. Add a
-thin macOS application layer, protocol compatibility work, and release tooling.
-Do not rewrite working packages.
+thin macOS application layer, verification tools and fixes. Do not rewrite
+working packages, and do not build what upstream is building
+([PLAN.md](PLAN.md) section 4).
 
 ```
 RagnarokOffline.app (SwiftUI + AppKit shell)
@@ -69,10 +70,9 @@ thread.
 - Add a runtime override for testing other dates. Do not scatter date checks.
 - Packet structs must match rAthena `src/map/packets_struct.hpp` and the packet
   tables for the selected date.
-- Stock rAthena enables `PACKET_OBFUSCATION`. The client must either implement it
-  or require the server to disable it. For development, the Docker stack adds
-  `#undef PACKET_OBFUSCATION` to `src/custom/defines_post.hpp` and rebuilds.
-  v1.0 decides based on the target server.
+- Stock rAthena compiles `PACKET_OBFUSCATION` in, but its keys are zero at
+  PACKETVER 20211103, so the client needs no support for it. Verified on a
+  stock server.
 - Add an unknown-packet path that logs opcode, length, and payload, and never
   crashes on a short or long packet.
 - Handle fragmented and coalesced TCP reads explicitly. Do not assume one read
@@ -131,18 +131,22 @@ handling are more likely to limit frame time.
 - Integration test: Docker rAthena + MariaDB, client logs in and walks. Run it
   locally or on a self-hosted Mac runner; GitHub-hosted macOS runners cannot run
   Docker.
-- UI smoke test with XCUITest if the app is scriptable.
+- GUI smoke run: a script launches the app with the debug auto login
+  (`RO_AUTOLOGIN_*`), opens each core window and saves a screenshot of the
+  game window (`screencapture -l`). Planned as `scripts/gui-smoke.sh`
+  (TASKS.md P7-04). Screenshots are not committed.
+- A person plays. No test replaces this (PLAN.md section 4, verification
+  ladder).
 - Performance test scene: Prontera, Geffen, and one effect-heavy map.
 
 ## 8. CI and release
 
-- GitHub Actions `macos-26` (Xcode 27), arm64, Xcode current.
-- Build all packages, run unit tests, run the packet golden tests.
+- GitHub Actions `macos-26`, arm64. The runner's newest Xcode was 26.6 on
+  2026-11-06, one major version behind the developer Mac (Xcode 27).
+- Build the app, run the package tests and the packet golden tests.
 - Cache Swift packages and DerivedData.
-- Release job: archive, sign with Developer ID, notarize, staple, create DMG,
-  publish checksum and GPL source archive.
-- Keep a compatibility manifest in the DMG: client version, rAthena commit,
-  `PACKETVER`, obfuscation state.
+- No release job: nothing is distributed. `scripts/release.sh` builds a DMG
+  locally if one is ever wanted.
 
 ## 9. Performance targets
 
@@ -155,13 +159,27 @@ handling are more likely to limit frame time.
 | Login to map | under 15 s on LAN |
 | Input latency | under 100 ms |
 
-Measure with Xcode Instruments, Metal System Trace, and a fixed replay scene.
-Record results per release so regressions are visible.
+These were set for an M1 on a ProMotion panel. Measured on the developer Mac
+(M4, 144 Hz, 2560x1440) with `scripts/perf-run.sh`: 143.9 fps, 6.95 ms, peak
+RSS under 600 MB, 1.1 to 2.8 s from process start to the first map frame
+([perf.md](perf.md)). Login to map and input latency were not measured on
+their own.
 
-## 10. Local test stack
+## 10. Servers
 
-Phase 0 does not depend on the embedded Swift server. It uses the official
-rAthena Docker stack as an external server.
+Two rAthena servers, for two purposes.
+
+**Embedded (`swift-rathena` submodule): the play server.** Upstream compiles
+rAthena's login, char, map and web servers into the app and runs them in its
+process, with SQLite save data under the app's Library folder and both a
+Renewal and a Pre-Renewal build. `RagnarokOffline/Server/ServerManager.swift`
+starts them; in the fork that screen is behind View > Developer Tools until
+the launcher starts the servers itself (TASKS.md P7-02). Not yet run in the
+fork (P7-01).
+
+**Docker (`ro-backend`): the reference server.** Stock rAthena at a pinned
+commit with MariaDB. The headless probe and the two-client scenarios run
+against it. Development only.
 
 ```
 Client (macOS, arm64)
@@ -183,7 +201,8 @@ Docker Desktop network
   to the Mac LAN IP.
 - The stack is pinned to one rAthena commit. The client must record that commit,
   the packet date, and the obfuscation state in its compatibility manifest.
-- The embedded Swift server stays available as a reference and fallback, but it
-  is not the integration target.
+- The two servers are different rAthena snapshots with different configs
+  (the embedded one gives every account a set of GM commands, allows registration and
+  has no pincode). [COMPATIBILITY.md](COMPATIBILITY.md) records both.
 
 Full setup and reset commands are in [DOCKER.md](DOCKER.md).

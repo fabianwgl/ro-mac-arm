@@ -1,7 +1,13 @@
 # Local Patches
 
-Every divergence from `arkadeleon/ragnarok-offline` is listed here. See
+Changes the fork made inside upstream's own files, with the reason. See
 [UPSTREAM_SYNC.md](UPSTREAM_SYNC.md) for the sync procedure.
+
+This table is incomplete: 69 upstream files are modified and the rows below
+cover the ones that change upstream's behavior. The full list is
+`git diff --diff-filter=M --numstat upstream/master...HEAD`; bringing this
+table up to it is TASKS.md P7-10. Files the fork added (295 of them) are not
+listed: they do not conflict.
 
 | File or area | Reason | Upstreamable? |
 | --- | --- | --- |

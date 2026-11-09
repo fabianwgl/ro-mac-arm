@@ -3,13 +3,18 @@
 Checklist for the port. IDs are stable; add new work at the end of the matching
 phase. Mark a task done only when its acceptance check passes.
 
+The direction changed on 2026-11-09 ([PLAN.md](PLAN.md) section 2): solo play
+on this Mac, 1st and 2nd jobs, a thin fork. **Phase 7 is the current work, in
+the order of PLAN.md section 7.** Phases 0 to 6 are the record of the original
+plan; their open tasks carry a note saying what happens to them.
+
 ## Phase 0: Validation
 
 - [x] P0-01 Install the Xcode Metal Toolchain, clone upstream with submodules,
   and build on macOS 27 arm64 with current Xcode.
 - [x] P0-02 Extract `~/Downloads/kRO_FullClient_20210406.zip` and copy `data.grf`
   and `BGM` into the app's Local Client Files directory.
-- [ ] P0-03 Start the embedded local server and log in as a baseline.
+- [ ] P0-03 (reopened as P7-01: the embedded server is now the play path) Start the embedded local server and log in as a baseline.
 - [x] P0-04 Confirm `GameClientView` exposes `serverAddress` and `serverPort` and
   passes them to `GameSession.Configuration`.
 - [x] P0-05 Create a Docker test stack: rAthena master + MariaDB. See
@@ -46,7 +51,7 @@ Acceptance: character spawns on the rAthena map and plays for 10 minutes.
 - [x] P1-04 Add `upstream` remote and document the sync procedure.
 - [x] P1-05 Add a minimal `NOTICE` file for upstream and third-party code.
 - [x] P1-06 (on `macos-26`: no macOS 15 image has the toolchain upstream needs) Add GitHub Actions build on `macos-15`, arm64, with submodules.
-- [ ] P1-07 (job written; RagnarokGame does not compile on the runner's Xcode 26.6, the other ten packages pass) Add unit test job and cache Swift packages.
+- [ ] P1-07 (continues as P7-08; job written; RagnarokGame does not compile on the runner's Xcode 26.6, the other ten packages pass) Add unit test job and cache Swift packages.
 - [x] P1-08 Add an asset provisioning script that copies `data.grf` and `BGM`
   into the sandbox Documents directory and validates both.
 - [x] P1-09 Add `.gitignore` rules for client assets and build output.
@@ -93,7 +98,7 @@ Acceptance: 60 minute session, no blocking unknown packet.
 - [x] P3-12 Settings, keybinds, and window layout persistence.
 - [x] P3-13 Audio: BGM and sound effects.
 - [x] P3-14 Crash handling and local logs.
-- [ ] P3-15 One hour playtest with a written bug list.
+- [ ] P3-15 (gate G3; after P7-01 to P7-05) One hour playtest with a written bug list.
 
 Evidence for P3-02 and P3-05..P3-13: headless `ro-probe --scenario core`, see
 [core-verification.md](probe-runs/core-verification.md).
@@ -103,7 +108,7 @@ Acceptance: one hour of normal play with no blocking bug.
 ## Phase 4: Content
 
 - [x] P4-01 List the target server's enabled jobs, maps, and systems.
-- [ ] P4-02 Implement skills and effects for enabled jobs.
+- [ ] P4-02 (scope is now the 1st and 2nd jobs; effects are upstream's to build, see P7-14) Implement skills and effects for enabled jobs.
 - [x] P4-03 (names from the server YAML as a generated snapshot; the kRO lub
   files are Korean only and not needed, see [localization.md](localization.md))
   Load item and skill DBs from the server's YAML and SQL tables and
@@ -120,9 +125,9 @@ Acceptance: target server's daily content usable; gaps documented.
 
 ## Phase 5: Performance and release
 
-- [ ] P5-01 Capture Metal frames on M1 for Prontera, Geffen, and an effect map.
-- [ ] P5-02 Fix asset decode stalls and frame spikes.
-- [ ] P5-03 Tune command buffers, state changes, and argument buffers.
+- [ ] P5-01 (only for a spike seen while playing; no M1 is available, the developer Mac is an M4) Capture Metal frames on M1 for Prontera, Geffen, and an effect map.
+- [ ] P5-02 (only for a spike seen while playing) Fix asset decode stalls and frame spikes.
+- [ ] P5-03 (not planned: frame times are inside the target without it) Tune command buffers, state changes, and argument buffers.
 - [x] P5-04 (M4, 144 Hz, 2560x1440: 143.9 fps after the refresh rate fix; see [perf.md](perf.md)) Verify 120 fps target and record results.
 - [x] P5-05 (peak RSS 418 to 557 MB) Measure RSS with full kRO data; target under 4 GB.
 - [x] P5-06 (1.1 to 2.8 s process start to first map frame) Measure cold start; target under 10 seconds.
@@ -138,20 +143,115 @@ Acceptance: local build meets the performance targets on the developer Mac. Sign
 
 ## Phase 6: Maintenance
 
-- [ ] P6-01 Monthly upstream sync. (Last check 2026-11-08: no upstream commits since the fork point `fe04817b`.)
+- [ ] P6-01 (weekly now, see P7-09. Checked 2026-11-09: upstream is 3 commits past the fork point `fe04817b`) Monthly upstream sync.
 - [ ] P6-02 Re-run packet golden tests after every rAthena update.
 - [ ] P6-03 Track rAthena default `PACKETVER`.
 - [ ] P6-04 Keep the compatibility table current.
 - [ ] P6-05 Triage crash reports and protocol regressions.
 
+## Phase 7: Solo play on a thin fork (2026-11-09)
+
+In working order. Feature work is frozen until gate G3 (P3-15).
+
+Safety:
+
+- [ ] P7-07 Push `integrate-m2` to `origin` and open a pull request into
+  `main`. From then on push after every merged piece of work. `origin`
+  (`fabianwgl/ro-mac-arm`) is a public repository, so a push publishes; decide
+  first whether it stays public (PLAN.md section 2).
+- [ ] P7-13 Remove the agent worktrees and branches whose commits are in
+  `integrate-m2` (`git cherry` shows them as applied), and the two
+  `backup/*-before-rewrite` branches once the push is confirmed. Check each
+  worktree for uncommitted files first: one held the guild emblem work.
+
+Gate G1, embedded baseline:
+
+- [ ] P7-01 In the fork's build, start the embedded rAthena (Developer Tools,
+  Server), create an account and a character, enter a map. Then run the probe
+  against it (`--host 127.0.0.1` while the app is open): the 10-minute walk,
+  chat and attack run, and as much of the core scenario as the embedded
+  server's command set allows (its group 0 has `@item`, `@jobchange`,
+  `@monster` and `@zeny` but not every command the scenario uses). Record
+  in [COMPATIBILITY.md](COMPATIBILITY.md): the rAthena base of `swift-rathena`,
+  Renewal or Pre-Renewal, and how its config differs from the Docker stack
+  (group 0 has GM commands, `new_account: yes`, no pincode).
+
+Play path:
+
+- [ ] P7-02 Launcher: Play starts the embedded servers, waits until they
+  accept connections and opens the login. The server address and port move to
+  an advanced section and keep working for the Docker stack.
+- [ ] P7-03 Decide Renewal or Pre-Renewal for play after trying both for a few
+  minutes each. Record it in COMPATIBILITY.md. If Pre-Renewal: regenerate the
+  name tables from `db/pre-re` (`scripts/gen-server-names.py`) and rerun the
+  skill audit against `db/pre-re`.
+
+Gate G2, GUI smoke:
+
+- [ ] P7-04 `scripts/gui-smoke.sh`: launch the app with `RO_AUTOLOGIN_*`,
+  capture the game window (`screencapture -l <window id>`), open each core
+  window in turn (inventory, equipment, skills, status, options through their
+  key bindings; an NPC dialog, a shop and storage through `RO_AUTOLOGIN_CMD`
+  and clicks) and capture each. Screenshots go to `docs/port/gui-runs/<date>/`,
+  which is gitignored: they show Gravity art and the repository is public.
+- [ ] P7-05 Look at every screenshot and fix what is wrong. Known from the
+  first capture: the status window and the window's close, minimize and zoom
+  buttons overlap.
+
+Gate G3 is P3-15.
+
+Upstream:
+
+- [ ] P7-08 Make the RagnarokGame test job pass on CI (was P1-07). First try
+  `xcodebuild test` for that package instead of `swift test`: the app build
+  already compiles the same sources on the runner.
+- [ ] P7-09 First weekly merge of `upstream/master`
+  ([UPSTREAM_SYNC.md](UPSTREAM_SYNC.md)). Three commits, one conflict in a
+  trial merge: the display name line in `project.pbxproj`, keep the fork's
+  side.
+- [ ] P7-10 [patches.md](patches.md) lists every modified upstream file with a
+  reason, generated from `git diff --diff-filter=M --numstat
+  upstream/master...HEAD` and checked by hand. 69 files today, 7 rows.
+- [ ] P7-11 Offer the fixes upstream, one pull request each, smallest first:
+  the `RANKLIST` generator bug, the eight packets without a length, the friend
+  reply size, the account id read on a short TCP read, the keepalive that
+  shares a TCP read with `CZ_ENTER`, the 6-character login minimum, the 60 fps
+  cap, NPC dialogs staying open after a map change. Each needs the developer's
+  go before it is opened: it is a public pull request under the developer's
+  account. `origin` is not a GitHub fork of upstream, so this also needs a
+  real fork of `arkadeleon/ragnarok-offline` to push the branches to.
+- [ ] P7-12 Ask upstream whether it wants the multiplayer systems (PLAN.md
+  section 8) and the probe. If yes, split them into reviewable pull requests.
+  If no, they stay frozen here.
+
+Content inside the cap, after G3:
+
+- [ ] P7-14 Close the v1.0 gaps in PLAN.md section 5, in this order and only
+  where upstream has not done it (ownership rule, PLAN.md section 4):
+  - [ ] P7-14a Job change walk-through: a Novice to each of the six 1st jobs
+    through the job NPCs; each 2nd job with a character raised by commands.
+    Probe scenario first, then by hand.
+  - [ ] P7-14b Statuses the player cannot see: the option bits already stored
+    on the object (stone, freeze, stun, poison, curse) and the buffs of the
+    1st and 2nd jobs ([skill-effects.md](skill-effects.md) gap 2).
+  - [ ] P7-14c Cart window for the Merchant.
+  - [ ] P7-14d Remaining skill effects of the 1st and 2nd jobs, ground units
+    first (Warp Portal, Safety Wall, traps), from the audit.
+
 ## Backlog
+
+Not planned. Kept so the ideas are not lost.
 
 - [ ] Implement `PACKET_OBFUSCATION` if the target server needs it.
 - [ ] Add a packet editor or inspector window.
-- [ ] Add a map viewer mode.
-- [ ] Add a character simulator mode.
 - [ ] Add a benchmarking scene.
-- [ ] Add multi-client support for local testing.
+- [ ] Multiplayer work that was next before 2026-11-09: guild position editing
+  and alliances, clan, battlegrounds, search store, NPC chat rooms, mercenary
+  window, refine and enchant windows (upstream ranks refine as its own work).
+
+Dropped: a map viewer mode and a character simulator mode (upstream has
+both), multi-client support for local testing (the probe does it).
+
 
 ## Status 2026-11-09
 
@@ -160,18 +260,19 @@ Evidence: [phase0-probe-report.md](phase0-probe-report.md), [packet-coverage.md]
 [skill-effects.md](skill-effects.md), [KNOWN_GAPS.md](KNOWN_GAPS.md), package tests (`swift test` per package) and the
 golden suite (`Packages/RagnarokPackets/Tests/RagnarokPacketsTests/GoldenPacketTests.swift`).
 
-Open, with the reason:
+Nothing in Phase 7 is started. Open tasks of the earlier phases, with the reason:
 
-- P0-03 embedded-server baseline: skipped; the external Docker server is the target and works.
+- P0-03 embedded-server baseline: skipped in Phase 0 because the Docker server was the target. It is the play path
+  now, so it is the first gate (P7-01).
 - P1-07 CI unit tests: the last run (2026-11-06, `main`) built the app and passed ten test jobs. RagnarokGame fails to
   compile there: `#bundle` in the UI sources finds no resource bundle under `swift test` with Xcode 26.6. It compiles
   and passes with Xcode 27 locally. Nothing has been pushed since, so CI has not seen the later work.
 - P3-15 one-hour playtest: needs a person at the app. Everything in Phase 3 is verified headless only.
 - P4-02 skills and effects: 83 of the 224 active 1st and 2nd job skills have a skill specific effect, 3 of 45 ground
-  unit skills are drawn, 2 of 89 statuses show more than an icon.
-- P5-01..P5-03 GPU capture, decode stalls, command buffer tuning: not started; the measured frame times are inside
-  the target without them.
-- P5-07 Retina, fullscreen, window restore, display change: not checked.
-- P5-09..P5-12 signing, notarization, DMG, source archive: deferred; `scripts/release.sh` works unnotarized.
+  unit skills are drawn, 2 of 89 statuses show more than an icon. Upstream's to build under the split; see P7-14.
+- P5-01..P5-03 GPU capture, decode stalls, command buffer tuning: not started and not planned unless play shows a
+  spike; the measured frame times are inside the target without them.
+- P5-07 Retina, fullscreen, window restore, display change: not checked; part of the GUI smoke run and the playtest.
+- P5-09..P5-12 signing, notarization, DMG, source archive: a non-goal now; `scripts/release.sh` works unnotarized.
 - Attendance needs a server-side period in `db/import/attendance.yml`; the `openmail` NPC is broken server-side at this
-  PACKETVER (menu and `@mail` work).
+  PACKETVER (menu and `@mail` work). Both are frozen systems.
