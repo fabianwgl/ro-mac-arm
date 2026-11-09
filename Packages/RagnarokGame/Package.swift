@@ -18,6 +18,7 @@ let package = Package(
         ),
     ],
     dependencies: [
+        .package(path: "../DataCompression"),
         .package(path: "../RagnarokConstants"),
         .package(path: "../RagnarokCore"),
         .package(path: "../RagnarokEffects"),
@@ -37,6 +38,7 @@ let package = Package(
         .target(
             name: "RagnarokGame",
             dependencies: [
+                "DataCompression",
                 "RagnarokConstants",
                 "RagnarokCore",
                 "RagnarokEffects",

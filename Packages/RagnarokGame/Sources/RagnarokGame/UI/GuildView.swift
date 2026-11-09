@@ -9,6 +9,7 @@ import Foundation
 import RagnarokConstants
 import RagnarokResources
 import SwiftUI
+import UniformTypeIdentifiers
 
 private enum GuildTab: CaseIterable {
     case info
@@ -160,13 +161,33 @@ private struct GuildCreateForm: View {
 private struct GuildInfoTab: View {
     var guild: Guild
 
+    @Environment(PlaySession.self) private var playSession
+
+    @State private var isImportingEmblem = false
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 4) {
-                Text(verbatim: guild.name)
-                    .font(.game(size: 13))
-                    .foregroundStyle(Color.gameLabel)
-                    .lineLimit(1)
+                HStack(spacing: 6) {
+                    GuildEmblemView(guildID: guild.guildID, side: 32)
+
+                    Text(verbatim: guild.name)
+                        .font(.game(size: 13))
+                        .foregroundStyle(Color.gameLabel)
+                        .lineLimit(1)
+
+                    Spacer(minLength: 0)
+
+                    if guild.isMaster {
+                        Button {
+                            isImportingEmblem = true
+                        } label: {
+                            Text(verbatim: "Emblem")
+                        }
+                        .buttonStyle(.game)
+                        .frame(width: 58, height: 20)
+                    }
+                }
 
                 GuildInfoRow(label: "Level", value: "\(guild.level)")
 
@@ -188,6 +209,28 @@ private struct GuildInfoTab: View {
             .padding(8)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .fileImporter(isPresented: $isImportingEmblem, allowedContentTypes: [.image]) { result in
+            importEmblem(result)
+        }
+    }
+
+    /// Reads the chosen image. rAthena wants a 24 by 24 BMP, so the session converts any image to one.
+    private func importEmblem(_ result: Result<URL, Error>) {
+        guard case .success(let url) = result else {
+            return
+        }
+
+        let isScoped = url.startAccessingSecurityScopedResource()
+        defer {
+            if isScoped {
+                url.stopAccessingSecurityScopedResource()
+            }
+        }
+
+        guard let data = try? Data(contentsOf: url) else {
+            return
+        }
+        playSession.changeGuildEmblem(fromImageData: data)
     }
 
     private var membersText: String {
@@ -220,6 +263,28 @@ private struct GuildInfoRow: View {
 
             Spacer(minLength: 0)
         }
+    }
+}
+
+/// The emblem of a guild once the server has sent it, an empty square before that.
+private struct GuildEmblemView: View {
+    var guildID: UInt32
+    var side: CGFloat
+
+    @Environment(PlaySession.self) private var playSession
+
+    var body: some View {
+        ZStack {
+            if let emblem = playSession.guildState.emblems[guildID] {
+                Image(decorative: emblem.image, scale: 1)
+                    .resizable()
+                    .interpolation(.none)
+            } else {
+                Rectangle()
+                    .fill(Color.black.opacity(0.08))
+            }
+        }
+        .frame(width: side, height: side)
     }
 }
 
@@ -257,10 +322,14 @@ private struct GuildRelationSection: View {
             }
 
             ForEach(relations) { relation in
-                Text(verbatim: relation.name)
-                    .font(.game())
-                    .foregroundStyle(Color.gameLabel)
-                    .lineLimit(1)
+                HStack(spacing: 4) {
+                    GuildEmblemView(guildID: relation.guildID, side: 16)
+
+                    Text(verbatim: relation.name)
+                        .font(.game())
+                        .foregroundStyle(Color.gameLabel)
+                        .lineLimit(1)
+                }
             }
         }
         .padding(.top, 4)

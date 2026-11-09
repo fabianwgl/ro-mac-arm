@@ -5,15 +5,32 @@
 //  RO Mac Client. SPDX-License-Identifier: GPL-3.0
 //
 
+import CoreGraphics
 import Foundation
 import Observation
 import RagnarokNetwork
 import RagnarokPackets
 
+/// A decoded guild emblem and the version (`emblem id`) the server sent it for.
+struct GuildEmblem: Equatable {
+    var version: UInt32
+    var image: CGImage
+
+    static func == (lhs: GuildEmblem, rhs: GuildEmblem) -> Bool {
+        lhs.version == rhs.version && lhs.image === rhs.image
+    }
+}
+
 @Observable
 final class GuildState {
     var guild = Guild()
     var invitation: GuildInvitation?
+
+    /// Emblems the server has sent, by guild id.
+    var emblems: [UInt32: GuildEmblem] = [:]
+
+    /// The emblem version asked for per guild, 0 when the version was unknown, so the same one is not requested twice.
+    @ObservationIgnored var requestedEmblems: [UInt32: UInt32] = [:]
 }
 
 extension PlaySession {
@@ -27,6 +44,7 @@ extension PlaySession {
             handleGuildBelonging(packet)
         case let packet as PACKET_ZC_GUILD_INFO:
             guildState.guild.apply(info: Guild.Info(from: packet))
+            requestGuildEmblemIfNeeded(guildID: guildState.guild.guildID, version: guildState.guild.emblemID)
         case let packet as PACKET_ZC_ACK_GUILD_MENUINTERFACE:
             guildState.guild.apply(menuFlags: Int(packet.menuFlag))
         case let packet as PACKET_ZC_MEMBERMGR_INFO:
@@ -47,6 +65,11 @@ extension PlaySession {
             refreshGuildPermissions()
         case let packet as PACKET_ZC_MYGUILD_BASIC_INFO:
             guildState.guild.apply(relations: packet.rgInfo.compactMap(Guild.Relation.init(from:)))
+            for relation in guildState.guild.relations {
+                requestGuildEmblemIfNeeded(guildID: relation.guildID, version: nil)
+            }
+        case let packet as PACKET_ZC_GUILD_EMBLEM_IMG_LEGACY:
+            handleGuildEmblem(packet)
         case let packet as PACKET_ZC_DELETE_RELATED_GUILD:
             if let kind = Guild.Relation.Kind(rawValue: Int(packet.flag)) {
                 guildState.guild.removeRelation(guildID: packet.allyID, kind: kind)
@@ -225,6 +248,7 @@ extension PlaySession {
         )
         guildState.guild.apply(belonging: belonging)
         refreshGuildPermissions()
+        requestGuildEmblemIfNeeded(guildID: belonging.guildID, version: belonging.emblemID)
 
         // The server sends this when the player enters the guild or logs in, and again when the emblem or the
         // master changes. It sends no member list, positions or relations on its own at that point.
@@ -298,6 +322,7 @@ extension PlaySession {
             guildState.guild.reset()
         } else if UInt32(bitPattern: packet.guild_id) == guildState.guild.guildID {
             guildState.guild.emblemID = Int(packet.emblem_id)
+            requestGuildEmblemIfNeeded(guildID: guildState.guild.guildID, version: guildState.guild.emblemID)
         }
     }
 
@@ -316,7 +341,7 @@ extension PlaySession {
         return reason
     }
 
-    private func addGuildMessage(_ content: String, type: MessageCenter.MessageType = .info) {
+    func addGuildMessage(_ content: String, type: MessageCenter.MessageType = .info) {
         let message = MessageCenter.Message(content: content, type: type, category: .general)
         messageCenter.messages.append(message)
     }

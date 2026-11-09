@@ -96,4 +96,56 @@ final class GuildExtrasPacketTests: XCTestCase {
         XCTAssertEqual(bytes, le16(0x0112) + le16(10013))
         XCTAssertEqual(bytes.count, Int(packetDatabase.entriesByPacketType[0x0112]!.packetLength))
     }
+
+    // MARK: - Guild emblem (0x0151, 0x0152, 0x0153)
+
+    func testEncodeEmblemRequest() throws {
+        // 0151 <guild id>.L
+        var packet = PACKET_CZ_REQ_GUILD_EMBLEM_IMG1()
+        packet.packetType = HEADER_CZ_REQ_GUILD_EMBLEM_IMG1
+        packet.guild_id = 7
+
+        let bytes = try encode(packet)
+
+        XCTAssertEqual(bytes, le16(0x0151) + le32(7))
+        XCTAssertEqual(bytes.count, Int(packetDatabase.entriesByPacketType[0x0151]!.packetLength))
+    }
+
+    func testDecodeEmblem() throws {
+        // clif_guild_emblem: 0152 <packet len>.W <guild id>.L <emblem id>.L <emblem data>.?B, at every PACKETVER.
+        let data: [UInt8] = [0x78, 0x9c, 0x00, 0xff, 0x10]
+        let bytes = le16(0x0152) + le16(12 + data.count) + le32(7) + le32(3) + data
+
+        let packets = try decodeAll(bytes)
+
+        XCTAssertEqual(packets.count, 1)
+        let packet = try XCTUnwrap(packets.first as? PACKET_ZC_GUILD_EMBLEM_IMG_LEGACY)
+        XCTAssertEqual(packet.guildID, 7)
+        XCTAssertEqual(packet.emblemID, 3)
+        XCTAssertEqual(packet.data, data)
+    }
+
+    func testDecodeEmblemWithoutDataThenNextPacket() throws {
+        // The decoder must stop at the length field so the packet behind it still decodes.
+        let empty = le16(0x0152) + le16(12) + le32(7) + le32(3)
+        let skills = le16(0x0162) + le16(6) + le16(5)
+
+        let packets = try decodeAll(empty + skills)
+
+        XCTAssertEqual(packets.count, 2)
+        let packet = try XCTUnwrap(packets.first as? PACKET_ZC_GUILD_EMBLEM_IMG_LEGACY)
+        XCTAssertTrue(packet.data.isEmpty)
+        XCTAssertTrue(packets.last is PACKET_ZC_GUILD_SKILLINFO)
+    }
+
+    func testEncodeEmblemUpload() throws {
+        // clif_parse_GuildChangeEmblem: 0153 <packet len>.W <emblem data>.?B, the length covers the header.
+        var packet = PACKET_CZ_REGISTER_GUILD_EMBLEM_IMG()
+        packet.data = [0x78, 0x9c, 0x01, 0x02]
+
+        let bytes = try encode(packet)
+
+        XCTAssertEqual(bytes, le16(0x0153) + le16(8) + [0x78, 0x9c, 0x01, 0x02])
+        XCTAssertEqual(packetDatabase.entriesByPacketType[0x0153]!.packetLength, -1)
+    }
 }

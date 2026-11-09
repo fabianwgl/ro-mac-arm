@@ -472,7 +472,9 @@ let registeredPackets: [Int16 : any DecodablePacket.Type] = [
     HEADER_ZC_GUILD_INFO: PACKET_ZC_GUILD_INFO.self,
 
     // | 0x152, 0xb36 | `clif_guild_emblem` |
+    // clif_guild_emblem always writes 0x152, with binary emblem data; the generated 0xb36 type is kept for the layout.
     HEADER_ZC_GUILD_EMBLEM_IMG: PACKET_ZC_GUILD_EMBLEM_IMG.self,
+    HEADER_ZC_GUILD_EMBLEM_IMG_LEGACY: PACKET_ZC_GUILD_EMBLEM_IMG_LEGACY.self,
 
     // | 0x154, 0xaa5, 0xb7d | `clif_guild_memberlist` |
     HEADER_ZC_MEMBERMGR_INFO: PACKET_ZC_MEMBERMGR_INFO.self,

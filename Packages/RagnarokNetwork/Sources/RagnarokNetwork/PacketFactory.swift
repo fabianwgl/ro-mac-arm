@@ -1135,4 +1135,23 @@ public enum PacketFactory {
         packet.index = index
         return packet
     }
+
+    /// | `PACKET_CZ_REQ_GUILD_EMBLEM_IMG1` | `clif_parse_GuildRequestEmblem` |
+    ///
+    /// Asks for the emblem of any guild the map server has loaded. The answer is `ZC_GUILD_EMBLEM_IMG` (0x152).
+    public static func CZ_REQ_GUILD_EMBLEM_IMG(guildID: UInt32) -> PACKET_CZ_REQ_GUILD_EMBLEM_IMG1 {
+        var packet = PACKET_CZ_REQ_GUILD_EMBLEM_IMG1()
+        packet.packetType = HEADER_CZ_REQ_GUILD_EMBLEM_IMG1
+        packet.guild_id = Int32(bitPattern: guildID)
+        return packet
+    }
+
+    /// | `PACKET_CZ_REGISTER_GUILD_EMBLEM_IMG` | `clif_parse_GuildChangeEmblem` |
+    ///
+    /// `data` is a zlib compressed BMP, see `GuildEmblemCodec` in RagnarokGame.
+    public static func CZ_REGISTER_GUILD_EMBLEM_IMG(data: [UInt8]) -> PACKET_CZ_REGISTER_GUILD_EMBLEM_IMG {
+        var packet = PACKET_CZ_REGISTER_GUILD_EMBLEM_IMG()
+        packet.data = data
+        return packet
+    }
 }
