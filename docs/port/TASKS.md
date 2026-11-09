@@ -46,7 +46,7 @@ Acceptance: character spawns on the rAthena map and plays for 10 minutes.
 - [x] P1-04 Add `upstream` remote and document the sync procedure.
 - [x] P1-05 Add a minimal `NOTICE` file for upstream and third-party code.
 - [x] P1-06 (on `macos-26`: no macOS 15 image has the toolchain upstream needs) Add GitHub Actions build on `macos-15`, arm64, with submodules.
-- [ ] P1-07 Add unit test job and cache Swift packages.
+- [ ] P1-07 (job written; RagnarokGame does not compile on the runner's Xcode 26.6, the other ten packages pass) Add unit test job and cache Swift packages.
 - [x] P1-08 Add an asset provisioning script that copies `data.grf` and `BGM`
   into the sandbox Documents directory and validates both.
 - [x] P1-09 Add `.gitignore` rules for client assets and build output.
@@ -153,19 +153,25 @@ Acceptance: local build meets the performance targets on the developer Mac. Sign
 - [ ] Add a benchmarking scene.
 - [ ] Add multi-client support for local testing.
 
-## Status 2026-11-06
+## Status 2026-11-09
 
 Evidence: [phase0-probe-report.md](phase0-probe-report.md), [packet-coverage.md](packet-coverage.md),
-[KNOWN_GAPS.md](KNOWN_GAPS.md), package tests (`swift test` per package) and the golden suite
-(`Packages/RagnarokPackets/Tests/RagnarokPacketsTests/GoldenPacketTests.swift`).
+[core-verification.md](probe-runs/core-verification.md), the scenario runs in `probe-runs/`, [perf.md](perf.md),
+[skill-effects.md](skill-effects.md), [KNOWN_GAPS.md](KNOWN_GAPS.md), package tests (`swift test` per package) and the
+golden suite (`Packages/RagnarokPackets/Tests/RagnarokPacketsTests/GoldenPacketTests.swift`).
 
 Open, with the reason:
 
 - P0-03 embedded-server baseline: skipped; the external Docker server is the target and works.
-- P1-06, P1-07 CI: workflow written (`.github/workflows/ci.yml`), not run; the fork has no GitHub remote yet.
-- P3-05..P3-11, P3-13: upstream features; walk/attack/chat exercised by the probe, the rest not re-verified.
-- P3-15 one-hour playtest: the developer runs it once the content work is done.
-- P4-02, P4-03: skills/effects per job and lub DB loading beyond achievements not re-verified; see KNOWN_GAPS.md.
-- Attendance needs a server-side period in `db/import/attendance.yml`; the `openmail` NPC is broken server-side at this PACKETVER (menu and `@mail` work).
-- P5-01..P5-08: GPU capture, fps, RSS, cold start, display and input checks need the app running on screen.
+- P1-07 CI unit tests: the last run (2026-11-06, `main`) built the app and passed ten test jobs. RagnarokGame fails to
+  compile there: `#bundle` in the UI sources finds no resource bundle under `swift test` with Xcode 26.6. It compiles
+  and passes with Xcode 27 locally. Nothing has been pushed since, so CI has not seen the later work.
+- P3-15 one-hour playtest: needs a person at the app. Everything in Phase 3 is verified headless only.
+- P4-02 skills and effects: 83 of the 224 active 1st and 2nd job skills have a skill specific effect, 3 of 45 ground
+  unit skills are drawn, 2 of 89 statuses show more than an icon.
+- P5-01..P5-03 GPU capture, decode stalls, command buffer tuning: not started; the measured frame times are inside
+  the target without them.
+- P5-07 Retina, fullscreen, window restore, display change: not checked.
 - P5-09..P5-12 signing, notarization, DMG, source archive: deferred; `scripts/release.sh` works unnotarized.
+- Attendance needs a server-side period in `db/import/attendance.yml`; the `openmail` NPC is broken server-side at this
+  PACKETVER (menu and `@mail` work).

@@ -165,13 +165,13 @@ Exit criteria: the local build meets the performance targets on the developer Ma
 
 ## 5. Milestones
 
-| Milestone | Scope | Solo full-time | Status 2026-11-06 |
+| Milestone | Scope | Solo full-time | Status 2026-11-09 |
 | --- | --- | --- | --- |
 | M0 | Build upstream, Docker rAthena login | 1-2 weeks | Done |
 | M1 | Login to rAthena, walk, chat | 5-8 weeks | Done |
-| M2 | Playable core | 11-18 weeks | In progress: core loop coded, per-item verification and the playtest left |
-| M3 | Target-server content | 17-28 weeks | About half of the enabled systems usable; rest in KNOWN_GAPS.md |
-| M4 | v1.0 (local build) | 20-33 weeks | Not started (performance work) |
+| M2 | Playable core | 11-18 weeks | Every task verified headless against the live server; the one-hour playtest by a person (P3-15) is the only open item |
+| M3 | Target-server content | 17-28 weeks | Most enabled systems usable; open: skill effects (P4-02) and the systems in KNOWN_GAPS.md |
+| M4 | v1.0 (local build) | 20-33 weeks | fps, memory and cold start measured and inside the targets on the developer Mac; GPU capture and display handling open |
 
 Solo at 20 hours per week: double the ranges. Two developers full-time: roughly
 60 percent of the ranges.
@@ -230,8 +230,9 @@ v1.0:
 
 ## 10. Progress
 
-Status on 2026-11-06. Work is on branch `feat/port-phase0-5` of
-`github.com/fabianwgl/ro-mac-arm` (PR #1); `main` mirrors `upstream/master`.
+Status on 2026-11-09. Work is on the local branch `integrate-m2`. It is more
+than 50 commits ahead of `main` and `feat/port-phase0-5` (PR #1, merged on
+`github.com/fabianwgl/ro-mac-arm`) and has not been pushed.
 Per-task status with evidence is in [TASKS.md](TASKS.md); open content in
 [KNOWN_GAPS.md](KNOWN_GAPS.md).
 
@@ -249,7 +250,9 @@ Per-task status with evidence is in [TASKS.md](TASKS.md); open content in
   - Fork files: NOTICE, an asset-safe `.gitignore`, issue templates, the
     compatibility manifest, `scripts/provision-assets.sh`, the upstream sync
     doc and `patches.md`.
-  - CI on `macos-26` builds the app.
+  - CI on `macos-26` builds the app and runs the package tests. The app build
+    and ten of the eleven test jobs pass; the RagnarokGame job does not (see
+    Open problems).
 - Phase 2:
   - Packet handling: a packet-date guard, decoder hardening (hex logging,
     bounded buffer, fragmented and coalesced read tests) and a replay recorder.
@@ -269,30 +272,65 @@ Per-task status with evidence is in [TASKS.md](TASKS.md); open content in
 - Phase 3:
   - Chat: whisper, party and guild.
   - The quit acknowledgement and the hand-off between map servers.
-  - Clicking warps and NPCs.
-  - macOS keyboard controls with rebinding.
+  - Clicking warps and NPCs. NPC dialogs close on a map change.
+  - macOS keyboard controls with rebinding, WASD walking, game controller.
   - Sound and display preferences.
   - The saved password lives in the Keychain.
   - A crash marker and log export.
-- Phase 4: an inventory of the server's content
-  ([server-content.md](server-content.md)), plus party, friends, quest log,
-  guild, pets, homunculus, RODEX mail, achievements and attendance.
-- Phase 5: install and release docs. `scripts/release.sh` builds a signed DMG
-  without notarization. Signing and distribution are deferred because the
-  project is local-only.
+  - Map changes, experience, loot, inventory, NPC shops and storage, Kafra,
+    skills, ground skills and audio verified by the probe's core scenario:
+    66 of 66 checks ([core-verification.md](probe-runs/core-verification.md)).
+- Phase 4:
+  - An inventory of the server's content ([server-content.md](server-content.md)).
+  - Party, friends, quest log, pets, homunculus, RODEX mail, achievements and
+    attendance.
+  - Guild window with skills and emblem.
+  - Trade, vending, buying stores, chat rooms, item appraisal and cart moves,
+    each verified live with one or two probes (`probe-runs/`).
+  - English names for every server item, skill and monster
+    ([localization.md](localization.md)).
+  - Skill effects: an audit of the 224 active skills of the 1st and 2nd jobs,
+    83 with a skill specific effect, ground units for three skills
+    ([skill-effects.md](skill-effects.md)).
+- Phase 5:
+  - Install and release docs. `scripts/release.sh` builds a signed DMG
+    without notarization. Signing and distribution are deferred because the
+    project is local-only.
+  - `scripts/perf-run.sh` measures fps, memory and cold start unattended. On
+    the developer Mac (M4, 144 Hz, 2560x1440): 143.9 fps, peak RSS under
+    600 MB, 1.1 to 2.8 s to the first map frame ([perf.md](perf.md)). The map
+    view now draws at the display's refresh rate instead of 60 fps.
+
+### Open problems
+
+- No person has played the client yet. Every check so far is headless: the
+  probe calls the same `PlaySession` and `MapScene` entry points as the UI,
+  but it draws nothing, so a SwiftUI window or a Metal frame that looks wrong
+  is not caught. P3-15 is the gate for M2 and for most of the work below.
+- CI is red. `swift test` for RagnarokGame does not compile on the runner's
+  Xcode 26.6: the `#bundle` macro in the UI sources needs a resource bundle
+  the package does not have. It compiles with Xcode 27 on the developer Mac.
+  CI has not run since 2026-11-06 because nothing was pushed.
+- The work since PR #1 exists only on this Mac.
+- [server-content.md](server-content.md) lists every job and system of a
+  stock rAthena as enabled, so "the content the target server enables" does
+  not narrow the scope. Which jobs and systems are played decides the order
+  of the rest of Phase 4.
+- The week ranges in section 5 no longer describe the pace: Phases 0 to 4
+  took days. They are kept as the original estimate.
 
 ### Next
 
-1. Finish M2:
-   - Verify P3-02 and P3-04 to P3-13 against the local server with the probe.
-   - Do a GUI run of the real app, with screenshots of the map and of each
-     core window.
-   - Fix what turns up.
-   - Run the soak again.
-   - Then the developer's one-hour playtest (P3-15).
-2. Plan and build the remaining systems in [KNOWN_GAPS.md](KNOWN_GAPS.md).
-   First: trade, vending, buying store, refine and enchant.
-3. Phase 5 performance work on the developer Mac.
+1. The developer's one-hour playtest (P3-15) with a written bug list. Fix
+   what turns up, then run the soak again.
+2. Push `integrate-m2` and make the RagnarokGame test job compile on CI
+   (P1-07).
+3. Skill effects (P4-02), in the order of [skill-effects.md](skill-effects.md):
+   status pictures for other players, ground units (Warp Portal and Safety
+   Wall first), the ground cast circle.
+4. The remaining systems in [KNOWN_GAPS.md](KNOWN_GAPS.md). First: refine and
+   enchant, the cart window, guild position editing and alliances.
+5. Phase 5: GPU capture (P5-01 to P5-03) and display handling (P5-07).
 
 ### Server notes found during the work
 

@@ -23,7 +23,12 @@ per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
   accept or decline an invitation, members with position, level, job and
   online state (login and logout live), expel, leave, disband (master, empty
   guild), position names and permissions, notice (read, and edit as master),
-  alliance and hostile guild lists (read only), expulsion list.
+  alliance and hostile guild lists (read only), expulsion list. Skills tab:
+  skill points, the skills the guild qualifies for, level up (master) and Use
+  for the master's active skills. Emblem: shown on the Info tab and next to
+  allied and hostile guilds; the master picks any image file and it is scaled
+  to the 24 by 24 bitmap rAthena stores. Skills and emblem verified live
+  ([guild-2026-11-09.json](probe-runs/guild-2026-11-09.json)).
 - Pet window (status, feed, performance, return to egg, unequip accessory,
   rename, auto feed) and the egg list a pet incubator opens; homunculus window
   (status, feed, rename, delete, call, vaporize, resurrect, auto feed, skill
@@ -60,7 +65,7 @@ per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
 
 | Area | Server state | Client state |
 | --- | --- | --- |
-| Guild window: skills, emblem image, editing positions and member positions, alliance and hostility requests, castle info, member dots on the minimap | enabled | Info, Members, Positions and Notice tabs work (see Works); skills (`ZC_GUILD_SKILLINFO`), `ZC_GUILD_EMBLEM_IMG`, `CZ_REG_CHANGE_GUILD_POSITIONINFO`, `CZ_REQ_CHANGE_MEMBERPOS`, `CZ_REQ_ALLY_GUILD`/`CZ_ALLY_GUILD`/`CZ_REQ_HOSTILE_GUILD` and `ZC_GUILD_AGIT_INFO` are not used; an incoming alliance request only prints a chat line |
+| Guild window: editing positions and member positions, alliance and hostility requests, castle info, member dots on the minimap, emblems on the map | enabled | Info, Members, Positions, Skills and Notice tabs work (see Works); `CZ_REG_CHANGE_GUILD_POSITIONINFO`, `CZ_REQ_CHANGE_MEMBERPOS`, `CZ_REQ_ALLY_GUILD`/`CZ_ALLY_GUILD`/`CZ_REQ_HOSTILE_GUILD` and `ZC_GUILD_AGIT_INFO` are not used; an incoming alliance request only prints a chat line; the emblem is drawn in the guild window only, not above characters or on castle flags |
 | Pets, homunculus, mercenaries | enabled | pet and homunculus windows and commands done (see Works); missing: taming (`ZC_START_CAPTURE`, `CZ_TRYCAPTURE_MONSTER`), pet evolution (`CZ_PET_EVOLUTION`), pet emotes and talk (`ZC_PET_ACT`), homunculus skill upgrade, attack and move orders, homunculus Lua AI; mercenary packets are not handled and there is no mercenary window |
 | RODEX mail | enabled | mailbox window (Mail and Account tabs, list, read, take zeny and items, delete, reply), write window (name check, title, text, zeny, up to 5 items), unread icon and message. Opened from the menu mail button or `@mail`: the `openmail` NPC cannot open it at this PACKETVER (`BUILDIN_FUNC(openmail)` only logs that it is unsupported, after the NPC took 130 zeny). Not done: returning a mail (rAthena ignores `CZ_RODEX_RETURN`), the "all mails" account requests (`CZ_OPEN_ALL_RODEX`, none in rAthena) |
 | Achievements | enabled | menu window, claim button and completion message work; titles need `System/achievement_list.lub` in the client folder, else rows read "Achievement #id"; no title wearing |
@@ -81,6 +86,10 @@ per-packet backlog is upstream's [ROBROWSER_PARITY.md](../ROBROWSER_PARITY.md).
 ## Not verified on this machine
 
 - Visual check of the play UI by a person for one hour (P3-15). Protocol-level
-  soak runs pass; see [phase0-probe-report.md](phase0-probe-report.md).
-- Metal GPU capture, 120 fps on M1, RSS and cold-start targets (P5-01..P5-06):
-  the build Mac is an M4; numbers are not recorded yet.
+  soak and scenario runs pass; see [phase0-probe-report.md](phase0-probe-report.md)
+  and `probe-runs/`. No window has been looked at by a person yet.
+- The 120 fps, RSS and cold-start targets were set for an M1 on a ProMotion
+  panel. They are measured and met on the build Mac, an M4 on a 144 Hz
+  display ([perf.md](perf.md)); nothing was measured on an M1.
+- Metal GPU capture (P5-01), display changes and window restore (P5-07).
+- The game controller mapping on a physical pad.

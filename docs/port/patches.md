@@ -11,3 +11,4 @@ Every divergence from `arkadeleon/ragnarok-offline` is listed here. See
 | `Generated/packets.swift` `RANKLIST` | Generator emits `char names[10][NAME_LENGTH]` as one 10-byte string; hand-fixed to ten 24-byte names (golden test caught it) | Yes: fix 2-D char arrays in `RagnarokOfflineGenerator` `PacketStructConverter` |
 | `PlaySession.connect(to:)` | Removed the keepalive start right after `CZ_ENTER`: rAthena rejects the connect packet when `CZ_REQUEST_TIME` shares its TCP read (found by `Tools/ROProbe`) | Yes |
 | `README.md` | Rewritten for the fork (goal, status, run steps); upstream README content is in upstream | No |
+| `Packages/DataCompression` `Zlib+Deflate.swift` | `Zlib.deflate` (zlib `compress2`) for the guild emblem upload; upstream only inflates. Kept in its own file so `Zlib.swift` merges cleanly | Yes |
